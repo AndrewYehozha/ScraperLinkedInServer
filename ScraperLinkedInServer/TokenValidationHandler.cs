@@ -46,10 +46,8 @@ namespace ScraperLinkedInServer
 
             try
             {
-                const string Secret = "LGNSELdlknKNn837=wWDL2Z+zfwefasdWdQkFHiovnspa==S";
-                byte[] key = Convert.FromBase64String(Secret);
-
-                var securityKey = new SymmetricSecurityKey(key);
+                const string Secret = "LGNSELdlknKNn837wWDL2ZzfwefasdWdQkFHiovnspaS";
+                var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(Secret));
 
                 SecurityToken securityToken;
                 var handler = new JwtSecurityTokenHandler();
