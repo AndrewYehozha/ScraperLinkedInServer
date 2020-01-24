@@ -8,13 +8,17 @@ using System.Web.Mvc;
 
 namespace ScraperLinkedInServer.Controllers
 {
-    [Authorize(Roles = Role.User)]
+    [RoutePrefix("api/Home")]
     public class HomeController : Controller
     {
+        /// <summary>
+        /// </summary>
+        /// <returns>sdsd</returns>
+        [Authorize(Roles = Role.Admin)]
+        [HttpGet]
+        [Route("Index")]
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
             return View();
         }
     }

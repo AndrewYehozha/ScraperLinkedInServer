@@ -5,22 +5,26 @@ using System.Security.Claims;
 using System.Web;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using ScraperLinkedInServer.Models.Entities;
+using System.Text;
 
 namespace ScraperLinkedInServer
 {
     public class TokenManager
     {
-        private readonly static string Secret = "LGNSELdlknKNn837=wWDL2Z+zfwefasdWdQkFHiovnspa==S";
-        public static string GenerateToken(string userId, string role, string email, string password)
+        private readonly static string Secret = "LGNSELdlknKNn837wWDL2ZzfwefasdWdQkFHiovnspaS";
+        public static string GenerateToken(Account account)
         {
             var identity = new ClaimsIdentity(new[] {
-                    new Claim("UserId", userId),
-                    new Claim("Role", role),
-                    new Claim(ClaimTypes.Email, email),
-                    new Claim("Password", password)
+                    new Claim(Claims.AccountId, account.AccountId.ToString()),
+                    new Claim(Claims.FirstName, account.FirstName),
+                    new Claim(Claims.LastName, account.LastName),
+                    new Claim(Claims.Email, account.Email),
+                    new Claim(Claims.RoleId, account.RoleId.ToString()),
+                    new Claim(ClaimTypes.Role, account.Role)
             });
-            byte[] key = Convert.FromBase64String(Secret);
-            var securityKey = new SymmetricSecurityKey(key);
+            
+            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(Secret));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
             var descriptor = new SecurityTokenDescriptor

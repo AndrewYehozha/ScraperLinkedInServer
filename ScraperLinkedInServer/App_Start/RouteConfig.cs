@@ -18,8 +18,15 @@ namespace ScraperLinkedInServer
                 controller = "Home", 
                 action = "Index", 
                 id = UrlParameter.Optional 
-            }); 
-            
+            });
+
+            routes.MapRoute(name: "login", url: "login", defaults: new
+            {
+                controller = "Login",
+                action = "Login",
+                id = UrlParameter.Optional
+            });
+
             routes.MapRoute(name: "Default", url: "{controller}/{action}/{id}", defaults: new
             {
                 controller = "Login",
