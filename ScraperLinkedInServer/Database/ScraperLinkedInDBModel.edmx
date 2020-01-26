@@ -1,0 +1,846 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ScraperLinkedInDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accounts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="DateOfBirthday" Type="date" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="IsBlocked" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdvanceSettings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TimeStart" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IntervalType" Type="int" Nullable="false" />
+          <Property Name="IntervalValue" Type="int" Nullable="false" />
+          <Property Name="CompanyBatchSize" Type="int" Nullable="false" />
+          <Property Name="ProfileBatchSize" Type="int" Nullable="false" />
+          <Property Name="AccountId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Companies">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrganizationName" Type="nvarchar" MaxLength="250" />
+          <Property Name="OrganizationURL" Type="nvarchar" MaxLength="500" />
+          <Property Name="Founders" Type="nvarchar" MaxLength="250" />
+          <Property Name="HeadquartersLocation" Type="nvarchar" MaxLength="250" />
+          <Property Name="Website" Type="nvarchar" MaxLength="150" />
+          <Property Name="LinkedInURL" Type="nvarchar" MaxLength="500" />
+          <Property Name="LogoUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="Specialties" Type="nvarchar(max)" />
+          <Property Name="ExecutionStatusID" Type="int" Nullable="false" />
+          <Property Name="Facebook" Type="nvarchar" MaxLength="150" />
+          <Property Name="Twitter" Type="nvarchar" MaxLength="150" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AmountEmployees" Type="nvarchar" MaxLength="50" />
+          <Property Name="Industry" Type="nvarchar(max)" />
+          <Property Name="AccountId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DebugLogs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="250" />
+          <Property Name="Logs" Type="nvarchar(max)" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="AccountId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExecutionStatuses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="StatusName" Type="nvarchar" MaxLength="75" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IntervalTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IntervalTypeName" Type="nvarchar" MaxLength="75" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Profiles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="125" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="125" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="250" />
+          <Property Name="Job" Type="nvarchar" MaxLength="250" />
+          <Property Name="ProfileUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="AllSkills" Type="nvarchar(max)" />
+          <Property Name="ExecutionStatusID" Type="int" Nullable="false" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="ProfileStatusID" Type="int" Nullable="false" />
+          <Property Name="DateСreation" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProfileStatuses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="StatusName" Type="nvarchar" MaxLength="75" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ScraperStatuses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="StatusName" Type="nvarchar" MaxLength="75" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Settings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Token" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="TechnologiesSearch" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RolesSearch" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ScraperStatusID" Type="int" Nullable="false" />
+          <Property Name="AccountId" Type="int" />
+        </EntityType>
+        <EntityType Name="SuitableProfiles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="125" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="125" />
+          <Property Name="Job" Type="nvarchar" MaxLength="250" />
+          <Property Name="PersonLinkedIn" Type="nvarchar" MaxLength="500" />
+          <Property Name="Company" Type="nvarchar" MaxLength="250" />
+          <Property Name="Website" Type="nvarchar" MaxLength="150" />
+          <Property Name="CompanyLogoUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="CrunchUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailStatus" Type="nvarchar" MaxLength="10" />
+          <Property Name="City" Type="nvarchar" MaxLength="75" />
+          <Property Name="State" Type="nvarchar" MaxLength="75" />
+          <Property Name="Country" Type="nvarchar" MaxLength="75" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AmountEmployees" Type="nvarchar" MaxLength="50" />
+          <Property Name="Industry" Type="nvarchar(max)" />
+          <Property Name="Twitter" Type="nvarchar" MaxLength="150" />
+          <Property Name="Facebook" Type="nvarchar" MaxLength="150" />
+          <Property Name="TechStack" Type="nvarchar(max)" />
+          <Property Name="DateTimeCreation" Type="datetime" />
+          <Property Name="ProfileId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AdvanceSettings_AdvanceSettings">
+          <End Role="IntervalTypes" Type="Self.IntervalTypes" Multiplicity="1" />
+          <End Role="AdvanceSettings" Type="Self.AdvanceSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IntervalTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSettings">
+              <PropertyRef Name="IntervalType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_Accounts">
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_ExecutionStatuses">
+          <End Role="ExecutionStatuses" Type="Self.ExecutionStatuses" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExecutionStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="ExecutionStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DebugLogs_Accounts">
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+          <End Role="DebugLogs" Type="Self.DebugLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DebugLogs">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_Companies">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_ExecutionStatuses">
+          <End Role="ExecutionStatuses" Type="Self.ExecutionStatuses" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExecutionStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="ExecutionStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_ProfileStatuses">
+          <End Role="ProfileStatuses" Type="Self.ProfileStatuses" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProfileStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="ProfileStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Settings_Accounts">
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="0..1" />
+          <End Role="Settings" Type="Self.Settings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Settings">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SuitableProfiles_Profiles">
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="1" />
+          <End Role="SuitableProfiles" Type="Self.SuitableProfiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Profiles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SuitableProfiles">
+              <PropertyRef Name="ProfileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ScraperLinkedInDBModelStoreContainer">
+          <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AdvanceSettings" EntityType="Self.AdvanceSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Companies" EntityType="Self.Companies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DebugLogs" EntityType="Self.DebugLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExecutionStatuses" EntityType="Self.ExecutionStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IntervalTypes" EntityType="Self.IntervalTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Profiles" EntityType="Self.Profiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProfileStatuses" EntityType="Self.ProfileStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ScraperStatuses" EntityType="Self.ScraperStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SuitableProfiles" EntityType="Self.SuitableProfiles" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AdvanceSettings_AdvanceSettings" Association="Self.FK_AdvanceSettings_AdvanceSettings">
+            <End Role="IntervalTypes" EntitySet="IntervalTypes" />
+            <End Role="AdvanceSettings" EntitySet="AdvanceSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_Accounts" Association="Self.FK_Companies_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_ExecutionStatuses" Association="Self.FK_Companies_ExecutionStatuses">
+            <End Role="ExecutionStatuses" EntitySet="ExecutionStatuses" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DebugLogs_Accounts" Association="Self.FK_DebugLogs_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="DebugLogs" EntitySet="DebugLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_Companies" Association="Self.FK_Profiles_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_ExecutionStatuses" Association="Self.FK_Profiles_ExecutionStatuses">
+            <End Role="ExecutionStatuses" EntitySet="ExecutionStatuses" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_ProfileStatuses" Association="Self.FK_Profiles_ProfileStatuses">
+            <End Role="ProfileStatuses" EntitySet="ProfileStatuses" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Settings_Accounts" Association="Self.FK_Settings_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="Settings" EntitySet="Settings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SuitableProfiles_Profiles" Association="Self.FK_SuitableProfiles_Profiles">
+            <End Role="Profiles" EntitySet="Profiles" />
+            <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ScraperLinkedInDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrganizationName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="OrganizationURL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Founders" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="HeadquartersLocation" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LinkedInURL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LogoUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Specialties" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ExecutionStatusID" Type="Int32" Nullable="false" />
+          <Property Name="Facebook" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Twitter" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AmountEmployees" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Industry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="Companies" ToRole="ExecutionStatuses" />
+          <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Companies" FromRole="Companies" ToRole="Profiles" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_Companies_Accounts" FromRole="Company" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="DebugLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Remarks" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Logs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_DebugLogs_Accounts" FromRole="DebugLog" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="ExecutionStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="StatusName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Companies" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="ExecutionStatuses" ToRole="Companies" />
+          <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_ExecutionStatuses" FromRole="ExecutionStatuses" ToRole="Profiles" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Profile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="FullName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Job" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AllSkills" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ExecutionStatusID" Type="Int32" Nullable="false" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <Property Name="ProfileStatusID" Type="Int32" Nullable="false" />
+          <Property Name="DateСreation" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Company" Relationship="Self.FK_Profiles_Companies" FromRole="Profiles" ToRole="Companies" />
+          <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Profiles_ExecutionStatuses" FromRole="Profiles" ToRole="ExecutionStatuses" />
+          <NavigationProperty Name="ProfileStatus" Relationship="Self.FK_Profiles_ProfileStatuses" FromRole="Profiles" ToRole="ProfileStatuses" />
+          <NavigationProperty Name="SuitableProfiles" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles" FromRole="Profile" ToRole="SuitableProfile" />
+        </EntityType>
+        <EntityType Name="ProfileStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="StatusName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_ProfileStatuses" FromRole="ProfileStatuses" ToRole="Profiles" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ScraperStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="StatusName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Settings" Relationship="Self.FK_Settings_ScraperStatuses" FromRole="ScraperStatuses" ToRole="Settings" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Token" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Login" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TechnologiesSearch" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RolesSearch" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ScraperStatusID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ScraperStatus" Relationship="Self.FK_Settings_ScraperStatuses" FromRole="Settings" ToRole="ScraperStatuses" />
+          <Property Name="AccountId" Type="Int32" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_Settings_Accounts" FromRole="Setting" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="SuitableProfile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="Job" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="PersonLinkedIn" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Company" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyLogoUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CrunchUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AmountEmployees" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Industry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Twitter" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Facebook" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="TechStack" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateTimeCreation" Type="DateTime" Precision="3" />
+          <Property Name="ProfileId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Profile" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles" FromRole="SuitableProfile" ToRole="Profile" />
+        </EntityType>
+        <Association Name="FK_Companies_ExecutionStatuses">
+          <End Role="ExecutionStatuses" Type="Self.ExecutionStatus" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Company" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExecutionStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="ExecutionStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_Companies">
+          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_ExecutionStatuses">
+          <End Role="ExecutionStatuses" Type="Self.ExecutionStatus" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExecutionStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="ExecutionStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_ProfileStatuses">
+          <End Role="ProfileStatuses" Type="Self.ProfileStatus" Multiplicity="1" />
+          <End Role="Profiles" Type="Self.Profile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProfileStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="ProfileStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Settings_ScraperStatuses">
+          <End Role="ScraperStatuses" Type="Self.ScraperStatus" Multiplicity="1" />
+          <End Role="Settings" Type="Self.Setting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ScraperStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Settings">
+              <PropertyRef Name="ScraperStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ScraperLinkedInDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Companies" EntityType="Self.Company" />
+          <EntitySet Name="DebugLogs" EntityType="Self.DebugLog" />
+          <EntitySet Name="ExecutionStatuses" EntityType="Self.ExecutionStatus" />
+          <EntitySet Name="Profiles" EntityType="Self.Profile" />
+          <EntitySet Name="ProfileStatuses" EntityType="Self.ProfileStatus" />
+          <EntitySet Name="ScraperStatuses" EntityType="Self.ScraperStatus" />
+          <EntitySet Name="Settings" EntityType="Self.Setting" />
+          <EntitySet Name="SuitableProfiles" EntityType="Self.SuitableProfile" />
+          <AssociationSet Name="FK_Companies_ExecutionStatuses" Association="Self.FK_Companies_ExecutionStatuses">
+            <End Role="ExecutionStatuses" EntitySet="ExecutionStatuses" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_Companies" Association="Self.FK_Profiles_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_ExecutionStatuses" Association="Self.FK_Profiles_ExecutionStatuses">
+            <End Role="ExecutionStatuses" EntitySet="ExecutionStatuses" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_ProfileStatuses" Association="Self.FK_Profiles_ProfileStatuses">
+            <End Role="ProfileStatuses" EntitySet="ProfileStatuses" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Settings_ScraperStatuses" Association="Self.FK_Settings_ScraperStatuses">
+            <End Role="ScraperStatuses" EntitySet="ScraperStatuses" />
+            <End Role="Settings" EntitySet="Settings" />
+          </AssociationSet>
+          <EntitySet Name="Accounts" EntityType="ScraperLinkedInDBModel.Account" />
+          <EntitySet Name="AdvanceSettings" EntityType="ScraperLinkedInDBModel.AdvanceSetting" />
+          <AssociationSet Name="FK_AdvanceSettings_AdvanceSettings" Association="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="AdvanceSetting" EntitySet="AdvanceSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Settings_Accounts" Association="ScraperLinkedInDBModel.FK_Settings_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Setting" EntitySet="Settings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Companies_Accounts" Association="ScraperLinkedInDBModel.FK_Companies_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Company" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DebugLogs_Accounts" Association="ScraperLinkedInDBModel.FK_DebugLogs_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="DebugLog" EntitySet="DebugLogs" />
+          </AssociationSet>
+          <EntitySet Name="IntervalTypes" EntityType="ScraperLinkedInDBModel.IntervalType" />
+          <AssociationSet Name="FK_AdvanceSettings_AdvanceSettings1" Association="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings1">
+            <End Role="IntervalType" EntitySet="IntervalTypes" />
+            <End Role="AdvanceSetting" EntitySet="AdvanceSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SuitableProfiles_Profiles" Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles">
+            <End Role="Profile" EntitySet="Profiles" />
+            <End Role="SuitableProfile" EntitySet="SuitableProfiles" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirthday" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Role" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="IsBlocked" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AdvanceSettings" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings" FromRole="Account" ToRole="AdvanceSetting" />
+          <NavigationProperty Name="Settings" Relationship="ScraperLinkedInDBModel.FK_Settings_Accounts" FromRole="Account" ToRole="Setting" />
+          <NavigationProperty Name="Companies" Relationship="ScraperLinkedInDBModel.FK_Companies_Accounts" FromRole="Account" ToRole="Company" />
+          <NavigationProperty Name="DebugLogs" Relationship="ScraperLinkedInDBModel.FK_DebugLogs_Accounts" FromRole="Account" ToRole="DebugLog" />
+        </EntityType>
+        <EntityType Name="AdvanceSetting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimeStart" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IntervalType" Type="Int32" Nullable="false" />
+          <Property Name="IntervalValue" Type="Int32" Nullable="false" />
+          <Property Name="CompanyBatchSize" Type="Int32" Nullable="false" />
+          <Property Name="ProfileBatchSize" Type="Int32" Nullable="false" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings" FromRole="AdvanceSetting" ToRole="Account" />
+          <NavigationProperty Name="IntervalType1" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings1" FromRole="AdvanceSetting" ToRole="IntervalType" />
+        </EntityType>
+        <Association Name="FK_AdvanceSettings_AdvanceSettings">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.AdvanceSetting" Role="AdvanceSetting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSetting">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Settings_Accounts">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="0..1" />
+          <End Type="ScraperLinkedInDBModel.Setting" Role="Setting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Setting">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Companies_Accounts">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.Company" Role="Company" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Company">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DebugLogs_Accounts">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.DebugLog" Role="DebugLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DebugLog">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="IntervalType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IntervalTypeName" Type="String" Nullable="false" MaxLength="75" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdvanceSettings" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings1" FromRole="IntervalType" ToRole="AdvanceSetting" />
+        </EntityType>
+        <Association Name="FK_AdvanceSettings_AdvanceSettings1">
+          <End Type="ScraperLinkedInDBModel.IntervalType" Role="IntervalType" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.AdvanceSetting" Role="AdvanceSetting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IntervalType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSetting">
+              <PropertyRef Name="IntervalType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SuitableProfiles_Profiles">
+          <End Type="ScraperLinkedInDBModel.Profile" Role="Profile" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.SuitableProfile" Role="SuitableProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Profile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SuitableProfile">
+              <PropertyRef Name="ProfileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ScraperLinkedInDBModelStoreContainer" CdmEntityContainer="ScraperLinkedInDBEntities">
+          <EntitySetMapping Name="Companies">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Company">
+              <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
+                <ScalarProperty Name="OrganizationURL" ColumnName="OrganizationURL" />
+                <ScalarProperty Name="Founders" ColumnName="Founders" />
+                <ScalarProperty Name="HeadquartersLocation" ColumnName="HeadquartersLocation" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="LinkedInURL" ColumnName="LinkedInURL" />
+                <ScalarProperty Name="LogoUrl" ColumnName="LogoUrl" />
+                <ScalarProperty Name="Specialties" ColumnName="Specialties" />
+                <ScalarProperty Name="ExecutionStatusID" ColumnName="ExecutionStatusID" />
+                <ScalarProperty Name="Facebook" ColumnName="Facebook" />
+                <ScalarProperty Name="Twitter" ColumnName="Twitter" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="AmountEmployees" ColumnName="AmountEmployees" />
+                <ScalarProperty Name="Industry" ColumnName="Industry" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DebugLogs">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.DebugLog">
+              <MappingFragment StoreEntitySet="DebugLogs">
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Logs" ColumnName="Logs" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExecutionStatuses">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.ExecutionStatus">
+              <MappingFragment StoreEntitySet="ExecutionStatuses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Profiles">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Profile">
+              <MappingFragment StoreEntitySet="Profiles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Job" ColumnName="Job" />
+                <ScalarProperty Name="ProfileUrl" ColumnName="ProfileUrl" />
+                <ScalarProperty Name="AllSkills" ColumnName="AllSkills" />
+                <ScalarProperty Name="ExecutionStatusID" ColumnName="ExecutionStatusID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="ProfileStatusID" ColumnName="ProfileStatusID" />
+                <ScalarProperty Name="DateСreation" ColumnName="DateСreation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProfileStatuses">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.ProfileStatus">
+              <MappingFragment StoreEntitySet="ProfileStatuses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScraperStatuses">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.ScraperStatus">
+              <MappingFragment StoreEntitySet="ScraperStatuses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="TechnologiesSearch" ColumnName="TechnologiesSearch" />
+                <ScalarProperty Name="RolesSearch" ColumnName="RolesSearch" />
+                <ScalarProperty Name="ScraperStatusID" ColumnName="ScraperStatusID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SuitableProfiles">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.SuitableProfile">
+              <MappingFragment StoreEntitySet="SuitableProfiles">
+                <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Job" ColumnName="Job" />
+                <ScalarProperty Name="PersonLinkedIn" ColumnName="PersonLinkedIn" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="CompanyLogoUrl" ColumnName="CompanyLogoUrl" />
+                <ScalarProperty Name="CrunchUrl" ColumnName="CrunchUrl" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailStatus" ColumnName="EmailStatus" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="AmountEmployees" ColumnName="AmountEmployees" />
+                <ScalarProperty Name="Industry" ColumnName="Industry" />
+                <ScalarProperty Name="Twitter" ColumnName="Twitter" />
+                <ScalarProperty Name="Facebook" ColumnName="Facebook" />
+                <ScalarProperty Name="TechStack" ColumnName="TechStack" />
+                <ScalarProperty Name="DateTimeCreation" ColumnName="DateTimeCreation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Account">
+              <MappingFragment StoreEntitySet="Accounts">
+                <ScalarProperty Name="IsBlocked" ColumnName="IsBlocked" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="DateOfBirthday" ColumnName="DateOfBirthday" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdvanceSettings">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.AdvanceSetting">
+              <MappingFragment StoreEntitySet="AdvanceSettings">
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="ProfileBatchSize" ColumnName="ProfileBatchSize" />
+                <ScalarProperty Name="CompanyBatchSize" ColumnName="CompanyBatchSize" />
+                <ScalarProperty Name="IntervalValue" ColumnName="IntervalValue" />
+                <ScalarProperty Name="IntervalType" ColumnName="IntervalType" />
+                <ScalarProperty Name="TimeStart" ColumnName="TimeStart" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IntervalTypes">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.IntervalType">
+              <MappingFragment StoreEntitySet="IntervalTypes">
+                <ScalarProperty Name="IntervalTypeName" ColumnName="IntervalTypeName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

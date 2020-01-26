@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace ScraperLinkedInServer.Utilities
+namespace ScraperLinkedInServer.Extensions
 {
     public static class UserExtensions
     {
