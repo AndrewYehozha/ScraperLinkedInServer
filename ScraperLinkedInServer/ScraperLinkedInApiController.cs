@@ -1,9 +1,8 @@
 ﻿using System.Security.Principal;
 using System.Threading;
 using System.Web.Http;
-using System.Web.Mvc;
 
-namespace ScraperLinkedInServer.Utilities
+namespace ScraperLinkedInServer
 {
     public class ScraperLinkedInApiController : ApiController
     {
@@ -15,6 +14,9 @@ namespace ScraperLinkedInServer.Utilities
             }
         }
 
+        /// <summary></summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected new IHttpActionResult Json(object data)
         {
             return Ok(data); ;

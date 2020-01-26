@@ -1,8 +1,7 @@
 ﻿using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Types;
-using ScraperLinkedInServer.Utilities;
-using System;
+using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using System.Linq;
 using System.Web.Http;
 
@@ -11,6 +10,14 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/Login")]
     public class LoginController : ScraperLinkedInApiController
     {
+        private IAccountService accountService;
+
+        public LoginController(
+            IAccountService accountService)
+        {
+            this.accountService = accountService;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
@@ -50,16 +57,7 @@ namespace ScraperLinkedInServer.Controllers
             //});
             //    }
 
-
-            var account = new Account
-            {
-                AccountId = 222,
-                FirstName = "Andrew",
-                LastName = "Test",
-                Email = "test@gmail.com",
-                RoleId = 1,
-                Role = Role.User
-            };
+            var account = accountService.GetAccountByEmail("");
 
             var token = TokenManager.GenerateToken(account);
 

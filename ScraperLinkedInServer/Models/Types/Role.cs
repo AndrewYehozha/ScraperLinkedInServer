@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ScraperLinkedInServer.Models.Types
+﻿namespace ScraperLinkedInServer.Models.Types
 {
     public static class Role
     {

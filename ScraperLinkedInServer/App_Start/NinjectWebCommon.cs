@@ -2,10 +2,12 @@
 using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
-using ScraperLinkedInServer.App_Start;
 using System;
 using System.Web;
 using System.Web.Http;
+using ScraperLinkedInServer.App_Start;
+using ScraperLinkedInServer.Services.AccountService;
+using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using WebActivatorEx;
 using WebApiContrib.IoC.Ninject;
 
@@ -62,7 +64,7 @@ namespace ScraperLinkedInServer.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             //Bind Services
-            //kernel.Bind<>().To<>();
+            kernel.Bind<IAccountService>().To<AccountService>();
 
             //Bind repositories
 
