@@ -503,5 +503,15 @@
             </summary>
             <returns>sdsd</returns>
         </member>
+        <member name="M:ScraperLinkedInServer.ScraperLinkedInApiController.JsonSuccess(System.Object)">
+            <summary></summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ScraperLinkedInServer.ScraperLinkedInApiController.JsonError(System.Object)">
+            <summary></summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="dotnet-aspnet-codegenerator-design, Version=3.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Web.CodeGeneration.Design.3.1.0\lib\net461\dotnet-aspnet-codegenerator-design.exe</HintPath>
     </Reference>
@@ -437,10 +440,24 @@
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Claims.cs" />
+    <Compile Include="Models\Request\RegistrationRequest.cs" />
+    <Compile Include="Models\Request\SettingRequest.cs" />
+    <Compile Include="Models\Response\AuthorizationResponse.cs" />
+    <Compile Include="Models\Response\RegistrationResponse.cs" />
+    <Compile Include="Models\Response\SettingResponse.cs" />
     <Compile Include="Models\Types\ExecutionStatuses.cs" />
+    <Compile Include="Models\Types\IntervalTypesSettings.cs" />
     <Compile Include="Models\Types\ScraperIntervalTypes.cs" />
     <Compile Include="Models\Types\ProfileStatuses.cs" />
     <Compile Include="Models\Types\ScraperStatuses.cs" />
+    <Compile Include="Models\Validator.cs" />
+    <Compile Include="ObjectMappers\Mapper.cs" />
+    <Compile Include="Repositories\AccountRepository\AccountRepository.cs" />
+    <Compile Include="Repositories\AccountRepository\Interfaces\IAccountRepository.cs" />
+    <Compile Include="Repositories\AdvanceSettingRepository\AdvanceSettingRepository.cs" />
+    <Compile Include="Repositories\AdvanceSettingRepository\Interfaces\IAdvanceSettingRepository.cs" />
+    <Compile Include="Repositories\SettingRepository\Interfaces\ISettingRepository.cs" />
+    <Compile Include="Repositories\SettingRepository\SettingRepository.cs" />
     <Compile Include="Services\AccountService\AccountService.cs" />
     <Compile Include="Services\AccountService\Interfaces\IAccountService.cs" />
     <Compile Include="ScraperLinkedInApiController.cs" />
@@ -450,6 +467,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdvanceSettingService\AdvanceSettingService.cs" />
+    <Compile Include="Services\AdvanceSettingService\Interfaces\IAdvanceSettingService.cs" />
+    <Compile Include="Services\SettingService\Interfaces\ISettingService.cs" />
+    <Compile Include="Services\SettingService\SettingService.cs" />
     <Compile Include="TokenManager.cs" />
     <Compile Include="TokenValidationHandler.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
@@ -528,8 +549,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Attributes\" />
-    <Folder Include="Models\Response\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

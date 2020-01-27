@@ -13,24 +13,22 @@ namespace ScraperLinkedInServer.Extensions
             int.TryParse(GetClaimValue(identity, Claims.AccountId), out result);
             return result;
         }
+
         public static string ToFirstName(this IIdentity identity)
         {
             return GetClaimValue(identity, Claims.FirstName);
         }
+
         public static string ToLastName(this IIdentity identity)
         {
             return GetClaimValue(identity, Claims.LastName);
         }
+
         public static string ToEmail(this IIdentity identity)
         {
             return GetClaimValue(identity, Claims.Email);
         }
-        public static short ToRoleID(this IIdentity identity)
-        {
-            var result = default(short);
-            short.TryParse(GetClaimValue(identity, Claims.RoleId), out result);
-            return result;
-        }
+
         public static string ToRole(this IIdentity identity)
         {
             return GetClaimValue(identity, ClaimTypes.Role);

@@ -17,9 +17,25 @@ namespace ScraperLinkedInServer
         /// <summary></summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected new IHttpActionResult Json(object data)
+        protected new IHttpActionResult JsonSuccess(object data)
         {
-            return Ok(data); ;
+            return Ok(new
+            {
+                success = true,
+                response = data
+            });
+        }
+
+        /// <summary></summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected new IHttpActionResult JsonError(object data)
+        {
+            return Ok(new
+            {
+                success = false,
+                response = data
+            });
         }
     }
 }

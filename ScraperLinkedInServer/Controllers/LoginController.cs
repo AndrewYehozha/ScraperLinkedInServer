@@ -1,8 +1,9 @@
-﻿using ScraperLinkedInServer.Models.Entities;
+﻿using ScraperLinkedInServer.Models;
 using ScraperLinkedInServer.Models.Request;
-using ScraperLinkedInServer.Models.Types;
+using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ScraperLinkedInServer.Controllers
@@ -21,60 +22,58 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        public IHttpActionResult Login(AuthorizationRequest model)
+        public async Task<IHttpActionResult> Login(AuthorizationRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return Json(new
-                {
-                    success = false,
-                    response = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage
-                });
+                return JsonError(new AuthorizationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
             }
 
-            //var account = accountReadService.SearchAccountByEmail(model.Email);
+            var account = await accountService.GetAccountByEmailAsync(request.Email);
 
-            //if (account == null)
-            //{
-            //return Json(new
-            //{
-            //    success = false,
-            //    response = "Account not registered"
-            //});
-            //}
-            //else
-            //{
-            //try
-            //{
-            //    var isCorrectPassword = userReadService.CheckUserCorrectPassword(model.Password, user.Password);
+            var message = account.IsValid();
+            if (!string.IsNullOrEmpty(message))
+            {
+                return JsonError(new AuthorizationResponse { Message = message });
+            }
 
-            //    if (!isCorrectPassword)
-            //    {
-            //return Json(new
-            //{
-            //    success = false,
-            //    response = "Incorrect password"
-            //});
-            //    }
+            var isCorrectPassword = accountService.CheckUserCorrectPassword(request.Password, account.Password);
+            if (!isCorrectPassword)
+            {
+                return JsonError(new AuthorizationResponse { Message = "Incorrect password" });
+            }
 
-            var account = accountService.GetAccountByEmail("");
-
+            account.Password = string.Empty;
             var token = TokenManager.GenerateToken(account);
 
-            return Json(new
+            return JsonSuccess(new AuthorizationResponse
             {
-                success = true,
-                response = token
+                Account = account,
+                Token = token
             });
-            //}
-            //catch (Exception ex)
-            //{
-            //return Json(new
-            //{
-            //    success = false,
-            //    response = ex.Message
-            //});
-            //}
+        }
+
+        public async Task<IHttpActionResult> Registration(RegistrationRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return JsonError(new RegistrationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
+            }
+
+            var account = await accountService.GetAccountByEmailAsync(request.Email);
+            if (account != null)
+            {
+                return JsonError(new RegistrationResponse { Message = "Account is already registered" });
+            }
+
+            account = await accountService.InsertAccountAsync(request);
+            var token = TokenManager.GenerateToken(account);
+
+            return JsonSuccess(new RegistrationResponse
+            {
+                Account = account,
+                Token = token
+            });
         }
     }
 }
