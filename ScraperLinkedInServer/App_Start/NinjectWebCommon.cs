@@ -10,6 +10,16 @@ using ScraperLinkedInServer.Services.AccountService;
 using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using WebActivatorEx;
 using WebApiContrib.IoC.Ninject;
+using ScraperLinkedInServer.Repositories.AccountRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.AccountRepository;
+using ScraperLinkedInServer.Services.AdvanceSettingService.Interfaces;
+using ScraperLinkedInServer.Services.AdvanceSettingService;
+using ScraperLinkedInServer.Services.SettingService.Interfaces;
+using ScraperLinkedInServer.Services.SettingService;
+using ScraperLinkedInServer.Repositories.AdvanceSettingRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.SettingRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.AdvanceSettingRepository;
+using ScraperLinkedInServer.Repositories.SettingRepository;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: ApplicationShutdownMethod(typeof(NinjectWebCommon), "Stop")]
@@ -65,8 +75,13 @@ namespace ScraperLinkedInServer.App_Start
         {
             //Bind Services
             kernel.Bind<IAccountService>().To<AccountService>();
+            kernel.Bind<IAdvanceSettingService>().To<AdvanceSettingService>();
+            kernel.Bind<ISettingService>().To<SettingService>();
 
             //Bind repositories
+            kernel.Bind<IAccountRepository>().To<AccountRepository>();
+            kernel.Bind<IAdvanceSettingRepository>().To<AdvanceSettingRepository>();
+            kernel.Bind<ISettingRepository>().To<SettingRepository>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(kernel);
         }

@@ -18,6 +18,7 @@ namespace ScraperLinkedInServer.Database
         public ScraperLinkedInDBEntities()
             : base("name=ScraperLinkedInDBEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
