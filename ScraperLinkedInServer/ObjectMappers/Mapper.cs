@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
+using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Request;
-using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ScraperLinkedInServer.ObjectMappers
 {
@@ -22,23 +18,22 @@ namespace ScraperLinkedInServer.ObjectMappers
                 {
                     var config = new MapperConfiguration(cfg =>
                     {
-                        cfg.CreateMap<RegistrationRequest, Account>()
+                        cfg.CreateMap<RegistrationRequest, AccountViewModel>()
                            .ForMember(ci => ci.Id, opt => opt.Ignore())
                            .ForMember(ci => ci.IsDeleted, opt => opt.Ignore())
                            .ForMember(ci => ci.IsBlocked, opt => opt.Ignore());
 
-                        cfg.CreateMap<SettingRequest, Setting>()
-                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatus));
 
-                        cfg.CreateMap<Setting, SettingRequest>()
-                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (int)ce.ScraperStatusID));
+                        cfg.CreateMap<Account, AccountViewModel>();
 
-                        cfg.CreateMap<SettingResponse, Setting>()
-                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatus));
+                        cfg.CreateMap<AccountViewModel, Account>();
 
-                        cfg.CreateMap<Setting, SettingResponse>()
-                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (int)ce.ScraperStatusID));
 
+                        cfg.CreateMap<SettingViewModel, Setting>()
+                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
+
+                        cfg.CreateMap<Setting, SettingViewModel>()
+                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatusID));
                         //cfg.CreateMap<CompanyImportViewModel, Company>()
                         //   .ForMember(c => c.LinkedInURL, opt => opt.MapFrom(ci => ci.LinkedIn))
                         //   .ForMember(c => c.OrganizationURL, opt => opt.MapFrom(ci => ci.OrganizationNameURL))
