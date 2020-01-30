@@ -3,12 +3,15 @@ using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using System.Threading.Tasks;
 using System.Text;
 using System.Security.Cryptography;
-using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.AccountRepository.Interfaces;
 using ScraperLinkedInServer.Services.SettingService.Interfaces;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.AdvanceSettingService.Interfaces;
+using ScraperLinkedInServer.Models.Entities;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.Models;
 
 namespace ScraperLinkedInServer.Services.AccountService
 {
@@ -31,19 +34,45 @@ namespace ScraperLinkedInServer.Services.AccountService
             this.accountRepository = accountRepository;
         }
 
-        public async Task<Account> GetAccountByEmailAsync(string email)
+        public async Task<AuthorizationResponse> Authorization(AuthorizationRequest request)
         {
-            return await accountRepository.GetAccountByEmailAsync(email);
+            var account = await accountRepository.GetAccountByEmailAsync(request.Email);
+
+            var message = account.IsValid();
+            if (!string.IsNullOrEmpty(message))
+            {
+                return new AuthorizationResponse { Message = message };
+            }
+
+            var isCorrectPassword = CheckUserCorrectPassword(request.Password, account.Password);
+            if (!isCorrectPassword)
+            {
+                return new AuthorizationResponse { Message = "Incorrect password" };
+            }
+
+            var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
+            var token = TokenManager.GenerateToken(accountVM);
+
+            return new AuthorizationResponse { Account = accountVM, Token = token };
         }
 
-        public async Task<Account> InsertAccountAsync(RegistrationRequest request)
+        public async Task<bool> IsExistAccount(string email)
         {
-            var accountDb = Mapper.Instance.Map<RegistrationRequest, Account>(request);
+            return await accountRepository.GetAccountByEmailAsync(email) != null;
+        }
+
+        public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel request)
+        {
+            var accountDb = Mapper.Instance.Map<AccountViewModel, Account>(request);
             accountDb.Password = HashPassword(accountDb.Password);
             accountDb.Role = Role.User;
-            var response = await accountRepository.InsertAccountAsync(accountDb);
-            await settingService.InsertDefaultSettingAsync(response.Id);
-            await advanceSettingService.InsertDefaultAdvanceSettingAsync(response.Id);
+
+            accountDb = await accountRepository.InsertAccountAsync(accountDb);
+            await settingService.InsertDefaultSettingAsync(accountDb.Id);
+            await advanceSettingService.InsertDefaultAdvanceSettingAsync(accountDb.Id);
+
+            var response = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
+            response.Password = string.Empty;
 
             return response;
         }

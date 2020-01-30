@@ -1,6 +1,7 @@
-﻿using ScraperLinkedInServer.Models;
+﻿using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Services.AccountService.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,28 +30,9 @@ namespace ScraperLinkedInServer.Controllers
                 return JsonError(new AuthorizationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
             }
 
-            var account = await accountService.GetAccountByEmailAsync(request.Email);
+            var result = await accountService.Authorization(request);
 
-            var message = account.IsValid();
-            if (!string.IsNullOrEmpty(message))
-            {
-                return JsonError(new AuthorizationResponse { Message = message });
-            }
-
-            var isCorrectPassword = accountService.CheckUserCorrectPassword(request.Password, account.Password);
-            if (!isCorrectPassword)
-            {
-                return JsonError(new AuthorizationResponse { Message = "Incorrect password" });
-            }
-
-            account.Password = string.Empty;
-            var token = TokenManager.GenerateToken(account);
-
-            return JsonSuccess(new AuthorizationResponse
-            {
-                Account = account,
-                Token = token
-            });
+            return JsonSuccess(result);
         }
 
         public async Task<IHttpActionResult> Registration(RegistrationRequest request)
@@ -60,18 +42,19 @@ namespace ScraperLinkedInServer.Controllers
                 return JsonError(new RegistrationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
             }
 
-            var account = await accountService.GetAccountByEmailAsync(request.Email);
-            if (account != null)
+            var isExistAccount = await accountService.IsExistAccount(request.Email);
+            if (isExistAccount)
             {
                 return JsonError(new RegistrationResponse { Message = "Account is already registered" });
             }
 
-            account = await accountService.InsertAccountAsync(request);
-            var token = TokenManager.GenerateToken(account);
+            var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
+            accountVM = await accountService.InsertAccountAsync(accountVM);
+            var token = TokenManager.GenerateToken(accountVM);
 
             return JsonSuccess(new RegistrationResponse
             {
-                Account = account,
+                Account = accountVM,
                 Token = token
             });
         }

@@ -2,8 +2,8 @@
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class SettingResponse
+    public class AdvanceSettingResponse
     {
-        SettingViewModel SettingViewModel { get; set; }
+        AdvanceSettingViewModel AdvanceSettingViewModel { get; set; }
     }
 }

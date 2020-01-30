@@ -3,14 +3,13 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using ScraperLinkedInServer.Models.Entities;
-using ScraperLinkedInServer.Database;
 
 namespace ScraperLinkedInServer
 {
     public class TokenManager
     {
         private readonly static string Secret = "LGNSELdlknKNn837wWDL2ZzfwefasdWdQkFHiovnspaS";
-        public static string GenerateToken(Account account)
+        public static string GenerateToken(AccountViewModel account)
         {
             var identity = new ClaimsIdentity(new[] {
                     new Claim(Claims.AccountId, account.Id.ToString()),

@@ -439,12 +439,31 @@
     <Compile Include="Database\SuitableProfile.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\AccountViewModel.cs" />
+    <Compile Include="Models\Entities\AdvanceSettingViewModel.cs" />
     <Compile Include="Models\Entities\Claims.cs" />
+    <Compile Include="Models\Entities\CompanyViewModel.cs" />
+    <Compile Include="Models\Entities\DebugLogViewModel.cs" />
+    <Compile Include="Models\Entities\ProfileViewModel.cs" />
+    <Compile Include="Models\Entities\SettingViewModel.cs" />
+    <Compile Include="Models\Entities\SuitableProfileViewModel.cs" />
+    <Compile Include="Models\Request\AccountRequest.cs" />
+    <Compile Include="Models\Request\AdvanceSettingRequest.cs" />
+    <Compile Include="Models\Request\CompanyRequest.cs" />
+    <Compile Include="Models\Request\DebugLogRequest.cs" />
+    <Compile Include="Models\Request\ProfilesRequest.cs" />
     <Compile Include="Models\Request\RegistrationRequest.cs" />
     <Compile Include="Models\Request\SettingRequest.cs" />
+    <Compile Include="Models\Request\SuitableProfilesRequest.cs" />
+    <Compile Include="Models\Response\AccountResponse.cs" />
+    <Compile Include="Models\Response\AdvanceSettingResponse.cs" />
     <Compile Include="Models\Response\AuthorizationResponse.cs" />
+    <Compile Include="Models\Response\CompanyResponse.cs" />
+    <Compile Include="Models\Response\DebugLogsResponse.cs" />
+    <Compile Include="Models\Response\ProfilesResponse.cs" />
     <Compile Include="Models\Response\RegistrationResponse.cs" />
     <Compile Include="Models\Response\SettingResponse.cs" />
+    <Compile Include="Models\Response\SuitableProfilesResponse.cs" />
     <Compile Include="Models\Types\ExecutionStatuses.cs" />
     <Compile Include="Models\Types\IntervalTypesSettings.cs" />
     <Compile Include="Models\Types\ScraperIntervalTypes.cs" />
