@@ -20,6 +20,22 @@ using ScraperLinkedInServer.Repositories.AdvanceSettingRepository.Interfaces;
 using ScraperLinkedInServer.Repositories.SettingRepository.Interfaces;
 using ScraperLinkedInServer.Repositories.AdvanceSettingRepository;
 using ScraperLinkedInServer.Repositories.SettingRepository;
+using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.CompanyRepository;
+using ScraperLinkedInServer.Repositories.DebugLogRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.DebugLogRepository;
+using ScraperLinkedInServer.Repositories.ProfileRepository;
+using ScraperLinkedInServer.Repositories.ProfileRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.SuitableProfileRepository.Interfaces;
+using ScraperLinkedInServer.Repositories.SuitableProfileRepository;
+using ScraperLinkedInServer.Services.CompanyService.Interfaces;
+using ScraperLinkedInServer.Services.CompanyService;
+using ScraperLinkedInServer.Services.DebugLogService.Interfaces;
+using ScraperLinkedInServer.Services.DebugLogService;
+using ScraperLinkedInServer.Services.ProfileService.Interfaces;
+using ScraperLinkedInServer.Services.ProfileService;
+using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
+using ScraperLinkedInServer.Services.SuitableProfileService;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: ApplicationShutdownMethod(typeof(NinjectWebCommon), "Stop")]
@@ -76,12 +92,20 @@ namespace ScraperLinkedInServer.App_Start
             //Bind Services
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IAdvanceSettingService>().To<AdvanceSettingService>();
+            kernel.Bind<ICompanyService>().To<CompanyService>();
+            kernel.Bind<IDebugLogService>().To<DebugLogService>();
+            kernel.Bind<IProfileService>().To<ProfileService>();
             kernel.Bind<ISettingService>().To<SettingService>();
+            kernel.Bind<ISuitableProfileService>().To<SuitableProfileService>();
 
             //Bind repositories
             kernel.Bind<IAccountRepository>().To<AccountRepository>();
             kernel.Bind<IAdvanceSettingRepository>().To<AdvanceSettingRepository>();
+            kernel.Bind<ICompanyRepository>().To<CompanyRepository>();
+            kernel.Bind<IDebugLogRepository>().To<DebugLogRepository>();
+            kernel.Bind<IProfileRepository>().To<ProfileRepository>();
             kernel.Bind<ISettingRepository>().To<SettingRepository>();
+            kernel.Bind<ISuitableProfileRepository>().To<SuitableProfileRepository>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(kernel);
         }

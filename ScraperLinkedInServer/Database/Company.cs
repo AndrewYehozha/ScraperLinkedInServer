@@ -37,9 +37,9 @@ namespace ScraperLinkedInServer.Database
         public string Industry { get; set; }
         public int AccountId { get; set; }
     
+        public virtual Account Account { get; set; }
         public virtual ExecutionStatus ExecutionStatus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Profile> Profiles { get; set; }
-        public virtual Account Account { get; set; }
     }
 }

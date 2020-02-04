@@ -17,7 +17,7 @@ namespace ScraperLinkedInServer.Database
         public int Id { get; set; }
         public string Remarks { get; set; }
         public string Logs { get; set; }
-        public System.DateTime? CreatedOn { get; set; }
+        public Nullable<System.DateTime> CreatedOn { get; set; }
         public int AccountId { get; set; }
     
         public virtual Account Account { get; set; }

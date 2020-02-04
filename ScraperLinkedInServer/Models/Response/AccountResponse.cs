@@ -6,4 +6,9 @@ namespace ScraperLinkedInServer.Models.Response
     {
         AccountViewModel AccountViewModel { get; set; }
     }
+
+    public class AccountUpdateResponse
+    {
+        public string Message { get; set; }
+    }
 }

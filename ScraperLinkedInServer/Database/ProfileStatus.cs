@@ -20,8 +20,8 @@ namespace ScraperLinkedInServer.Database
             this.Profiles = new HashSet<Profile>();
         }
     
-        public string StatusName { get; set; }
         public int Id { get; set; }
+        public string StatusName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Profile> Profiles { get; set; }

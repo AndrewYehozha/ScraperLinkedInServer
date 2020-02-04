@@ -14,7 +14,6 @@ namespace ScraperLinkedInServer.Controllers
         /// <summary>
         /// </summary>
         /// <returns>sdsd</returns>
-        [Authorize(Roles = Role.Admin)]
         [HttpGet]
         [Route("Index")]
         public ActionResult Index()

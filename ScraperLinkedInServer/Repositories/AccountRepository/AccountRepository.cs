@@ -27,5 +27,50 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
+        public async Task UpdateAccountAsync(Account account)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var accountDb = db.Accounts.Where(x => x.Id == account.Id).FirstOrDefault();
+
+                accountDb.FirstName = account.FirstName;
+                accountDb.LastName = account.LastName;
+                accountDb.Email = account.Email;
+                accountDb.Phone = account.Phone;
+                accountDb.DateOfBirthday = account.DateOfBirthday;
+
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task ChangeRoleAccountAsync(int accountId, string role)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var accountDb = db.Accounts.Where(x => x.Id == accountId).FirstOrDefault();
+                accountDb.Role = role;
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task ChangeBlockAccountAsync(int accountId, bool isBlocked)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var accountDb = db.Accounts.Where(x => x.Id == accountId).FirstOrDefault();
+                accountDb.IsBlocked = isBlocked;
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteAccountAsync(int accountId)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var accountDb = db.Accounts.Where(x => x.Id == accountId).FirstOrDefault();
+                accountDb.IsDeleted = true;
+                await db.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -13,6 +13,14 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 
         Task<AccountViewModel> InsertAccountAsync(AccountViewModel request);
 
-        bool CheckUserCorrectPassword(string enteredPassword, string hashUserPassword);
+        bool CheckAccountCorrectPassword(string enteredPassword, string hashUserPassword);
+
+        Task<AccountUpdateResponse> UpdateAccountAsync(AccountViewModel accountVM);
+
+        Task ChangeRoleAccountAsync(int accountId, string role);
+
+        Task ChangeBlockAccountAsync(int accountId, bool isBlocked);
+
+        Task DeleteAccountAsync(int accountId);
     }
 }
