@@ -1,5 +1,7 @@
 ﻿using ScraperLinkedInServer.Database;
+using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Types;
+using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.AdvanceSettingRepository.Interfaces;
 using ScraperLinkedInServer.Services.AdvanceSettingService.Interfaces;
 using System;
@@ -30,6 +32,12 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
             };
 
             await advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
+        }
+
+        public async Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSetting)
+        {
+            var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingViewModel, AdvanceSetting>(advanceSetting);
+            await advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
         }
     }
 }

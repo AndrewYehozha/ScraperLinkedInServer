@@ -14,16 +14,7 @@ namespace ScraperLinkedInServer.Database
     
     public partial class ScraperStatus
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ScraperStatus()
-        {
-            this.Settings = new HashSet<Setting>();
-        }
-    
-        public string StatusName { get; set; }
         public int Id { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Setting> Settings { get; set; }
+        public string StatusName { get; set; }
     }
 }

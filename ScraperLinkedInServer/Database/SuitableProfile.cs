@@ -35,8 +35,10 @@ namespace ScraperLinkedInServer.Database
         public string Facebook { get; set; }
         public string TechStack { get; set; }
         public Nullable<System.DateTime> DateTimeCreation { get; set; }
-        public int ProfileId { get; set; }
+        public int ProfileID { get; set; }
+        public int AccountID { get; set; }
     
+        public virtual Account Account { get; set; }
         public virtual Profile Profile { get; set; }
     }
 }

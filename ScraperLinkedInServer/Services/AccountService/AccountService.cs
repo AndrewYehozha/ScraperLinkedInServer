@@ -44,7 +44,7 @@ namespace ScraperLinkedInServer.Services.AccountService
                 return new AuthorizationResponse { Message = message };
             }
 
-            var isCorrectPassword = CheckUserCorrectPassword(request.Password, account.Password);
+            var isCorrectPassword = CheckAccountCorrectPassword(request.Password, account.Password);
             if (!isCorrectPassword)
             {
                 return new AuthorizationResponse { Message = "Incorrect password" };
@@ -77,10 +77,40 @@ namespace ScraperLinkedInServer.Services.AccountService
             return response;
         }
 
-
-        public bool CheckUserCorrectPassword(string enteredPassword, string hashUserPassword)
+        public async Task<AccountUpdateResponse> UpdateAccountAsync(AccountViewModel accountVM)
         {
-            return HashPassword(enteredPassword) == hashUserPassword ? true : false;
+            var response = new AccountUpdateResponse();
+            var account = Mapper.Instance.Map<AccountViewModel, Account>(accountVM);
+
+            var message = account.IsValid();
+            if (!string.IsNullOrEmpty(message))
+            {
+                response.Message = message;
+            }
+
+            await accountRepository.UpdateAccountAsync(account);
+
+            return response;
+        }
+
+        public async Task ChangeRoleAccountAsync(int accountId, string role)
+        {
+            await accountRepository.ChangeRoleAccountAsync(accountId, role);
+        }
+
+        public async Task ChangeBlockAccountAsync(int accountId, bool isBlocked)
+        {
+            await accountRepository.ChangeBlockAccountAsync(accountId, isBlocked);
+        }
+
+        public async Task DeleteAccountAsync(int accountId)
+        {
+            await accountRepository.DeleteAccountAsync(accountId);
+        }
+
+        public bool CheckAccountCorrectPassword(string enteredPassword, string hashAccountPassword)
+        {
+            return HashPassword(enteredPassword) == hashAccountPassword ? true : false;
         }
 
         //Utils

@@ -18,7 +18,6 @@ namespace ScraperLinkedInServer.Database
         public ScraperLinkedInDBEntities()
             : base("name=ScraperLinkedInDBEntities")
         {
-            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -26,16 +25,16 @@ namespace ScraperLinkedInServer.Database
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<AdvanceSetting> AdvanceSettings { get; set; }
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<DebugLog> DebugLogs { get; set; }
         public virtual DbSet<ExecutionStatus> ExecutionStatuses { get; set; }
+        public virtual DbSet<IntervalType> IntervalTypes { get; set; }
         public virtual DbSet<Profile> Profiles { get; set; }
         public virtual DbSet<ProfileStatus> ProfileStatuses { get; set; }
         public virtual DbSet<ScraperStatus> ScraperStatuses { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SuitableProfile> SuitableProfiles { get; set; }
-        public virtual DbSet<Account> Accounts { get; set; }
-        public virtual DbSet<AdvanceSetting> AdvanceSettings { get; set; }
-        public virtual DbSet<IntervalType> IntervalTypes { get; set; }
     }
 }
