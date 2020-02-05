@@ -389,8 +389,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Database\Account.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
@@ -489,7 +488,7 @@
     <Compile Include="Services\AccountService\Interfaces\IAccountService.cs" />
     <Compile Include="ScraperLinkedInApiController.cs" />
     <Compile Include="Models\Request\AuthorizationRequest.cs" />
-    <Compile Include="Models\Types\Role.cs" />
+    <Compile Include="Models\Types\Roles.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

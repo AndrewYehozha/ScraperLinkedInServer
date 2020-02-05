@@ -8,6 +8,14 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
 {
     public class AccountRepository : IAccountRepository
     {
+        public async Task<Account> GetAccountByIdAsync(int accountId)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.Accounts.Where(x => x.Id == accountId).FirstOrDefaultAsync();
+            }
+        }
+
         public async Task<Account> GetAccountByEmailAsync(string email)
         {
             using (var db = new ScraperLinkedInDBEntities())
@@ -43,7 +51,7 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
-        public async Task ChangeRoleAccountAsync(int accountId, string role)
+        public async Task ChangeAccountRoleAsync(int accountId, string role)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -53,7 +61,7 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
-        public async Task ChangeBlockAccountAsync(int accountId, bool isBlocked)
+        public async Task ChangeAccountBlockAsync(int accountId, bool isBlocked)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {

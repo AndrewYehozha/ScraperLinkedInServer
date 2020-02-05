@@ -34,6 +34,17 @@ namespace ScraperLinkedInServer.Services.AccountService
             this.accountRepository = accountRepository;
         }
 
+        public async Task<AccountBaseResponse> GetAccountByIdAsync(int accountId)
+        {
+            var response = new AccountBaseResponse();
+            var accountDb = await accountRepository.GetAccountByIdAsync(accountId);
+
+            response.Message = accountDb.IsValid();
+            response.AccountViewModel = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
+
+            return response;
+        }
+
         public async Task<AuthorizationResponse> Authorization(AuthorizationRequest request)
         {
             var account = await accountRepository.GetAccountByEmailAsync(request.Email);
@@ -65,7 +76,7 @@ namespace ScraperLinkedInServer.Services.AccountService
         {
             var accountDb = Mapper.Instance.Map<AccountViewModel, Account>(request);
             accountDb.Password = HashPassword(accountDb.Password);
-            accountDb.Role = Role.User;
+            accountDb.Role = Roles.User;
 
             accountDb = await accountRepository.InsertAccountAsync(accountDb);
             await settingService.InsertDefaultSettingAsync(accountDb.Id);
@@ -77,30 +88,33 @@ namespace ScraperLinkedInServer.Services.AccountService
             return response;
         }
 
-        public async Task<AccountUpdateResponse> UpdateAccountAsync(AccountViewModel accountVM)
+        public async Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM)
         {
-            var response = new AccountUpdateResponse();
+            var response = new AccountBaseResponse();
             var account = Mapper.Instance.Map<AccountViewModel, Account>(accountVM);
 
-            var message = account.IsValid();
+            var accountDb = await accountRepository.GetAccountByIdAsync(accountVM.Id);
+            var message = accountDb.IsValid();
             if (!string.IsNullOrEmpty(message))
             {
                 response.Message = message;
             }
-
-            await accountRepository.UpdateAccountAsync(account);
+            else
+            {
+                await accountRepository.UpdateAccountAsync(account);
+            }
 
             return response;
         }
 
-        public async Task ChangeRoleAccountAsync(int accountId, string role)
+        public async Task ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
-            await accountRepository.ChangeRoleAccountAsync(accountId, role);
+            await accountRepository.ChangeAccountRoleAsync(request.AccountId, request.Role);
         }
 
-        public async Task ChangeBlockAccountAsync(int accountId, bool isBlocked)
+        public async Task ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {
-            await accountRepository.ChangeBlockAccountAsync(accountId, isBlocked);
+            await accountRepository.ChangeAccountBlockAsync(request.AccountId, request.IsBlocked);
         }
 
         public async Task DeleteAccountAsync(int accountId)
