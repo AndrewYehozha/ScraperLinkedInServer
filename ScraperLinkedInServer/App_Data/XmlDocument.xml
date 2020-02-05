@@ -498,11 +498,6 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:ScraperLinkedInServer.Controllers.HomeController.Index">
-            <summary>
-            </summary>
-            <returns>sdsd</returns>
-        </member>
         <member name="M:ScraperLinkedInServer.ScraperLinkedInApiController.JsonSuccess(System.Object)">
             <summary></summary>
             <param name="data"></param>

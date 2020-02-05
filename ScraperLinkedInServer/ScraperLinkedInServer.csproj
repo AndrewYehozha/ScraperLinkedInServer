@@ -454,7 +454,7 @@
     <Compile Include="Models\Request\RegistrationRequest.cs" />
     <Compile Include="Models\Request\SettingRequest.cs" />
     <Compile Include="Models\Request\SuitableProfilesRequest.cs" />
-    <Compile Include="Models\Response\AccountResponse.cs" />
+    <Compile Include="Models\Response\AccountBaseResponse.cs" />
     <Compile Include="Models\Response\AdvanceSettingResponse.cs" />
     <Compile Include="Models\Response\AuthorizationResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />

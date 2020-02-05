@@ -11,10 +11,12 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository.Interfaces
 
         Task UpdateAccountAsync(Account account);
 
-        Task ChangeRoleAccountAsync(int accountId, string role);
-
-        Task ChangeBlockAccountAsync(int accountId, bool isBlocked);
-
         Task DeleteAccountAsync(int accountId);
+
+        Task ChangeAccountBlockAsync(int accountId, bool isBlocked);
+
+        Task ChangeAccountRoleAsync(int accountId, string role);
+
+        Task<Account> GetAccountByIdAsync(int id);
     }
 }

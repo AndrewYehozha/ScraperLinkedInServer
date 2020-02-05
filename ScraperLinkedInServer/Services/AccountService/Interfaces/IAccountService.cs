@@ -7,6 +7,8 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 {
     public interface IAccountService
     {
+        Task<AccountBaseResponse> GetAccountByIdAsync(int id);
+
         Task<AuthorizationResponse> Authorization(AuthorizationRequest request);
 
         Task<bool> IsExistAccount(string email);
@@ -15,12 +17,12 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 
         bool CheckAccountCorrectPassword(string enteredPassword, string hashUserPassword);
 
-        Task<AccountUpdateResponse> UpdateAccountAsync(AccountViewModel accountVM);
-
-        Task ChangeRoleAccountAsync(int accountId, string role);
-
-        Task ChangeBlockAccountAsync(int accountId, bool isBlocked);
+        Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM);
 
         Task DeleteAccountAsync(int accountId);
+
+        Task ChangeAccountBlockAsync(ChangeAccountBlockRequest request);
+
+        Task ChangeAccountRoleAsync(ChangeAccountRoleRequest request);
     }
 }
