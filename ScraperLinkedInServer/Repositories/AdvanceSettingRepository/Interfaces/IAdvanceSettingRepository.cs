@@ -5,7 +5,7 @@ namespace ScraperLinkedInServer.Repositories.AdvanceSettingRepository.Interfaces
 {
     public interface IAdvanceSettingRepository
     {
-        Task<AdvanceSetting> GetAdvanceSetting(int accountId);
+        Task<AdvanceSetting> GetAdvanceSettingByAccountId(int accountId);
 
         Task InsertAdvanceSettingAsync(AdvanceSetting advanceSetting);
 

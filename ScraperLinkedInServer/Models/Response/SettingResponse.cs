@@ -4,6 +4,6 @@ namespace ScraperLinkedInServer.Models.Response
 {
     public class SettingResponse
     {
-        SettingViewModel SettingViewModel { get; set; }
+        public SettingViewModel SettingViewModel { get; set; }
     }
 }

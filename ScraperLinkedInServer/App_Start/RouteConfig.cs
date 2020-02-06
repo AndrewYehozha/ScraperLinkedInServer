@@ -14,23 +14,10 @@ namespace ScraperLinkedInServer
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapMvcAttributeRoutes();
 
-            routes.MapRoute(name: "home", url: "home", defaults: new { 
-                controller = "Home", 
-                action = "Index", 
-                id = UrlParameter.Optional 
-            });
-
-            routes.MapRoute(name: "login", url: "login", defaults: new
-            {
-                controller = "Login",
-                action = "Login",
-                id = UrlParameter.Optional
-            });
-
             routes.MapRoute(name: "Default", url: "{controller}/{action}/{id}", defaults: new
             {
-                controller = "Login",
-                action = "Login",
+                controller = "Home",
+                action = "Index",
                 id = UrlParameter.Optional
             });
         }
