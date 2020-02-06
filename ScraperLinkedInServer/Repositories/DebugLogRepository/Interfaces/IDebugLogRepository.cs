@@ -6,12 +6,12 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository.Interfaces
 {
     public interface IDebugLogRepository
     {
-        Task<List<DebugLog>> GetNewDebugLogsAsync(int accountId, int lastDebugLogId, int size);
+        Task<IEnumerable<DebugLog>> GetDebugLogsAsync(int accountId, int batchSize);
 
-        Task<IEnumerable<DebugLog>> GetLogsAsync(int accountId, int batchSize);
+        Task<IEnumerable<DebugLog>> GetNewDebugLogsAsync(int accountId, int lastDebugLogId, int size);
 
-        Task InsertMessagesAsync(List<DebugLog> debugLogs);
+        Task InsertDebugLogAsync(DebugLog debugLog);
 
-        Task InsertMessageAsync(DebugLog debugLog);
+        Task InsertDebugLogsAsync(IEnumerable<DebugLog> debugLogs);
     }
 }

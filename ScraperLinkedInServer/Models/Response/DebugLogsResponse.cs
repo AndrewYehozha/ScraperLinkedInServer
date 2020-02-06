@@ -5,6 +5,6 @@ namespace ScraperLinkedInServer.Models.Response
 {
     public class DebugLogsResponse
     {
-        IEnumerable<DebugLogViewModel> DebugLogsViewModel { get; set; }
+        public IEnumerable<DebugLogViewModel> DebugLogsViewModel { get; set; }
     }
 }

@@ -391,8 +391,10 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountV1Controller.cs" />
     <Compile Include="Controllers\AdvanceSettingV1Controller.cs" />
+    <Compile Include="Controllers\DebugLogV1Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SettingV1Controller.cs" />
+    <Compile Include="Controllers\SuitableProfileV1Controller.cs" />
     <Compile Include="Database\Account.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>

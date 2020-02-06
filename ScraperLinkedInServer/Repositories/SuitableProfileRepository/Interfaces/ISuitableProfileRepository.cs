@@ -7,8 +7,9 @@ namespace ScraperLinkedInServer.Repositories.SuitableProfileRepository.Interface
 {
     public interface ISuitableProfileRepository
     {
-        Task<IEnumerable<SuitableProfile>> GetSuitableProfileAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size);
+        Task<SuitableProfile> GetSuitableProfileByIdAsync(int id);
 
+        Task<IEnumerable<SuitableProfile>> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size);
 
         Task InsertSuitableProfilesAsync(IEnumerable<SuitableProfile> suitableProfiles);
     }

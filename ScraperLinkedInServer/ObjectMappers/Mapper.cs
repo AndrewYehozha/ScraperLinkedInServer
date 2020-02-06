@@ -25,15 +25,34 @@ namespace ScraperLinkedInServer.ObjectMappers
 
 
                         cfg.CreateMap<Account, AccountViewModel>();
-
                         cfg.CreateMap<AccountViewModel, Account>();
 
 
                         cfg.CreateMap<SettingViewModel, Setting>()
                            .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
-
                         cfg.CreateMap<Setting, SettingViewModel>()
                            .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatusID));
+
+
+                        cfg.CreateMap<AdvanceSettingViewModel, AdvanceSetting>()
+                           .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (int)ce.IntervalType));
+                        cfg.CreateMap<AdvanceSetting, AdvanceSettingViewModel>()
+                           .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (IntervalTypesSettings)ce.IntervalType));
+
+
+                        cfg.CreateMap<DebugLogViewModel, DebugLog>();
+                        cfg.CreateMap<DebugLog, DebugLogViewModel>();
+
+
+                        cfg.CreateMap<SettingViewModel, Setting>()
+                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
+                        cfg.CreateMap<Setting, SettingViewModel>()
+                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatusID));
+
+
+                        cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>();
+                        cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>();
+
                         //cfg.CreateMap<CompanyImportViewModel, Company>()
                         //   .ForMember(c => c.LinkedInURL, opt => opt.MapFrom(ci => ci.LinkedIn))
                         //   .ForMember(c => c.OrganizationURL, opt => opt.MapFrom(ci => ci.OrganizationNameURL))

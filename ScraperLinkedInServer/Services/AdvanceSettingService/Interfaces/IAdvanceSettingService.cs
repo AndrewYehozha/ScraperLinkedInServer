@@ -10,6 +10,6 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService.Interfaces
 
         Task InsertDefaultAdvanceSettingAsync(int accountId);
 
-        Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSetting);
+        Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSettingVM);
     }
 }

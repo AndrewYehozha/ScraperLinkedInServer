@@ -73,9 +73,9 @@ namespace ScraperLinkedInServer.Services.AccountService
             return await accountRepository.GetAccountByEmailAsync(email) != null;
         }
 
-        public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel request)
+        public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM)
         {
-            var accountDb = Mapper.Instance.Map<AccountViewModel, Account>(request);
+            var accountDb = Mapper.Instance.Map<AccountViewModel, Account>(accountVM);
             accountDb.Password = HashPassword(accountDb.Password);
             accountDb.Role = Roles.User;
 
@@ -83,10 +83,10 @@ namespace ScraperLinkedInServer.Services.AccountService
             await settingService.InsertDefaultSettingAsync(accountDb.Id);
             await advanceSettingService.InsertDefaultAdvanceSettingAsync(accountDb.Id);
 
-            var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
-            accountVM.Password = string.Empty;
+            var accountResponse = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
+            accountResponse.Password = string.Empty;
 
-            return accountVM;
+            return accountResponse;
         }
 
         public async Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM)

@@ -1,11 +1,6 @@
 ﻿using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Services.SettingService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,7 +9,8 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/settings")]
     public class SettingV1Controller : ScraperLinkedInApiController
     {
-        ISettingService settingService;
+        private readonly ISettingService settingService;
+
         public SettingV1Controller(
             ISettingService settingService)
         {
