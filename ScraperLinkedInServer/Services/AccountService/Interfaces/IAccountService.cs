@@ -13,7 +13,7 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 
         Task<bool> IsExistAccount(string email);
 
-        Task<AccountViewModel> InsertAccountAsync(AccountViewModel request);
+        Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM);
 
         bool CheckAccountCorrectPassword(string enteredPassword, string hashUserPassword);
 

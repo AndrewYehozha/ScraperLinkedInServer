@@ -10,7 +10,15 @@ namespace ScraperLinkedInServer.Repositories.SuitableProfileRepository
 {
     public class SuitableProfileRepository : ISuitableProfileRepository
     {
-        public async Task<IEnumerable<SuitableProfile>> GetSuitableProfileAsync(DateTime startDate, DateTime endDate, int accountId, int page = 1, int size = 50)
+        public async Task<SuitableProfile> GetSuitableProfileByIdAsync(int id)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.SuitableProfiles.Where(x => x.Id == id).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<IEnumerable<SuitableProfile>> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page = 1, int size = 50)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {

@@ -9,7 +9,7 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/advance-settings")]
     public class AdvanceSettingV1Controller : ScraperLinkedInApiController
     {
-        IAdvanceSettingService advanceSettingService;
+        private readonly IAdvanceSettingService advanceSettingService;
 
         public AdvanceSettingV1Controller(
             IAdvanceSettingService advanceSettingService)

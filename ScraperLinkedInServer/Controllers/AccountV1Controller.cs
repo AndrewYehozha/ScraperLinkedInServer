@@ -13,7 +13,7 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/accounts")]
     public class AccountV1Controller : ScraperLinkedInApiController
     {
-        private IAccountService accountService;
+        private readonly IAccountService accountService;
 
         public AccountV1Controller(
             IAccountService accountService)

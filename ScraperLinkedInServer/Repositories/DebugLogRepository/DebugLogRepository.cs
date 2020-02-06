@@ -10,17 +10,7 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository
 {
     public class DebugLogRepository : IDebugLogRepository
     {
-        public async Task<List<DebugLog>> GetNewDebugLogsAsync(int accountId, int lastDebugLogId, int size = 50)
-        {
-            using (var db = new ScraperLinkedInDBEntities())
-            {
-                return await db.DebugLogs.Where(x => x.Id > lastDebugLogId && x.AccountId == accountId)
-                                         .Take(size)
-                                         .ToListAsync();
-            }
-        }
-
-        public async Task<IEnumerable<DebugLog>> GetLogsAsync(int accountId, int batchSize = 50)
+        public async Task<IEnumerable<DebugLog>> GetDebugLogsAsync(int accountId, int batchSize = 50)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -32,7 +22,33 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository
             }
         }
 
-        public async Task InsertMessagesAsync(List<DebugLog> debugLogs)
+        public async Task<IEnumerable<DebugLog>> GetNewDebugLogsAsync(int accountId, int lastDebugLogId, int size = 50)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.DebugLogs.Where(x => x.Id > lastDebugLogId && x.AccountId == accountId)
+                                         .Take(size)
+                                         .ToListAsync();
+            }
+        }
+
+        public async Task InsertDebugLogAsync(DebugLog debugLog)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var log = new DebugLog
+                {
+                    Remarks = !string.IsNullOrEmpty(debugLog.Remarks) ? debugLog.Remarks : "",
+                    Logs = debugLog.Logs,
+                    CreatedOn = DateTime.UtcNow
+                };
+
+                db.DebugLogs.Add(log);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task InsertDebugLogsAsync(IEnumerable<DebugLog> debugLogs)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -48,22 +64,6 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository
                     db.DebugLogs.Add(log);
                 }
 
-                await db.SaveChangesAsync();
-            }
-        }
-
-        public async Task InsertMessageAsync(DebugLog debugLog)
-        {
-            using (var db = new ScraperLinkedInDBEntities())
-            {
-                var log = new DebugLog
-                {
-                    Remarks = !string.IsNullOrEmpty(debugLog.Remarks) ? debugLog.Remarks : "",
-                    Logs = debugLog.Logs,
-                    CreatedOn = DateTime.UtcNow
-                };
-
-                db.DebugLogs.Add(log);
                 await db.SaveChangesAsync();
             }
         }
