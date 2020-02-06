@@ -34,10 +34,10 @@ namespace ScraperLinkedInServer.Services.AccountService
             this.accountRepository = accountRepository;
         }
 
-        public async Task<AccountBaseResponse> GetAccountByIdAsync(int accountId)
+        public async Task<AccountBaseResponse> GetAccountByIdAsync(int id)
         {
             var response = new AccountBaseResponse();
-            var accountDb = await accountRepository.GetAccountByIdAsync(accountId);
+            var accountDb = await accountRepository.GetAccountByIdAsync(id);
 
             response.Message = accountDb.IsValid();
             response.AccountViewModel = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);

@@ -8,11 +8,11 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
 {
     public class AccountRepository : IAccountRepository
     {
-        public async Task<Account> GetAccountByIdAsync(int accountId)
+        public async Task<Account> GetAccountByIdAsync(int id)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                return await db.Accounts.Where(x => x.Id == accountId).FirstOrDefaultAsync();
+                return await db.Accounts.Where(x => x.Id == id).FirstOrDefaultAsync();
             }
         }
 

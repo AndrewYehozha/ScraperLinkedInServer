@@ -11,5 +11,7 @@ namespace ScraperLinkedInServer.Models.Response
     public class SuitableProfilesResponse
     {
         public IEnumerable<SuitableProfileViewModel> SuitableProfilesViewModel { get; set; }
+
+        internal int CountCompaniesInProcess { get; set; }
     }
 }

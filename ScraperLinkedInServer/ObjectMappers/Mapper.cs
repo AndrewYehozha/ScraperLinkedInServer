@@ -40,6 +40,10 @@ namespace ScraperLinkedInServer.ObjectMappers
                            .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (IntervalTypesSettings)ce.IntervalType));
 
 
+                        cfg.CreateMap<CompanyViewModel, Company>();
+                        cfg.CreateMap<Company, CompanyViewModel>();
+
+
                         cfg.CreateMap<DebugLogViewModel, DebugLog>();
                         cfg.CreateMap<DebugLog, DebugLogViewModel>();
 
@@ -52,26 +56,6 @@ namespace ScraperLinkedInServer.ObjectMappers
 
                         cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>();
                         cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>();
-
-                        //cfg.CreateMap<CompanyImportViewModel, Company>()
-                        //   .ForMember(c => c.LinkedInURL, opt => opt.MapFrom(ci => ci.LinkedIn))
-                        //   .ForMember(c => c.OrganizationURL, opt => opt.MapFrom(ci => ci.OrganizationNameURL))
-                        //   .ForMember(ci => ci.Industry, opt => opt.MapFrom(c => c.Categories))
-                        //   .ForMember(ci => ci.AmountEmployees, opt => opt.MapFrom(c => c.NumberofEmployees));
-
-                        //cfg.CreateMap<SuitableProfile, ResultViewModel>()
-                        //   .ForMember(ci => ci.Number, opt => opt.MapFrom(ce => ce.Id))
-                        //   .ForMember(ci => ci.LeadSource, opt => opt.Ignore());
-
-                        //cfg.CreateMap<DebugLog, DebugLogViewModel>();
-                        ////.ForMember(ci => ci.CreatedOn, opt => opt.MapFrom(ce => DateTime.Parse(ce.CreatedOn.ToString(), System.Globalization.CultureInfo.CreateSpecificCulture("ru-Ru"))))
-                        //;
-
-                        //cfg.CreateMap<SettingsViewModel, Setting>()
-                        //   .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (int)ce.IntervalType))
-                        //   .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus))
-                        //   .ForMember(c => c.Localization, opt => opt.MapFrom(ce => (int)ce.Localization))
-                        //   .ForMember(c => c.ScraperStatus, opt => opt.Ignore());
                     });
                     _instance = config.CreateMapper();
                 }

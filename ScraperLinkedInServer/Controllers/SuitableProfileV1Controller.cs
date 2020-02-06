@@ -1,5 +1,6 @@
 ﻿using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.Services.CompanyService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -11,11 +12,14 @@ namespace ScraperLinkedInServer.Controllers
     public class SuitableProfileV1Controller : ScraperLinkedInApiController
     {
         private readonly ISuitableProfileService suitableProfileService;
+        private readonly ICompanyService companyService;
 
         public SuitableProfileV1Controller(
-            ISuitableProfileService suitableProfileService)
+            ISuitableProfileService suitableProfileService,
+            ICompanyService companyService)
         {
             this.suitableProfileService = suitableProfileService;
+            this.companyService = companyService;
         }
 
         [HttpGet]
@@ -43,6 +47,7 @@ namespace ScraperLinkedInServer.Controllers
 
             var suitableProfilesVM = await suitableProfileService.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
             response.SuitableProfilesViewModel = suitableProfilesVM;
+            response.CountCompaniesInProcess = await companyService.CountCompaniesInProcess(accountId);
 
             return JsonSuccess(response);
         }
