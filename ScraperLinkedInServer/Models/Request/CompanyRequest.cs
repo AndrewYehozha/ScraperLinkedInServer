@@ -5,4 +5,8 @@ namespace ScraperLinkedInServer.Models.Request
     public class CompanyRequest : CompanyResponse
     {
     }
+
+    public class CompaniesRequest : CompaniesResponse
+    {
+    }
 }

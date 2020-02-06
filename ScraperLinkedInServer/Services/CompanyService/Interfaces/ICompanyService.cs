@@ -1,12 +1,23 @@
-﻿using System;
+﻿using ScraperLinkedInServer.Models.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ScraperLinkedInServer.Services.CompanyService.Interfaces
 {
-    interface ICompanyService
+    public interface ICompanyService
     {
+        Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize);
+
+        Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchSuitableProfilesAsync(int accountId);
+
+        Task<int> CountCompaniesInProcess(int accountId);
+
+        Task InsertCompanyAsync(CompanyViewModel companyVM);
+
+        Task InsertCompaniesAsync(IEnumerable<CompanyViewModel> companiesVM);
+
+        Task UpdateCompanyAsync(CompanyViewModel companyVM);
+
+        Task UpdateCompaniesAsync(IEnumerable<CompanyViewModel> companiesVM);
     }
 }
