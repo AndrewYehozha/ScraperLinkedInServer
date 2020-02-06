@@ -5,7 +5,7 @@ namespace ScraperLinkedInServer.Repositories.SettingRepository.Interfaces
 {
     public interface ISettingRepository
     {
-        Task<Setting> GetSettingAsync(int accountId);
+        Task<Setting> GetSettingByAccountIdAsync(int accountId);
 
         Task InsertSettingAsync(Setting setting);
 

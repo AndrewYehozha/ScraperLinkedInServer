@@ -8,7 +8,7 @@ namespace ScraperLinkedInServer.Repositories.AdvanceSettingRepository
 {
     public class AdvanceSettingRepository : IAdvanceSettingRepository
     {
-        public async Task<AdvanceSetting> GetAdvanceSetting(int accountId)
+        public async Task<AdvanceSetting> GetAdvanceSettingByAccountId(int accountId)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {

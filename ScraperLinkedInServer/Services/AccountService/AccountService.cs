@@ -41,6 +41,7 @@ namespace ScraperLinkedInServer.Services.AccountService
 
             response.Message = accountDb.IsValid();
             response.AccountViewModel = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
+            response.AccountViewModel.Password = string.Empty;
 
             return response;
         }
@@ -82,10 +83,10 @@ namespace ScraperLinkedInServer.Services.AccountService
             await settingService.InsertDefaultSettingAsync(accountDb.Id);
             await advanceSettingService.InsertDefaultAdvanceSettingAsync(accountDb.Id);
 
-            var response = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
-            response.Password = string.Empty;
+            var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
+            accountVM.Password = string.Empty;
 
-            return response;
+            return accountVM;
         }
 
         public async Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM)

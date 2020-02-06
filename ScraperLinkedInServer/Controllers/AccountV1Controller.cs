@@ -11,18 +11,18 @@ using System.Web.Http;
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/accounts")]
-    public class AccountController : ScraperLinkedInApiController
+    public class AccountV1Controller : ScraperLinkedInApiController
     {
         private IAccountService accountService;
 
-        public AccountController(
+        public AccountV1Controller(
             IAccountService accountService)
         {
             this.accountService = accountService;
         }
 
         [HttpPost]
-        [Route("/signin")]
+        [Route("signin")]
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignIn(AuthorizationRequest request)
         {
@@ -37,7 +37,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpPost]
-        [Route("/signup")]
+        [Route("signup")]
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignUp(RegistrationRequest request)
         {
@@ -64,7 +64,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpGet]
-        [Route("/{id}")]
+        [Route("{id}")]
         [Authorize]
         public async Task<IHttpActionResult> GetAccountByIdAsync(int id)
         {
@@ -74,7 +74,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpPut]
-        [Route("/")]
+        [Route("account-management")]
         [Authorize]
         public async Task<IHttpActionResult> UpdateAccountAsync(AccountRequest request)
         {
@@ -84,7 +84,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpDelete]
-        [Route("/{id}")]
+        [Route("account-management/{id}")]
         [Authorize]
         public async Task<IHttpActionResult> DeleteAccountAsync(int id)
         {
@@ -96,7 +96,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpPut]
-        [Route("/account-management/role")]
+        [Route("account-management/role")]
         [Authorize(Roles = Roles.Admin)]
         public  async Task<IHttpActionResult> ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
@@ -108,7 +108,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpPut]
-        [Route("/account-management/block")]
+        [Route("account-management/block")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IHttpActionResult> ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {

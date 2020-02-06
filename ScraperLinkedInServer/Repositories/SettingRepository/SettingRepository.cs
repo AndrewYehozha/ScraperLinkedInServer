@@ -8,7 +8,7 @@ namespace ScraperLinkedInServer.Repositories.SettingRepository
 {
     public class SettingRepository : ISettingRepository
     {
-        public async Task<Setting> GetSettingAsync(int accountId)
+        public async Task<Setting> GetSettingByAccountIdAsync(int accountId)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
