@@ -12,6 +12,6 @@ namespace ScraperLinkedInServer.Models.Response
     {
         public IEnumerable<CompanyViewModel> CompaniesViewModel { get; set; }
 
-        public int CountCompaniesInProcess { get; set; }
+        internal int CountCompaniesInProcess { get; set; }
     }
 }
