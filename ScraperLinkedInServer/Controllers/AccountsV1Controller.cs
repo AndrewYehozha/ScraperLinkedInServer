@@ -1,4 +1,5 @@
-﻿using ScraperLinkedInServer.Models.Entities;
+﻿using ScraperLinkedInServer.Extensions;
+using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
@@ -11,11 +12,11 @@ using System.Web.Http;
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/accounts")]
-    public class AccountV1Controller : ScraperLinkedInApiController
+    public class AccountsV1Controller : ScraperLinkedInApiController
     {
         private readonly IAccountService accountService;
 
-        public AccountV1Controller(
+        public AccountsV1Controller(
             IAccountService accountService)
         {
             this.accountService = accountService;
@@ -68,7 +69,16 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize]
         public async Task<IHttpActionResult> GetAccountByIdAsync(int id)
         {
-            var response = await accountService.GetAccountByIdAsync(id);
+            var response = new AccountResponse();
+
+            var accountId = Identity.ToAccountID();
+            if (id != accountId)
+            {
+                response.Message = "Not permissions";
+                return JsonError(response);
+            }
+
+            response = await accountService.GetAccountByIdAsync(id);
 
             return JsonSuccess(response);
         }
@@ -88,7 +98,14 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize]
         public async Task<IHttpActionResult> DeleteAccountAsync(int id)
         {
-            var response = new AccountBaseResponse();
+            var response = new AccountResponse();
+
+            var accountId = Identity.ToAccountID();
+            if (id != accountId)
+            {
+                response.Message = "Not permissions";
+                return JsonError(response);
+            }
 
             await accountService.DeleteAccountAsync(id);
 
@@ -100,7 +117,7 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize(Roles = Roles.Admin)]
         public  async Task<IHttpActionResult> ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
-            var response = new AccountBaseResponse();
+            var response = new AccountResponse();
 
             await accountService.ChangeAccountRoleAsync(request);
 
@@ -112,7 +129,7 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize(Roles = Roles.Admin)]
         public async Task<IHttpActionResult> ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {
-            var response = new AccountBaseResponse();
+            var response = new AccountResponse();
 
             await accountService.ChangeAccountBlockAsync(request);
 

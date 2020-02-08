@@ -1,9 +1,10 @@
-﻿using ScraperLinkedInServer.Models.Response;
+﻿using ScraperLinkedInServer.Models.Entities;
 
 namespace ScraperLinkedInServer.Models.Request
 {
-    public class AccountRequest : AccountBaseResponse
+    public class AccountRequest
     {
+        public AccountViewModel AccountViewModel { get; set; }
     }
 
     public class ChangeAccountRoleRequest

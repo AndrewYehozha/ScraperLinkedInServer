@@ -1,10 +1,8 @@
-﻿using ScraperLinkedInServer.Models.Entities;
-using System.Collections.Generic;
+﻿using ScraperLinkedInServer.Models.Request;
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class DebugLogsResponse
+    public class DebugLogsResponse : DebugLogsRequest
     {
-        public IEnumerable<DebugLogViewModel> DebugLogsViewModel { get; set; }
     }
 }

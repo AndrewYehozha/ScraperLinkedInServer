@@ -1,5 +1,5 @@
 ﻿using ScraperLinkedInServer.Models.Entities;
-using System.Collections.Generic;
+using ScraperLinkedInServer.Models.Request;
 
 namespace ScraperLinkedInServer.Models.Response
 {
@@ -8,10 +8,8 @@ namespace ScraperLinkedInServer.Models.Response
         public SuitableProfileViewModel SuitableProfileViewModel { get; set; }
     }
 
-    public class SuitableProfilesResponse
+    public class SuitableProfilesResponse : SuitableProfilesRequest
     {
-        public IEnumerable<SuitableProfileViewModel> SuitableProfilesViewModel { get; set; }
-
-        internal int CountCompaniesInProcess { get; set; }
+        public int CountCompaniesInProcess { get; set; }
     }
 }

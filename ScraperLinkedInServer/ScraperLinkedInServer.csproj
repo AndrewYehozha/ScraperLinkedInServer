@@ -389,13 +389,14 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AccountV1Controller.cs" />
-    <Compile Include="Controllers\AdvanceSettingV1Controller.cs" />
-    <Compile Include="Controllers\CompanyV1Controller.cs" />
-    <Compile Include="Controllers\DebugLogV1Controller.cs" />
+    <Compile Include="Controllers\AccountsV1Controller.cs" />
+    <Compile Include="Controllers\AdvanceSettingsV1Controller.cs" />
+    <Compile Include="Controllers\CompaniesV1Controller.cs" />
+    <Compile Include="Controllers\DebugLogsV1Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SettingV1Controller.cs" />
-    <Compile Include="Controllers\SuitableProfileV1Controller.cs" />
+    <Compile Include="Controllers\ProfilesV1Controller.cs" />
+    <Compile Include="Controllers\SettingsV1Controller.cs" />
+    <Compile Include="Controllers\SuitableProfilesV1Controller.cs" />
     <Compile Include="Database\Account.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
@@ -447,11 +448,11 @@
     <Compile Include="Models\Entities\AccountViewModel.cs" />
     <Compile Include="Models\Entities\AdvanceSettingViewModel.cs" />
     <Compile Include="Models\Entities\Claims.cs" />
+    <Compile Include="Models\Entities\CompanyProfilesViewModel.cs" />
     <Compile Include="Models\Entities\CompanyViewModel.cs" />
     <Compile Include="Models\Entities\DebugLogViewModel.cs" />
     <Compile Include="Models\Entities\ProfileViewModel.cs" />
     <Compile Include="Models\Entities\SettingViewModel.cs" />
-    <Compile Include="Models\Entities\SuitableProfileViewModel.cs" />
     <Compile Include="Models\Request\AccountRequest.cs" />
     <Compile Include="Models\Request\AdvanceSettingRequest.cs" />
     <Compile Include="Models\Request\CompanyRequest.cs" />
@@ -460,7 +461,7 @@
     <Compile Include="Models\Request\RegistrationRequest.cs" />
     <Compile Include="Models\Request\SettingRequest.cs" />
     <Compile Include="Models\Request\SuitableProfilesRequest.cs" />
-    <Compile Include="Models\Response\AccountBaseResponse.cs" />
+    <Compile Include="Models\Response\AccountResponse.cs" />
     <Compile Include="Models\Response\AdvanceSettingResponse.cs" />
     <Compile Include="Models\Response\AuthorizationResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />

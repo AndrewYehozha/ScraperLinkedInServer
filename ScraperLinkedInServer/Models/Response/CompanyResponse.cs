@@ -1,17 +1,13 @@
-﻿using ScraperLinkedInServer.Models.Entities;
-using System.Collections.Generic;
+﻿using ScraperLinkedInServer.Models.Request;
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class CompanyResponse
+    public class CompanyResponse : CompanyRequest
     {
-        public CompanyViewModel CompanyViewModel { get; set; }
     }
 
-    public class CompaniesResponse
+    public class CompaniesResponse : CompaniesRequest
     {
-        public IEnumerable<CompanyViewModel> CompaniesViewModel { get; set; }
-
-        internal int CountCompaniesInProcess { get; set; }
+        public int CountCompaniesInProcess { get; set; }
     }
 }

@@ -34,9 +34,9 @@ namespace ScraperLinkedInServer.Services.AccountService
             this.accountRepository = accountRepository;
         }
 
-        public async Task<AccountBaseResponse> GetAccountByIdAsync(int id)
+        public async Task<AccountResponse> GetAccountByIdAsync(int id)
         {
-            var response = new AccountBaseResponse();
+            var response = new AccountResponse();
             var accountDb = await accountRepository.GetAccountByIdAsync(id);
 
             response.Message = accountDb.IsValid();
@@ -89,9 +89,9 @@ namespace ScraperLinkedInServer.Services.AccountService
             return accountResponse;
         }
 
-        public async Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM)
+        public async Task<AccountResponse> UpdateAccountAsync(AccountViewModel accountVM)
         {
-            var response = new AccountBaseResponse();
+            var response = new AccountResponse();
             var account = Mapper.Instance.Map<AccountViewModel, Account>(accountVM);
 
             var accountDb = await accountRepository.GetAccountByIdAsync(accountVM.Id);

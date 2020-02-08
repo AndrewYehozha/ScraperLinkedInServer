@@ -1,4 +1,5 @@
-﻿using ScraperLinkedInServer.Models.Request;
+﻿using ScraperLinkedInServer.Extensions;
+using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Services.SettingService.Interfaces;
 using System.Threading.Tasks;
@@ -7,23 +8,24 @@ using System.Web.Http;
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/settings")]
-    public class SettingV1Controller : ScraperLinkedInApiController
+    public class SettingsV1Controller : ScraperLinkedInApiController
     {
         private readonly ISettingService settingService;
 
-        public SettingV1Controller(
+        public SettingsV1Controller(
             ISettingService settingService)
         {
             this.settingService = settingService;
         }
 
         [HttpGet]
-        [Route("{accountId}")]
+        [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetSettingByAccountIdAsync(int accountId)
+        public async Task<IHttpActionResult> GetSettingByAccountIdAsync()
         {
             var response = new SettingResponse();
 
+            var accountId = Identity.ToAccountID();
             response.SettingViewModel = await settingService.GetSettingByAccountIdAsync(accountId);
 
             return JsonSuccess(response);

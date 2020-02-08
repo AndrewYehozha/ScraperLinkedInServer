@@ -1,10 +1,13 @@
 ﻿using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Entities;
+using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.SuitableProfileRepository.Interfaces;
+using ScraperLinkedInServer.Services.ProfileService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -13,11 +16,14 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
     public class SuitableProfileService : ISuitableProfileService
     {
         private readonly ISuitableProfileRepository suitableProfileRepository;
+        private readonly IProfileService profileService;
 
         public SuitableProfileService(
-            ISuitableProfileRepository suitableProfileRepository)
+            ISuitableProfileRepository suitableProfileRepository,
+            IProfileService profileService)
         {
             this.suitableProfileRepository = suitableProfileRepository;
+            this.profileService = profileService;
         }
 
         public async Task<SuitableProfileViewModel> GetSuitableProfileByIdAsync(int id)
@@ -39,6 +45,13 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
         {
             var suitableProfilesDB = Mapper.Instance.Map<IEnumerable<SuitableProfileViewModel>, IEnumerable<SuitableProfile>>(suitableProfilesVM);
             await suitableProfileRepository.InsertSuitableProfilesAsync(suitableProfilesDB);
+
+            var companiesIds = suitableProfilesVM.Select(x => x.CompanyID).Distinct();
+            foreach (var companyId in companiesIds)
+            {
+                var accountId = suitableProfilesVM.Where(x => x.CompanyID == companyId).FirstOrDefault().AccountID;
+                await profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, ExecutionStatuses.Success);
+            }
         }
     }
 }

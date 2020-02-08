@@ -1,22 +1,19 @@
-﻿using ScraperLinkedInServer.Models.Request;
+﻿using ScraperLinkedInServer.Extensions;
+using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/companies")]
-    public class CompanyV1Controller : ScraperLinkedInApiController
+    public class CompaniesV1Controller : ScraperLinkedInApiController
     {
         private readonly ICompanyService companyService;
 
-        public CompanyV1Controller(
+        public CompaniesV1Controller(
             ICompanyService companyService)
         {
             this.companyService = companyService;
@@ -24,28 +21,30 @@ namespace ScraperLinkedInServer.Controllers
 
         [HttpGet]
         [Route("windows-service-scraper")]
-        [Authorize]
-        public async Task<IHttpActionResult> GetCompaniesForSearchAsync(int accountId, int companyBatchSize)
+        [Authorize(Roles = Roles.WindowsService)]
+        public async Task<IHttpActionResult> GetCompaniesForSearchAsync(int companyBatchSize)
         {
             var response = new CompaniesResponse();
 
+            var accountId = Identity.ToAccountID();
             var companiesVM = await companyService.GetCompaniesForSearchAsync(accountId, companyBatchSize);
+            var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
             response.CompaniesViewModel = companiesVM;
-            response.CountCompaniesInProcess = await companyService.CountCompaniesInProcess(accountId);
+            response.CountCompaniesInProcess = countCompaniesInProcess;
 
             return JsonSuccess(response);
         }
 
         [HttpGet]
         [Route("windows-service-worker")]
-        [Authorize]
-        public async Task<IHttpActionResult> GetCompaniesForSearchSuitableProfilesAsync(int accountId)
+        [Authorize(Roles = Roles.WindowsService)]
+        public async Task<IHttpActionResult> GetCompaniesForSearchSuitableProfilesAsync(int companyBatchSize)
         {
             var response = new CompaniesResponse();
 
+            var accountId = Identity.ToAccountID();
             var companiesVM = await companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId);
             response.CompaniesViewModel = companiesVM;
-            response.CountCompaniesInProcess = await companyService.CountCompaniesInProcess(accountId);
 
             return JsonSuccess(response);
         }
@@ -53,11 +52,13 @@ namespace ScraperLinkedInServer.Controllers
         [HttpGet]
         [Route("count-in-process")]
         [Authorize]
-        public async Task<IHttpActionResult> CountCompaniesInProcess(int accountId)
+        public async Task<IHttpActionResult> GetCountCompaniesInProcess()
         {
             var response = new CompaniesResponse();
 
-            response.CountCompaniesInProcess = await companyService.CountCompaniesInProcess(accountId);
+            var accountId = Identity.ToAccountID();
+            var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
+            response.CountCompaniesInProcess = countCompaniesInProcess;
 
             return JsonSuccess(response);
         }
@@ -100,7 +101,7 @@ namespace ScraperLinkedInServer.Controllers
 
         [HttpPut]
         [Route("windows-service-scraper")]
-        [Authorize]
+        [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> UpdateCompaniesAsync(CompaniesRequest request)
         {
             var response = new CompaniesResponse();
