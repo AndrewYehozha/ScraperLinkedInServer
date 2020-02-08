@@ -10,7 +10,7 @@ namespace ScraperLinkedInServer.Services.CompanyService.Interfaces
 
         Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchSuitableProfilesAsync(int accountId);
 
-        Task<int> CountCompaniesInProcess(int accountId);
+        Task<int> GetCountCompaniesInProcess(int accountId);
 
         Task InsertCompanyAsync(CompanyViewModel companyVM);
 

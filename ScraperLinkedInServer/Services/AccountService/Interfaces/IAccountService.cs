@@ -7,7 +7,7 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 {
     public interface IAccountService
     {
-        Task<AccountBaseResponse> GetAccountByIdAsync(int id);
+        Task<AccountResponse> GetAccountByIdAsync(int id);
 
         Task<AuthorizationResponse> Authorization(AuthorizationRequest request);
 
@@ -17,7 +17,7 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 
         bool CheckAccountCorrectPassword(string enteredPassword, string hashUserPassword);
 
-        Task<AccountBaseResponse> UpdateAccountAsync(AccountViewModel accountVM);
+        Task<AccountResponse> UpdateAccountAsync(AccountViewModel accountVM);
 
         Task DeleteAccountAsync(int accountId);
 

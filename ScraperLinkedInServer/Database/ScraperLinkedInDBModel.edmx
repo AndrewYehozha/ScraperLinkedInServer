@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ScraperLinkedInDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ScraperLinkedInDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="Id" />
@@ -146,8 +146,9 @@
           <Property Name="Facebook" Type="nvarchar" MaxLength="150" />
           <Property Name="TechStack" Type="nvarchar(max)" />
           <Property Name="DateTimeCreation" Type="datetime" />
-          <Property Name="ProfileID" Type="int" Nullable="false" />
           <Property Name="AccountID" Type="int" Nullable="false" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="ProfileID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_AdvanceSettings_AdvanceSettings">
           <End Role="IntervalTypes" Type="Self.IntervalTypes" Multiplicity="1" />
@@ -269,6 +270,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SuitableProfiles_Companies">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
+          <End Role="SuitableProfiles" Type="Self.SuitableProfiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SuitableProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SuitableProfiles_Profiles">
           <End Role="Profiles" Type="Self.Profiles" Multiplicity="1" />
           <End Role="SuitableProfiles" Type="Self.SuitableProfiles" Multiplicity="*" />
@@ -333,13 +346,16 @@
             <End Role="Accounts" EntitySet="Accounts" />
             <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_SuitableProfiles_Companies" Association="Self.FK_SuitableProfiles_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
+          </AssociationSet>
           <AssociationSet Name="FK_SuitableProfiles_Profiles" Association="Self.FK_SuitableProfiles_Profiles">
             <End Role="Profiles" EntitySet="Profiles" />
             <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ScraperLinkedInDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -399,6 +415,7 @@
           <NavigationProperty Name="Account" Relationship="Self.FK_Companies_Accounts" FromRole="Companies" ToRole="Accounts" />
           <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="Companies" ToRole="ExecutionStatuses" />
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Companies" FromRole="Companies" ToRole="Profiles" />
+          <NavigationProperty Name="SuitableProfiles" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="Company" ToRole="SuitableProfile" />
         </EntityType>
         <EntityType Name="DebugLog">
           <Key>
@@ -508,6 +525,8 @@
           <Property Name="AccountID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Account" Relationship="Self.FK_SuitableProfiles_Accounts" FromRole="SuitableProfiles" ToRole="Accounts" />
           <NavigationProperty Name="Profile" Relationship="Self.FK_SuitableProfiles_Profiles" FromRole="SuitableProfiles" ToRole="Profiles" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Company1" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="SuitableProfile" ToRole="Company" />
         </EntityType>
         <Association Name="FK_Companies_Accounts">
           <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
@@ -697,7 +716,23 @@
             <End Role="Profiles" EntitySet="Profiles" />
             <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_SuitableProfiles_Companies" Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="SuitableProfile" EntitySet="SuitableProfiles" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_SuitableProfiles_Companies">
+          <End Type="ScraperLinkedInDBModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.SuitableProfile" Role="SuitableProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SuitableProfile">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -833,6 +868,7 @@
           <EntitySetMapping Name="SuitableProfiles">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.SuitableProfile">
               <MappingFragment StoreEntitySet="SuitableProfiles">
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />

@@ -10,7 +10,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
 
         Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId);
 
-        Task<int> CountCompaniesInProcess(int accountId);
+        Task<int> GetCountCompaniesInProcess(int accountId);
 
         Task InsertCompanyAsync(Company company);
 

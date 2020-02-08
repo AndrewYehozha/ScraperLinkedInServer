@@ -1,8 +1,9 @@
-﻿using ScraperLinkedInServer.Models.Response;
+﻿using ScraperLinkedInServer.Models.Entities;
 
 namespace ScraperLinkedInServer.Models.Request
 {
-    public class SettingRequest : SettingResponse
+    public class SettingRequest
     {
+        public SettingViewModel SettingViewModel { get; set; }
     }
 }

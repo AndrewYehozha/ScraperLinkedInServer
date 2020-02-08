@@ -11,7 +11,15 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
 {
     public class ProfileRepository : IProfileRepository
     {
-        public async Task<IEnumerable<Profile>> GetProfilesAsync(int accountId, int profileBatchSize)
+        public async Task<Profile> GetProfileByIdAsync(int id, int accountId)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.Profiles.Where(x => x.AccountID == accountId && x.Id == id).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Profile>> GetProfilesForSearchAsync(int accountId, int profileBatchSize)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -28,21 +36,12 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
             }
         }
 
-        public async Task<int> CountProfilesInProcessAsync(int accountId)
+        public async Task<int> GetCountProfilesInProcessAsync(int accountId)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                return await db.Profiles.Where(x => x.Company.AccountId == accountId && (((x.ExecutionStatusID == (int)ExecutionStatuses.Created) || (x.ExecutionStatusID == (int)ExecutionStatuses.Queued)) && (x.ProfileStatusID == (int)ProfileStatuses.Undefined)))
+                return await db.Profiles.Where(x => x.AccountID == accountId && (((x.ExecutionStatusID == (int)ExecutionStatuses.Created) || (x.ExecutionStatusID == (int)ExecutionStatuses.Queued)) && (x.ProfileStatusID == (int)ProfileStatuses.Undefined)))
                                         .CountAsync();
-            }
-        }
-
-        public async Task<int> GetCountRawProfilesAsync(int accountId)
-        {
-            using (var db = new ScraperLinkedInDBEntities())
-            {
-                return await db.Profiles.Where(x => x.AccountID == accountId && ((x.ProfileStatusID == (int)ProfileStatuses.Undefined) && (x.ExecutionStatusID == (int)ExecutionStatuses.Created || x.ExecutionStatusID == (int)ExecutionStatuses.Queued)))
-                                  .CountAsync();
             }
         }
 
@@ -55,7 +54,7 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
             }
         }
 
-        public async Task AddProfilesAsync(IEnumerable<Profile> profiles)
+        public async Task InsertProfilesAsync(IEnumerable<Profile> profiles)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -73,20 +72,23 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
             }
         }
 
-        public async Task UpdateProfileAsync(Profile profile)
+        public async Task UpdateProfilesAsync(IEnumerable<Profile> profiles)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var profileDB = db.Profiles.Where(x => x.Id == profile.Id).FirstOrDefault();
+                foreach (var profile in profiles)
+                {
+                    var profileDB = db.Profiles.Where(x => x.Id == profile.Id).FirstOrDefault();
 
-                profileDB.FirstName = profile.FirstName ?? "";
-                profileDB.LastName = profile.LastName ?? "";
-                profileDB.FullName = profile.FullName ?? "";
-                profileDB.Job = profile.Job ?? "";
-                profileDB.AllSkills = profile.AllSkills ?? "";
-                profileDB.ExecutionStatusID = profile.ExecutionStatusID;
-                profileDB.ProfileStatusID = profile.ProfileStatusID;
-                profileDB.DateСreation = profile.DateСreation;
+                    profileDB.FirstName = profile.FirstName ?? "";
+                    profileDB.LastName = profile.LastName ?? "";
+                    profileDB.FullName = profile.FullName ?? "";
+                    profileDB.Job = profile.Job ?? "";
+                    profileDB.AllSkills = profile.AllSkills ?? "";
+                    profileDB.ExecutionStatusID = profile.ExecutionStatusID;
+                    profileDB.ProfileStatusID = profile.ProfileStatusID;
+                    profileDB.DateСreation = profile.DateСreation;
+                }
 
                 await db.SaveChangesAsync();
             }

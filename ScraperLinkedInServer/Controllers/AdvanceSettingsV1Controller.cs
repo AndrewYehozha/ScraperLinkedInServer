@@ -3,27 +3,29 @@ using ScraperLinkedInServer.Models.Request;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.Extensions;
 
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/advance-settings")]
-    public class AdvanceSettingV1Controller : ScraperLinkedInApiController
+    public class AdvanceSettingsV1Controller : ScraperLinkedInApiController
     {
         private readonly IAdvanceSettingService advanceSettingService;
 
-        public AdvanceSettingV1Controller(
+        public AdvanceSettingsV1Controller(
             IAdvanceSettingService advanceSettingService)
         {
             this.advanceSettingService = advanceSettingService;
         }
 
         [HttpGet]
-        [Route("{accountId}")]
+        [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetAdvanceSettingByAccountId(int accountId)
+        public async Task<IHttpActionResult> GetAdvanceSettingByAccountId()
         {
             var response = new AdvanceSettingResponse();
 
+            var accountId = Identity.ToAccountID();
             var advanceSettingVM = await advanceSettingService.GetAdvanceSettingByAccountId(accountId);
             response.AdvanceSettingViewModel = advanceSettingVM;
 

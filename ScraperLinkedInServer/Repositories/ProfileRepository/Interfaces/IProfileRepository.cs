@@ -7,17 +7,17 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository.Interfaces
 {
     public interface IProfileRepository
     {
-        Task<IEnumerable<Profile>> GetProfilesAsync(int accountId, int profileBatchSize);
+        Task<Profile> GetProfileByIdAsync(int id, int accountId);
 
-        Task<int> CountProfilesInProcessAsync(int accountId);
+        Task<IEnumerable<Profile>> GetProfilesForSearchAsync(int accountId, int profileBatchSize);
 
-        Task<int> GetCountRawProfilesAsync(int accountId);
+        Task<int> GetCountProfilesInProcessAsync(int accountId);
 
         Task<int> GetCountNewProfilesAsync(int accountId);
 
-        Task AddProfilesAsync(IEnumerable<Profile> profiles);
+        Task InsertProfilesAsync(IEnumerable<Profile> profiles);
 
-        Task UpdateProfileAsync(Profile profile);
+        Task UpdateProfilesAsync(IEnumerable<Profile> profiles);
 
         Task UpdateProfilesExecutionStatusByCompanyIdAsync(int accountId, int companyId, ExecutionStatuses executionStatus);
     }

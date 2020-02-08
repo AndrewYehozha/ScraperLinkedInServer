@@ -27,6 +27,7 @@
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_ExecutionStatuses" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_ProfileStatuses" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

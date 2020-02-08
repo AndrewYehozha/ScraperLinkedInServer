@@ -2,7 +2,8 @@
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class AdvanceSettingResponse : AdvanceSettingRequest
+    public class AccountResponse : AccountRequest
     {
+        public string Message { get; set; }
     }
 }

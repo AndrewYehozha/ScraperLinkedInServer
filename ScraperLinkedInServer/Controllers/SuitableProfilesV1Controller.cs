@@ -1,5 +1,6 @@
 ﻿using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
+using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using System;
@@ -9,12 +10,12 @@ using System.Web.Http;
 namespace ScraperLinkedInServer.Controllers
 {
     [RoutePrefix("api/v1/suitable-profile")]
-    public class SuitableProfileV1Controller : ScraperLinkedInApiController
+    public class SuitableProfilesV1Controller : ScraperLinkedInApiController
     {
         private readonly ISuitableProfileService suitableProfileService;
         private readonly ICompanyService companyService;
 
-        public SuitableProfileV1Controller(
+        public SuitableProfilesV1Controller(
             ISuitableProfileService suitableProfileService,
             ICompanyService companyService)
         {
@@ -47,14 +48,14 @@ namespace ScraperLinkedInServer.Controllers
 
             var suitableProfilesVM = await suitableProfileService.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
             response.SuitableProfilesViewModel = suitableProfilesVM;
-            response.CountCompaniesInProcess = await companyService.CountCompaniesInProcess(accountId);
+            response.CountCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
 
             return JsonSuccess(response);
         }
 
         [HttpPost]
-        [Route("suitable-profiles-management")]
-        [Authorize]
+        [Route("windows-service-worker")]
+        [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertSuitableProfilesAsync(SuitableProfilesRequest request)
         {
             var response = new SuitableProfilesResponse();

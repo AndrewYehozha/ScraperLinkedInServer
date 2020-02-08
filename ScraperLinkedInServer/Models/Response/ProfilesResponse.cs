@@ -1,10 +1,16 @@
-﻿using ScraperLinkedInServer.Models.Entities;
-using System.Collections.Generic;
+﻿using ScraperLinkedInServer.Models.Request;
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class ProfilesResponse
+    public class ProfileResponse : ProfileRequest
     {
-        IEnumerable<ProfileViewModel> ProfilesViewModel { get; set; }
+
+    }
+
+    public class ProfilesResponse : ProfilesRequest
+    {
+        public int CountProfilesInProcess { get; set; }
+
+        public int CountNewProfiles { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
             }
         }
 
-        public async Task<int> CountCompaniesInProcess(int accountId)
+        public async Task<int> GetCountCompaniesInProcess(int accountId)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
