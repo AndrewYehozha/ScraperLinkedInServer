@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c38645bf77cd4534be655614ce50b0ec" Name="Diagram1">
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Account" Width="1.5" PointX="0.75" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.AdvanceSetting" Width="1.5" PointX="12" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Company" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.DebugLog" Width="1.5" PointX="3" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ExecutionStatus" Width="1.5" PointX="0.75" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.IntervalType" Width="1.5" PointX="9.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Profile" Width="1.5" PointX="5.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ProfileStatus" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ScraperStatus" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Setting" Width="1.5" PointX="3" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.SuitableProfile" Width="1.5" PointX="7.5" PointY="4.25" IsExpanded="true" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Companies_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_DebugLogs_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Settings_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_AdvanceSettings_AdvanceSettings" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Companies_ExecutionStatuses" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_Companies" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_ExecutionStatuses" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_ProfileStatuses" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles" ManuallyRouted="false" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
