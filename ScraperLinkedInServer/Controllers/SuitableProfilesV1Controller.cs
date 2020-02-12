@@ -1,15 +1,17 @@
-﻿using ScraperLinkedInServer.Models.Request;
+﻿using ScraperLinkedInServer.Extensions;
+using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ScraperLinkedInServer.Controllers
 {
-    [RoutePrefix("api/v1/suitable-profile")]
+    [RoutePrefix("api/v1/suitable-profiles")]
     public class SuitableProfilesV1Controller : ScraperLinkedInApiController
     {
         private readonly ISuitableProfileService suitableProfileService;
@@ -32,25 +34,28 @@ namespace ScraperLinkedInServer.Controllers
 
             var suitableProfileVM = await suitableProfileService.GetSuitableProfileByIdAsync(id);
             response.SuitableProfileViewModel = suitableProfileVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size)
+        public async Task<IHttpActionResult> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int page, int size)
         {
             var response = new SuitableProfilesResponse();
 
             startDate = startDate == DateTime.MinValue ? DateTime.UtcNow.AddDays(-7) : startDate.ToUniversalTime();
             endDate = endDate == DateTime.MinValue ? DateTime.UtcNow : endDate.ToUniversalTime();
 
+            var accountId = Identity.ToAccountID();
             var suitableProfilesVM = await suitableProfileService.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
             response.SuitableProfilesViewModel = suitableProfilesVM;
             response.CountCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -60,9 +65,16 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new SuitableProfilesResponse();
 
-            await suitableProfileService.InsertSuitableProfilesAsync(request.SuitableProfilesViewModel);
+            var accountId = Identity.ToAccountID();
+            foreach (var suitableProfile in request.SuitableProfilesViewModel)
+            {
+                suitableProfile.AccountID = accountId;
+            }
 
-            return JsonSuccess(response);
+            await suitableProfileService.InsertSuitableProfilesAsync(request.SuitableProfilesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
     }
 }

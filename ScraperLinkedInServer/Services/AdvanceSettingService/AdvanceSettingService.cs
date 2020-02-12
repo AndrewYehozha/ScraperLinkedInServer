@@ -11,18 +11,18 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
 {
     public class AdvanceSettingService : IAdvanceSettingService
     {
-        private readonly IAdvanceSettingRepository advanceSettingRepository;
+        private readonly IAdvanceSettingRepository _advanceSettingRepository;
 
         public AdvanceSettingService(
             IAdvanceSettingRepository advanceSettingRepository
         )
         {
-            this.advanceSettingRepository = advanceSettingRepository;
+            _advanceSettingRepository = advanceSettingRepository;
         }
 
         public async Task<AdvanceSettingViewModel> GetAdvanceSettingByAccountId(int accountId)
         {
-            var advenceSettingDb = await advanceSettingRepository.GetAdvanceSettingByAccountId(accountId);
+            var advenceSettingDb = await _advanceSettingRepository.GetAdvanceSettingByAccountId(accountId);
             return Mapper.Instance.Map<AdvanceSetting, AdvanceSettingViewModel>(advenceSettingDb);
         }
 
@@ -38,13 +38,13 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
                 AccountId = accountId
             };
 
-            await advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
+            await _advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
         }
 
         public async Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSettingVM)
         {
             var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingViewModel, AdvanceSetting>(advanceSettingVM);
-            await advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
+            await _advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
         }
     }
 }

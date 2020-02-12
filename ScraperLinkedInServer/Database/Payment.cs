@@ -12,18 +12,16 @@ namespace ScraperLinkedInServer.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class Setting
+    public partial class Payment
     {
         public int Id { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Token { get; set; }
-        public string TechnologiesSearch { get; set; }
-        public string RolesSearch { get; set; }
-        public int ScraperStatusID { get; set; }
-        public Nullable<int> AccountId { get; set; }
+        public System.Guid Guide { get; set; }
+        public int Validity { get; set; }
+        public System.DateTime CreateOn { get; set; }
+        public Nullable<System.DateTime> UpdateOn { get; set; }
+        public int AccountId { get; set; }
+        public Nullable<System.DateTime> PaymentOn { get; set; }
     
         public virtual Account Account { get; set; }
-        public virtual ScraperStatus ScraperStatus { get; set; }
     }
 }

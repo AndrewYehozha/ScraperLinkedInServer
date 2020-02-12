@@ -23,5 +23,6 @@ namespace ScraperLinkedInServer.Database
         public int AccountId { get; set; }
     
         public virtual IntervalType IntervalType1 { get; set; }
+        public virtual Account Account { get; set; }
     }
 }

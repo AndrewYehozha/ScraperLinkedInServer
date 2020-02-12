@@ -10,18 +10,18 @@ namespace ScraperLinkedInServer.Services.SettingService
 {
     public class SettingService : ISettingService
     {
-        private readonly ISettingRepository settingRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public SettingService(
             ISettingRepository settingRepository
         )
         {
-            this.settingRepository = settingRepository;
+            _settingRepository = settingRepository;
         }
 
         public async Task<SettingViewModel> GetSettingByAccountIdAsync(int accountId)
         {
-            var settingDb = await settingRepository.GetSettingByAccountIdAsync(accountId);
+            var settingDb = await _settingRepository.GetSettingByAccountIdAsync(accountId);
             return Mapper.Instance.Map<Setting, SettingViewModel>(settingDb);
         }
 
@@ -38,13 +38,13 @@ namespace ScraperLinkedInServer.Services.SettingService
                 AccountId = accountId
             };
 
-            await settingRepository.InsertSettingAsync(defaultSetting);
+            await _settingRepository.InsertSettingAsync(defaultSetting);
         }
 
         public async Task UpdateSettingAsync(SettingViewModel settingVM)
         {
             var settingDb = Mapper.Instance.Map<SettingViewModel, Setting>(settingVM);
-            await settingRepository.UpdateSettingAsync(settingDb);
+            await _settingRepository.UpdateSettingAsync(settingDb);
         }
     }
 }

@@ -36,6 +36,10 @@ using ScraperLinkedInServer.Services.ProfileService.Interfaces;
 using ScraperLinkedInServer.Services.ProfileService;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService;
+using ScraperLinkedInServer.Services.PaymentService.Interfaces;
+using ScraperLinkedInServer.Services.PaymentService;
+using ScraperLinkedInServer.Repositories.PaymentRepository;
+using ScraperLinkedInServer.Repositories.PaymentRepository.Interfaces;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: ApplicationShutdownMethod(typeof(NinjectWebCommon), "Stop")]
@@ -97,6 +101,7 @@ namespace ScraperLinkedInServer.App_Start
             kernel.Bind<IProfileService>().To<ProfileService>();
             kernel.Bind<ISettingService>().To<SettingService>();
             kernel.Bind<ISuitableProfileService>().To<SuitableProfileService>();
+            kernel.Bind<IPaymentService>().To<PaymentService>();
 
             //Bind repositories
             kernel.Bind<IAccountRepository>().To<AccountRepository>();
@@ -106,6 +111,7 @@ namespace ScraperLinkedInServer.App_Start
             kernel.Bind<IProfileRepository>().To<ProfileRepository>();
             kernel.Bind<ISettingRepository>().To<SettingRepository>();
             kernel.Bind<ISuitableProfileRepository>().To<SuitableProfileRepository>();
+            kernel.Bind<IPaymentRepository>().To<PaymentRepository>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(kernel);
         }

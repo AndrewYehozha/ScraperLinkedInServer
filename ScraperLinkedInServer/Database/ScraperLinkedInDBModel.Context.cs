@@ -36,5 +36,6 @@ namespace ScraperLinkedInServer.Database
         public virtual DbSet<ScraperStatus> ScraperStatuses { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SuitableProfile> SuitableProfiles { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
     }
 }

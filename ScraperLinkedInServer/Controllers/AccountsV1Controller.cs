@@ -5,7 +5,7 @@ using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Services.AccountService.Interfaces;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -27,14 +27,19 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignIn(AuthorizationRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return JsonError(new AuthorizationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
-            }
+            var response = await accountService.Authorization(request);
 
-            var result = await accountService.Authorization(request);
+            return Ok(response);
+        }
 
-            return JsonSuccess(result);
+        [HttpPost]
+        [Route("windows-service/signin")]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> WindowsServiceSignIn(AuthorizationWindowsServiceRequest request)
+        {
+            var result = await accountService.WindowsServiceAuthorization(request);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -42,45 +47,39 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignUp(RegistrationRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return JsonError(new RegistrationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
-            }
+            var response = new RegistrationResponse();
 
             var isExistAccount = await accountService.IsExistAccount(request.Email);
             if (isExistAccount)
             {
-                return JsonError(new RegistrationResponse { Message = "Account is already registered" });
+                response.ErrorMessage = "Account is already registered";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            }
+            else {
+                var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
+                accountVM = await accountService.InsertAccountAsync(accountVM);
+                var token = TokenManager.GenerateToken(accountVM);
+
+                response.Account = accountVM;
+                response.Token = token;
+                response.StatusCode = (int)HttpStatusCode.OK;
             }
 
-            var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
-            accountVM = await accountService.InsertAccountAsync(accountVM);
-            var token = TokenManager.GenerateToken(accountVM);
-
-            return JsonSuccess(new RegistrationResponse
-            {
-                Account = accountVM,
-                Token = token
-            });
+            return Ok(response);
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetAccountByIdAsync(int id)
+        public async Task<IHttpActionResult> GetAccountByIdAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            if (id != accountId)
-            {
-                response.Message = "Not permissions";
-                return JsonError(response);
-            }
+            response = await accountService.GetAccountByIdAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            response = await accountService.GetAccountByIdAsync(id);
-
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -88,29 +87,39 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize]
         public async Task<IHttpActionResult> UpdateAccountAsync(AccountRequest request)
         {
-            var response = await accountService.UpdateAccountAsync(request.AccountViewModel);
+            var response = new AccountResponse();
 
-            return JsonSuccess(response);
+            var accountId = Identity.ToAccountID();
+            if (request.AccountViewModel.Id != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                response = await accountService.UpdateAccountAsync(request.AccountViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
+
+            return Ok(response);
         }
 
         [HttpDelete]
-        [Route("account-management/{id}")]
+        [Route("account-management")]
         [Authorize]
-        public async Task<IHttpActionResult> DeleteAccountAsync(int id)
+        public async Task<IHttpActionResult> DeleteAccountAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            if (id != accountId)
-            {
-                response.Message = "Not permissions";
-                return JsonError(response);
-            }
+            await accountService.DeleteAccountAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            await accountService.DeleteAccountAsync(id);
-
-            return JsonSuccess(response);
+            return Ok(response);
         }
+
+
+        //Admin functionality
 
         [HttpPut]
         [Route("account-management/role")]
@@ -120,8 +129,9 @@ namespace ScraperLinkedInServer.Controllers
             var response = new AccountResponse();
 
             await accountService.ChangeAccountRoleAsync(request);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -132,8 +142,9 @@ namespace ScraperLinkedInServer.Controllers
             var response = new AccountResponse();
 
             await accountService.ChangeAccountBlockAsync(request);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

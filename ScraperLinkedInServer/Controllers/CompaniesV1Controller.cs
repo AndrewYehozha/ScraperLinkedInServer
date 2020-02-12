@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -31,8 +32,9 @@ namespace ScraperLinkedInServer.Controllers
             var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
             response.CompaniesViewModel = companiesVM;
             response.CountCompaniesInProcess = countCompaniesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -43,10 +45,11 @@ namespace ScraperLinkedInServer.Controllers
             var response = new CompaniesResponse();
 
             var accountId = Identity.ToAccountID();
-            var companiesVM = await companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId);
+            var companiesVM = await companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId, companyBatchSize);
             response.CompaniesViewModel = companiesVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -59,8 +62,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
             response.CountCompaniesInProcess = countCompaniesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -70,9 +74,13 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new CompanyResponse();
 
-            await companyService.InsertCompanyAsync(request.CompanyViewModel);
+            var accountId = Identity.ToAccountID();
+            request.CompanyViewModel.AccountId = accountId;
 
-            return JsonSuccess(response);
+            await companyService.InsertCompanyAsync(request.CompanyViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -82,9 +90,17 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new CompaniesResponse();
 
-            await companyService.InsertCompaniesAsync(request.CompaniesViewModel);
+            var accountId = Identity.ToAccountID();
+            foreach (var company in request.CompaniesViewModel)
+            {
+                company.AccountId = accountId;
+                company.ExecutionStatusID = (int)ExecutionStatuses.Created;
+            }
 
-            return JsonSuccess(response);
+            await companyService.InsertCompaniesAsync(request.CompaniesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
 
         [HttpPut]
@@ -94,9 +110,19 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new CompanyResponse();
 
-            await companyService.UpdateCompanyAsync(request.CompanyViewModel);
+            var accountId = Identity.ToAccountID();
+            if (request.CompanyViewModel.AccountId != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                await companyService.UpdateCompanyAsync(request.CompanyViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -107,8 +133,9 @@ namespace ScraperLinkedInServer.Controllers
             var response = new CompaniesResponse();
 
             await companyService.UpdateCompaniesAsync(request.CompaniesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

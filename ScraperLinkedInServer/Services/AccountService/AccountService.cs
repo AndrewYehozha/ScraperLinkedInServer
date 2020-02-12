@@ -12,34 +12,38 @@ using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models;
+using ScraperLinkedInServer.Services.PaymentService.Interfaces;
+using System.Net;
 
 namespace ScraperLinkedInServer.Services.AccountService
 {
     public class AccountService : IAccountService
     {
-        ISettingService settingService;
-        IAdvanceSettingService advanceSettingService;
+        private readonly ISettingService _settingService;
+        private readonly IAdvanceSettingService _advanceSettingService;
+        private readonly IPaymentService _paymentService;
 
-        IAccountRepository accountRepository;
+        private readonly IAccountRepository _accountRepository;
 
         public AccountService(
             ISettingService settingService,
             IAdvanceSettingService advanceSettingService,
-            IAccountRepository accountRepository
-        )
+            IAccountRepository accountRepository,
+            IPaymentService paymentService)
         {
-            this.settingService = settingService;
-            this.advanceSettingService = advanceSettingService;
+            _settingService = settingService;
+            _advanceSettingService = advanceSettingService;
+            _paymentService = paymentService;
 
-            this.accountRepository = accountRepository;
+            _accountRepository = accountRepository;
         }
 
         public async Task<AccountResponse> GetAccountByIdAsync(int id)
         {
             var response = new AccountResponse();
-            var accountDb = await accountRepository.GetAccountByIdAsync(id);
+            var accountDb = await _accountRepository.GetAccountByIdAsync(id);
 
-            response.Message = accountDb.IsValid();
+            response.ErrorMessage = accountDb.IsValid();
             response.AccountViewModel = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
             response.AccountViewModel.Password = string.Empty;
 
@@ -48,29 +52,60 @@ namespace ScraperLinkedInServer.Services.AccountService
 
         public async Task<AuthorizationResponse> Authorization(AuthorizationRequest request)
         {
-            var account = await accountRepository.GetAccountByEmailAsync(request.Email);
-
+            var response = new AuthorizationResponse();
+            var account = await _accountRepository.GetAccountByEmailAsync(request.Email);
+            
             var message = account.IsValid();
             if (!string.IsNullOrEmpty(message))
             {
-                return new AuthorizationResponse { Message = message };
+                response.ErrorMessage = message;
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
             }
 
             var isCorrectPassword = CheckAccountCorrectPassword(request.Password, account.Password);
             if (!isCorrectPassword)
             {
-                return new AuthorizationResponse { Message = "Incorrect password" };
+                response.ErrorMessage = "Incorrect password";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
             }
 
             var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
             var token = TokenManager.GenerateToken(accountVM);
 
-            return new AuthorizationResponse { Account = accountVM, Token = token };
+            response.Account = accountVM;
+            response.Token = token;
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return response;
+        }
+
+        public async Task<AuthorizationWindowsServiceResponse> WindowsServiceAuthorization(AuthorizationWindowsServiceRequest request)
+        {
+            var response = new AuthorizationWindowsServiceResponse();
+            var payment = await _paymentService.GetPaymentByGuideAsync(request.Guid);
+
+            if (payment == null)
+            {
+                response.ErrorMessage = $"Incorrect guid";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
+            }
+
+            var account = await _accountRepository.GetAccountByIdAsync(payment.AccountId);
+            var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
+            accountVM.Role = Roles.WindowsService;
+
+            response.Token = TokenManager.GenerateToken(accountVM);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return response;
         }
 
         public async Task<bool> IsExistAccount(string email)
         {
-            return await accountRepository.GetAccountByEmailAsync(email) != null;
+            return await _accountRepository.GetAccountByEmailAsync(email) != null;
         }
 
         public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM)
@@ -79,9 +114,9 @@ namespace ScraperLinkedInServer.Services.AccountService
             accountDb.Password = HashPassword(accountDb.Password);
             accountDb.Role = Roles.User;
 
-            accountDb = await accountRepository.InsertAccountAsync(accountDb);
-            await settingService.InsertDefaultSettingAsync(accountDb.Id);
-            await advanceSettingService.InsertDefaultAdvanceSettingAsync(accountDb.Id);
+            accountDb = await _accountRepository.InsertAccountAsync(accountDb);
+            await _settingService.InsertDefaultSettingAsync(accountDb.Id);
+            await _advanceSettingService.InsertDefaultAdvanceSettingAsync(accountDb.Id);
 
             var accountResponse = Mapper.Instance.Map<Account, AccountViewModel>(accountDb);
             accountResponse.Password = string.Empty;
@@ -94,15 +129,17 @@ namespace ScraperLinkedInServer.Services.AccountService
             var response = new AccountResponse();
             var account = Mapper.Instance.Map<AccountViewModel, Account>(accountVM);
 
-            var accountDb = await accountRepository.GetAccountByIdAsync(accountVM.Id);
+            var accountDb = await _accountRepository.GetAccountByIdAsync(accountVM.Id);
             var message = accountDb.IsValid();
             if (!string.IsNullOrEmpty(message))
             {
-                response.Message = message;
+                response.ErrorMessage = message;
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
             else
             {
-                await accountRepository.UpdateAccountAsync(account);
+                await _accountRepository.UpdateAccountAsync(account);
+                response.StatusCode = (int)HttpStatusCode.OK;
             }
 
             return response;
@@ -110,17 +147,17 @@ namespace ScraperLinkedInServer.Services.AccountService
 
         public async Task ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
-            await accountRepository.ChangeAccountRoleAsync(request.AccountId, request.Role);
+            await _accountRepository.ChangeAccountRoleAsync(request.AccountId, request.Role);
         }
 
         public async Task ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {
-            await accountRepository.ChangeAccountBlockAsync(request.AccountId, request.IsBlocked);
+            await _accountRepository.ChangeAccountBlockAsync(request.AccountId, request.IsBlocked);
         }
 
         public async Task DeleteAccountAsync(int accountId)
         {
-            await accountRepository.DeleteAccountAsync(accountId);
+            await _accountRepository.DeleteAccountAsync(accountId);
         }
 
         public bool CheckAccountCorrectPassword(string enteredPassword, string hashAccountPassword)

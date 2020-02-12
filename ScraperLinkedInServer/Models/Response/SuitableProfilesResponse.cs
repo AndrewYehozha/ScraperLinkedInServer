@@ -1,15 +1,17 @@
 ﻿using ScraperLinkedInServer.Models.Entities;
-using ScraperLinkedInServer.Models.Request;
+using System.Collections.Generic;
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class SuitableProfileResponse
+    public class SuitableProfileResponse : BaseResponse
     {
         public SuitableProfileViewModel SuitableProfileViewModel { get; set; }
     }
 
-    public class SuitableProfilesResponse : SuitableProfilesRequest
+    public class SuitableProfilesResponse : BaseResponse
     {
+        public IEnumerable<SuitableProfileViewModel> SuitableProfilesViewModel { get; set; }
+
         public int CountCompaniesInProcess { get; set; }
     }
 }
