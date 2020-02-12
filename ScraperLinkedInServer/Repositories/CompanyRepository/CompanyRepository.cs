@@ -24,7 +24,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
             }
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId)
+        public async Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId, int companyBatchSize)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -39,6 +39,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                 await db.SaveChangesAsync();
 
                 return await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)ExecutionStatuses.Success) && x.Profiles.Any(y => (y.ProfileStatusID == (int)ProfileStatuses.Developer) && (y.ExecutionStatusID != (int)ExecutionStatuses.Success)))
+                                         .Take(companyBatchSize)
                                          .ToListAsync();
             }
         }
@@ -65,11 +66,18 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
+                var addedCompaniesUrl = db.Companies.Where(x => (x.LinkedInURL != null && x.LinkedInURL.Trim() != "")).Select(x => x.LinkedInURL);
+                companies = companies.Where(x => !addedCompaniesUrl.Contains(x.LinkedInURL));
+
                 foreach (var company in companies)
                 {
+                    company.Founders = company.Founders ?? "";
+                    company.Website = company.Website ?? "";
+
                     db.Companies.Add(company);
                 }
 
+                db.SaveChanges();
                 await db.SaveChangesAsync();
             }
         }

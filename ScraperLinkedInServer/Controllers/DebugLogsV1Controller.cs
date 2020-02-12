@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.DebugLogService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -29,8 +30,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var debugLogsVM = await debugLogService.GetDebugLogsAsync(accountId, batchSize);
             response.DebugLogsViewModel = debugLogsVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -43,8 +45,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var debugLogsVM = await debugLogService.GetNewDebugLogsAsync(accountId, lastDebugLogId, size);
             response.DebugLogsViewModel = debugLogsVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -54,9 +57,12 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new DebugLogsResponse();
 
+            var accountId = Identity.ToAccountID();
+            request.DebugLogViewModel.AccountId = accountId;
             await debugLogService.InsertDebugLogAsync(request.DebugLogViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -66,9 +72,15 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new DebugLogsResponse();
 
+            var accountId = Identity.ToAccountID();
+            foreach (var debugLog in request.DebugLogsViewModel)
+            {
+                debugLog.AccountId = accountId;
+            }
             await debugLogService.InsertDebugLogsAsync(request.DebugLogsViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

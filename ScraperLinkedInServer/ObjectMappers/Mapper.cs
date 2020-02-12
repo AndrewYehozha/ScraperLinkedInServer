@@ -56,6 +56,9 @@ namespace ScraperLinkedInServer.ObjectMappers
 
                         cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>();
                         cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>();
+
+                        cfg.CreateMap<PaymentViewModel, Payment>();
+                        cfg.CreateMap<Payment, PaymentViewModel>();
                     });
                     _instance = config.CreateMapper();
                 }

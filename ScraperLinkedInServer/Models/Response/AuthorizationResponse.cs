@@ -2,10 +2,14 @@
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class AuthorizationResponse
+    public class AuthorizationResponse : BaseResponse
     {
         public AccountViewModel Account { get; set; }
         public string Token { get; set; }
-        public string Message { get; set; }
+    }
+
+    public class AuthorizationWindowsServiceResponse : BaseResponse
+    {
+        public string Token { get; set; }
     }
 }

@@ -415,6 +415,9 @@
     <Compile Include="Database\IntervalType.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\Payment.cs">
+      <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\Profile.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
@@ -451,8 +454,10 @@
     <Compile Include="Models\Entities\CompanyProfilesViewModel.cs" />
     <Compile Include="Models\Entities\CompanyViewModel.cs" />
     <Compile Include="Models\Entities\DebugLogViewModel.cs" />
+    <Compile Include="Models\Entities\PaymentViewModel.cs" />
     <Compile Include="Models\Entities\ProfileViewModel.cs" />
     <Compile Include="Models\Entities\SettingViewModel.cs" />
+    <Compile Include="Models\Entities\SuitableProfileViewModel.cs" />
     <Compile Include="Models\Request\AccountRequest.cs" />
     <Compile Include="Models\Request\AdvanceSettingRequest.cs" />
     <Compile Include="Models\Request\CompanyRequest.cs" />
@@ -464,6 +469,7 @@
     <Compile Include="Models\Response\AccountResponse.cs" />
     <Compile Include="Models\Response\AdvanceSettingResponse.cs" />
     <Compile Include="Models\Response\AuthorizationResponse.cs" />
+    <Compile Include="Models\Response\BaseResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />
     <Compile Include="Models\Response\DebugLogsResponse.cs" />
     <Compile Include="Models\Response\ProfilesResponse.cs" />
@@ -485,6 +491,8 @@
     <Compile Include="Repositories\CompanyRepository\Interfaces\ICompanyRepository.cs" />
     <Compile Include="Repositories\DebugLogRepository\DebugLogRepository.cs" />
     <Compile Include="Repositories\DebugLogRepository\Interfaces\IDebugLogRepository.cs" />
+    <Compile Include="Repositories\PaymentRepository\Interfaces\IPaymentRepository.cs" />
+    <Compile Include="Repositories\PaymentRepository\PaymentRepository.cs" />
     <Compile Include="Repositories\ProfileRepository\Interfaces\IProfileRepository.cs" />
     <Compile Include="Repositories\ProfileRepository\ProfileRepository.cs" />
     <Compile Include="Repositories\SettingRepository\Interfaces\ISettingRepository.cs" />
@@ -506,6 +514,8 @@
     <Compile Include="Services\CompanyService\Interfaces\ICompanyService.cs" />
     <Compile Include="Services\DebugLogService\DebugLogService.cs" />
     <Compile Include="Services\DebugLogService\Interfaces\IDebugLogService.cs" />
+    <Compile Include="Services\PaymentService\Interfaces\IPaymentService.cs" />
+    <Compile Include="Services\PaymentService\PaymentService.cs" />
     <Compile Include="Services\ProfileService\Interfaces\IProfileService.cs" />
     <Compile Include="Services\ProfileService\ProfileService.cs" />
     <Compile Include="Services\SettingService\Interfaces\ISettingService.cs" />

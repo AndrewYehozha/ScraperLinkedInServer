@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.ProfileService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -22,15 +23,16 @@ namespace ScraperLinkedInServer.Controllers
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetProfileByIdAsync(int id)
+        public async Task<IHttpActionResult> GetProfileAsync(int id)
         {
             var response = new ProfileResponse();
 
             var accountId = Identity.ToAccountID();
             var profile = await profileService.GetProfileByIdAsync(id, accountId);
             response.ProfileViewModel = profile;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -47,8 +49,9 @@ namespace ScraperLinkedInServer.Controllers
             response.ProfilesViewModel = profiles;
             response.CountProfilesInProcess = countProfilesInProcess;
             response.CountNewProfiles = countNewProfiles;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -61,8 +64,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var countProfilesInProcess = await profileService.GetCountProfilesInProcessAsync(accountId);
             response.CountProfilesInProcess = countProfilesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -75,8 +79,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var countNewProfiles = await profileService.GetCountNewProfilesAsync(accountId);
             response.CountNewProfiles = countNewProfiles;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -86,9 +91,10 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new ProfilesResponse();
 
-            await profileService.InsertProfilesAsync(request.ProfilesViewModel); ;
+            await profileService.InsertProfilesAsync(request.ProfilesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -99,8 +105,9 @@ namespace ScraperLinkedInServer.Controllers
             var response = new ProfilesResponse();
 
             await profileService.UpdateProfilesAsync(request.ProfilesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

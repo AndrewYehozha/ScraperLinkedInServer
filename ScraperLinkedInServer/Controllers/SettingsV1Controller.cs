@@ -2,6 +2,7 @@
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Services.SettingService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -21,14 +22,15 @@ namespace ScraperLinkedInServer.Controllers
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<IHttpActionResult> GetSettingByAccountIdAsync()
+        public async Task<IHttpActionResult> GetSettingAsync()
         {
             var response = new SettingResponse();
 
             var accountId = Identity.ToAccountID();
             response.SettingViewModel = await settingService.GetSettingByAccountIdAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -38,9 +40,19 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new AdvanceSettingResponse();
 
-            await settingService.UpdateSettingAsync(request.SettingViewModel);
+            var accountId = Identity.ToAccountID();
+            if (request.SettingViewModel.AccountId != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                await settingService.UpdateSettingAsync(request.SettingViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

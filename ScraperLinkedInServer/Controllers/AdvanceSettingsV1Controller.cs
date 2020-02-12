@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Extensions;
+using System.Net;
 
 namespace ScraperLinkedInServer.Controllers
 {
@@ -28,8 +29,9 @@ namespace ScraperLinkedInServer.Controllers
             var accountId = Identity.ToAccountID();
             var advanceSettingVM = await advanceSettingService.GetAdvanceSettingByAccountId(accountId);
             response.AdvanceSettingViewModel = advanceSettingVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -39,9 +41,19 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new AdvanceSettingResponse();
 
-            await advanceSettingService.UpdateAdvanceSettingAsync(request.AdvanceSettingViewModel);
+            var accountId = Identity.ToAccountID();
+            if (request.AdvanceSettingViewModel.AccountId != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                await advanceSettingService.UpdateAdvanceSettingAsync(request.AdvanceSettingViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }
