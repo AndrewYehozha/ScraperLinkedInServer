@@ -1,6 +1,6 @@
 ﻿namespace ScraperLinkedInServer.Models.Types
 {
-    public enum ProfileStatuses : byte
+    public enum ProfileStatus : byte
     {
         Undefined = 0,
         Developer = 1,

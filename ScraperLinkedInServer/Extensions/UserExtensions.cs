@@ -34,6 +34,11 @@ namespace ScraperLinkedInServer.Extensions
             return GetClaimValue(identity, ClaimTypes.Role);
         }
 
+        public static string ToIsAdmin(this IIdentity identity)
+        {
+            return GetClaimValue(identity, Claims.IsAdmin);
+        }
+
         #region Get Raw Claim
         private static string GetClaimValue(IIdentity identity, string claimName)
         {

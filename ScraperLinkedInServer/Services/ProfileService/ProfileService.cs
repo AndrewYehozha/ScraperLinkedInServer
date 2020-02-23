@@ -4,6 +4,7 @@ using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.ProfileRepository.Interfaces;
 using ScraperLinkedInServer.Services.ProfileService.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,9 +26,9 @@ namespace ScraperLinkedInServer.Services.ProfileService
             return Mapper.Instance.Map<Profile, ProfileViewModel>(profileDb);
         }
 
-        public async Task<IEnumerable<ProfileViewModel>> GetProfilesForSearchAsync(int accountId, int profileBatchSize)
+        public async Task<IEnumerable<ProfileViewModel>> GetProfilesForSearchAsync(int accountId, int profilesBatchSize)
         {
-            var profilesDb = await _profileRepository.GetProfilesForSearchAsync(accountId, profileBatchSize);
+            var profilesDb = await _profileRepository.GetProfilesForSearchAsync(accountId, profilesBatchSize);
             return Mapper.Instance.Map<IEnumerable<Profile>, IEnumerable<ProfileViewModel>>(profilesDb);
         }
 
@@ -53,7 +54,7 @@ namespace ScraperLinkedInServer.Services.ProfileService
             await _profileRepository.UpdateProfilesAsync(profilesDb);
         }
 
-        public async Task UpdateProfilesExecutionStatusByCompanyIdAsync(int accountId, int companyId, ExecutionStatuses executionStatus)
+        public async Task UpdateProfilesExecutionStatusByCompanyIdAsync(int accountId, int companyId, Models.Types.ExecutionStatus executionStatus)
         {
             await _profileRepository.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, executionStatus);
         }

@@ -1,5 +1,4 @@
 ﻿using ScraperLinkedInServer.Database;
-using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,13 +13,13 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var companiesDb = db.Companies.Where(x => x.AccountId == accountId && !string.IsNullOrEmpty(x.LinkedInURL.Trim()) && !string.IsNullOrEmpty(x.Website.Trim()) && (x.ExecutionStatusID == (int)ExecutionStatuses.Created || x.ExecutionStatusID == (int)ExecutionStatuses.Queued))
+                var companiesDb = db.Companies.Where(x => x.AccountId == accountId && !string.IsNullOrEmpty(x.LinkedInURL.Trim()) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Created || x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued))
                                               .Take(companyBatchSize);
 
-                companiesDb.ToList().ForEach(x => x.ExecutionStatusID = (int)ExecutionStatuses.Queued);
+                Enumerable.ToList(companiesDb).ForEach(x => x.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Queued);
                 await db.SaveChangesAsync();
 
-                return companiesDb;
+                return await companiesDb.ToListAsync();
             }
         }
 
@@ -28,17 +27,17 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var lastProcessedCompanyId = db.Profiles.Where(x => x.Company.AccountId == accountId && (x.ExecutionStatusID == (int)ExecutionStatuses.Queued) && (x.ProfileStatusID != (int)ProfileStatuses.Undefined))
+                var lastProcessedCompanyId = db.Profiles.Where(x => x.Company.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued) && (x.ProfileStatusID != (int)Models.Types.ProfileStatus.Undefined))
                                                         .OrderByDescending(d => d.Id)
                                                         .Select(x => x.CompanyID)
                                                         .FirstOrDefault();
 
-                var unsuitableCompanies = await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)ExecutionStatuses.Success) && x.Profiles.Any(y => (y.ExecutionStatusID != (int)ExecutionStatuses.Success)) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)ProfileStatuses.Developer)))
+                var unsuitableCompanies = await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any(y => (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Developer)))
                                                       .ToListAsync();
-                unsuitableCompanies.ForEach(x => x.Profiles.ToList().ForEach(y => y.ExecutionStatusID = (int)ExecutionStatuses.Success));
+                unsuitableCompanies.ForEach(x => x.Profiles.ToList().ForEach(y => y.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Success));
                 await db.SaveChangesAsync();
 
-                return await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)ExecutionStatuses.Success) && x.Profiles.Any(y => (y.ProfileStatusID == (int)ProfileStatuses.Developer) && (y.ExecutionStatusID != (int)ExecutionStatuses.Success)))
+                return await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Developer) && (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)))
                                          .Take(companyBatchSize)
                                          .ToListAsync();
             }
@@ -48,7 +47,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                return await db.Companies.Where(x => x.AccountId == accountId && ((x.ExecutionStatusID == (int)ExecutionStatuses.Created) || (x.ExecutionStatusID == (int)ExecutionStatuses.Queued)))
+                return await db.Companies.Where(x => x.AccountId == accountId && ((x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Created) || (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued)))
                                          .CountAsync();
             }
         }
@@ -110,6 +109,21 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                 }
 
                 await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateLastPageCompanyAsync(int accountId, int companyId, int lastScrapedPage)
+        {
+
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var companyDB = await db.Companies.Where(x => x.AccountId == accountId && x.Id == companyId).FirstOrDefaultAsync();
+                if (companyDB != null)
+                {
+                    companyDB.LastScrapedPage = lastScrapedPage;
+
+                    await db.SaveChangesAsync();
+                }
             }
         }
     }

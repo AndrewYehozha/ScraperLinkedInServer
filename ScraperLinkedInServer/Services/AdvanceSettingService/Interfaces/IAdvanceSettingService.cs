@@ -6,10 +6,10 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService.Interfaces
 {
     public interface IAdvanceSettingService
     {
-        Task<AdvanceSettingViewModel> GetAdvanceSettingByAccountId(int accountId);
+        Task<AdvanceSettingsViewModel> GetAdvanceSettingByAccountId(int accountId);
 
         Task InsertDefaultAdvanceSettingAsync(int accountId);
 
-        Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSettingVM);
+        Task UpdateAdvanceSettingAsync(AdvanceSettingsViewModel advanceSettingVM);
     }
 }

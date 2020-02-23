@@ -2,7 +2,7 @@
 using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Request;
-using ScraperLinkedInServer.Models.Types;
+using Profile = ScraperLinkedInServer.Database.Profile;
 
 namespace ScraperLinkedInServer.ObjectMappers
 {
@@ -28,34 +28,49 @@ namespace ScraperLinkedInServer.ObjectMappers
                         cfg.CreateMap<AccountViewModel, Account>();
 
 
-                        cfg.CreateMap<SettingViewModel, Setting>()
-                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
-                        cfg.CreateMap<Setting, SettingViewModel>()
-                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatusID));
-
-
-                        cfg.CreateMap<AdvanceSettingViewModel, AdvanceSetting>()
+                        cfg.CreateMap<AdvanceSettingsViewModel, AdvanceSetting>()
                            .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (int)ce.IntervalType));
-                        cfg.CreateMap<AdvanceSetting, AdvanceSettingViewModel>()
-                           .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (IntervalTypesSettings)ce.IntervalType));
+                        cfg.CreateMap<AdvanceSetting, AdvanceSettingsViewModel>()
+                           .ForMember(c => c.IntervalType, opt => opt.MapFrom(ce => (Models.Types.IntervalType)ce.IntervalType));
 
 
-                        cfg.CreateMap<CompanyViewModel, Company>();
-                        cfg.CreateMap<Company, CompanyViewModel>();
+                        cfg.CreateMap<CompanyViewModel, Company>()
+                           .ForMember(c => c.ExecutionStatusID, opt => opt.MapFrom(ce => (int)ce.ExecutionStatus))
+                           .ForMember(c => c.Account, opt => opt.Ignore())
+                           .ForMember(c => c.Profiles, opt => opt.Ignore())
+                           .ForMember(c => c.SuitableProfiles, opt => opt.Ignore())
+                           .ForMember(c => c.ExecutionStatus, opt => opt.Ignore());
+                        cfg.CreateMap<Company, CompanyViewModel>()
+                           .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID));
 
 
                         cfg.CreateMap<DebugLogViewModel, DebugLog>();
                         cfg.CreateMap<DebugLog, DebugLogViewModel>();
 
 
-                        cfg.CreateMap<SettingViewModel, Setting>()
+                        cfg.CreateMap<ProfileViewModel, Profile>()
+                           .ForMember(c => c.ExecutionStatusID, opt => opt.MapFrom(ce => (int)ce.ExecutionStatus))
+                           .ForMember(c => c.ProfileStatusID, opt => opt.MapFrom(ce => (int)ce.ProfileStatus))
+                           .ForMember(c => c.Account, opt => opt.Ignore())
+                           .ForMember(c => c.ExecutionStatus, opt => opt.Ignore())
+                           .ForMember(c => c.ProfileStatus, opt => opt.Ignore())
+                           .ForMember(c => c.SuitableProfiles, opt => opt.Ignore());
+
+                        cfg.CreateMap<Profile, ProfileViewModel>()
+                           .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
+                           .ForMember(c => c.ProfileStatus, opt => opt.MapFrom(ce => (Models.Types.ProfileStatus)ce.ProfileStatusID))
+                           .ForMember(c => c.OrganizationName, opt => opt.MapFrom(ce => ce.Company.OrganizationName));
+
+
+                        cfg.CreateMap<SettingsViewModel, Setting>()
                            .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
-                        cfg.CreateMap<Setting, SettingViewModel>()
-                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (ScraperStatuses)ce.ScraperStatusID));
+                        cfg.CreateMap<Setting, SettingsViewModel>()
+                           .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (Models.Types.ScraperStatus)ce.ScraperStatusID));
 
 
                         cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>();
                         cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>();
+
 
                         cfg.CreateMap<PaymentViewModel, Payment>();
                         cfg.CreateMap<Payment, PaymentViewModel>();

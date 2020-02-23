@@ -52,6 +52,7 @@
           <Property Name="AmountEmployees" Type="nvarchar" MaxLength="50" />
           <Property Name="Industry" Type="nvarchar(max)" />
           <Property Name="AccountId" Type="int" Nullable="false" />
+          <Property Name="LastScrapedPage" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="DebugLogs">
           <Key>
@@ -496,6 +497,7 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="Companies" ToRole="ExecutionStatuses" />
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Companies" FromRole="Companies" ToRole="Profiles" />
           <NavigationProperty Name="SuitableProfiles" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="Company" ToRole="SuitableProfile" />
+          <Property Name="LastScrapedPage" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="DebugLog">
           <Key>
@@ -919,6 +921,7 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Company">
               <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="LastScrapedPage" ColumnName="LastScrapedPage" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
                 <ScalarProperty Name="OrganizationURL" ColumnName="OrganizationURL" />

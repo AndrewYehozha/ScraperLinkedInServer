@@ -14,12 +14,12 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/accounts")]
     public class AccountsV1Controller : ScraperLinkedInApiController
     {
-        private readonly IAccountService accountService;
+        private readonly IAccountService _accountService;
 
         public AccountsV1Controller(
             IAccountService accountService)
         {
-            this.accountService = accountService;
+            _accountService = accountService;
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignIn(AuthorizationRequest request)
         {
-            var response = await accountService.Authorization(request);
+            var response = await _accountService.Authorization(request);
 
             return Ok(response);
         }
@@ -37,7 +37,7 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> WindowsServiceSignIn(AuthorizationWindowsServiceRequest request)
         {
-            var result = await accountService.WindowsServiceAuthorization(request);
+            var result = await _accountService.WindowsServiceAuthorization(request);
 
             return Ok(result);
         }
@@ -49,7 +49,7 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new RegistrationResponse();
 
-            var isExistAccount = await accountService.IsExistAccount(request.Email);
+            var isExistAccount = await _accountService.IsExistAccount(request.Email);
             if (isExistAccount)
             {
                 response.ErrorMessage = "Account is already registered";
@@ -57,7 +57,7 @@ namespace ScraperLinkedInServer.Controllers
             }
             else {
                 var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
-                accountVM = await accountService.InsertAccountAsync(accountVM);
+                accountVM = await _accountService.InsertAccountAsync(accountVM);
                 var token = TokenManager.GenerateToken(accountVM);
 
                 response.Account = accountVM;
@@ -69,21 +69,21 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("account")]
         [Authorize]
         public async Task<IHttpActionResult> GetAccountByIdAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            response = await accountService.GetAccountByIdAsync(accountId);
+            response = await _accountService.GetAccountByIdAsync(accountId);
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);
         }
 
         [HttpPut]
-        [Route("account-management")]
+        [Route("account")]
         [Authorize]
         public async Task<IHttpActionResult> UpdateAccountAsync(AccountRequest request)
         {
@@ -97,7 +97,7 @@ namespace ScraperLinkedInServer.Controllers
             }
             else
             {
-                response = await accountService.UpdateAccountAsync(request.AccountViewModel);
+                response = await _accountService.UpdateAccountAsync(request.AccountViewModel);
                 response.StatusCode = (int)HttpStatusCode.OK;
             }
 
@@ -105,14 +105,14 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpDelete]
-        [Route("account-management")]
+        [Route("account")]
         [Authorize]
         public async Task<IHttpActionResult> DeleteAccountAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            await accountService.DeleteAccountAsync(accountId);
+            await _accountService.DeleteAccountAsync(accountId);
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);
@@ -122,26 +122,26 @@ namespace ScraperLinkedInServer.Controllers
         //Admin functionality
 
         [HttpPut]
-        [Route("account-management/role")]
+        [Route("account/role")]
         [Authorize(Roles = Roles.Admin)]
         public  async Task<IHttpActionResult> ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
             var response = new AccountResponse();
 
-            await accountService.ChangeAccountRoleAsync(request);
+            await _accountService.ChangeAccountRoleAsync(request);
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);
         }
 
         [HttpPut]
-        [Route("account-management/block")]
+        [Route("account/block")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IHttpActionResult> ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {
             var response = new AccountResponse();
 
-            await accountService.ChangeAccountBlockAsync(request);
+            await _accountService.ChangeAccountBlockAsync(request);
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);

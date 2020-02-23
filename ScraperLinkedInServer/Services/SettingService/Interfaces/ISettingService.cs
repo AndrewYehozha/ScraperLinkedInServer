@@ -5,10 +5,12 @@ namespace ScraperLinkedInServer.Services.SettingService.Interfaces
 {
     public interface ISettingService
     {
-        Task<SettingViewModel> GetSettingByAccountIdAsync(int accountId);
+        Task<SettingsViewModel> GetSettingByAccountIdAsync(int accountId);
 
         Task InsertDefaultSettingAsync(int accountId);
 
-        Task UpdateSettingAsync(SettingViewModel settingVM);
+        Task UpdateSettingAsync(SettingsViewModel settingVM);
+
+        Task UpdateScraperStatus(int accountId, Models.Types.ScraperStatus status);
     }
 }

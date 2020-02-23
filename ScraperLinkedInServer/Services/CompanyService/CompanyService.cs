@@ -4,6 +4,7 @@ using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ScraperLinkedInServer.Services.CompanyService
@@ -57,6 +58,11 @@ namespace ScraperLinkedInServer.Services.CompanyService
         {
             var companiesDb = Mapper.Instance.Map<IEnumerable<CompanyViewModel>, IEnumerable<Company>>(companiesVM);
             await _companyRepository.UpdateCompaniesAsync(companiesDb);
+        }
+
+        public async Task UpdateLastPageCompanyAsync(int accountId, int companyId, int lastScrapedPage)
+        {
+            await _companyRepository.UpdateLastPageCompanyAsync(accountId, companyId, lastScrapedPage);
         }
     }
 }

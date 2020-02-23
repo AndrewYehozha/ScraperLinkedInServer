@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using ScraperLinkedInServer.Models.Entities;
+using ScraperLinkedInServer.Models.Types;
 
 namespace ScraperLinkedInServer
 {
@@ -16,6 +17,7 @@ namespace ScraperLinkedInServer
                     new Claim(Claims.FirstName, account.FirstName),
                     new Claim(Claims.LastName, account.LastName),
                     new Claim(Claims.Email, account.Email),
+                    new Claim(Claims.IsAdmin, (account.Role == Roles.Admin).ToString()),
                     new Claim(ClaimTypes.Role, account.Role)
             });
             

@@ -1,6 +1,6 @@
 ﻿namespace ScraperLinkedInServer.Models.Types
 {
-    public enum ExecutionStatuses : byte
+    public enum ExecutionStatus : byte
     {
         Created = 0,
         Queued = 1,

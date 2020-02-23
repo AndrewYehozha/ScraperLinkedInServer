@@ -9,7 +9,7 @@ namespace ScraperLinkedInServer.Services.ProfileService.Interfaces
     {
         Task<ProfileViewModel> GetProfileByIdAsync(int id, int accountId);
 
-        Task<IEnumerable<ProfileViewModel>> GetProfilesForSearchAsync(int accountId, int profileBatchSize);
+        Task<IEnumerable<ProfileViewModel>> GetProfilesForSearchAsync(int accountId, int profilesBatchSize);
 
         Task<int> GetCountProfilesInProcessAsync(int accountId);
 
@@ -19,6 +19,6 @@ namespace ScraperLinkedInServer.Services.ProfileService.Interfaces
 
         Task UpdateProfilesAsync(IEnumerable<ProfileViewModel> profilesVM);
 
-        Task UpdateProfilesExecutionStatusByCompanyIdAsync(int accountId, int companyId, ExecutionStatuses executionStatus);
+        Task UpdateProfilesExecutionStatusByCompanyIdAsync(int accountId, int companyId, ExecutionStatus executionStatus);
     }
 }
