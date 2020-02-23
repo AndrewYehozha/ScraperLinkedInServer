@@ -50,7 +50,7 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
             foreach (var companyId in companiesIds)
             {
                 var accountId = suitableProfilesVM.Where(x => x.CompanyID == companyId).FirstOrDefault().AccountID;
-                await _profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, ExecutionStatuses.Success);
+                await _profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, Models.Types.ExecutionStatus.Success);
             }
         }
     }

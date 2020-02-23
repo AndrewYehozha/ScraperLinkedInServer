@@ -2,8 +2,8 @@
 
 namespace ScraperLinkedInServer.Models.Request
 {
-    public class SettingRequest
+    public class SettingsRequest
     {
-        public SettingViewModel SettingViewModel { get; set; }
+        public SettingsViewModel SettingViewModel { get; set; }
     }
 }

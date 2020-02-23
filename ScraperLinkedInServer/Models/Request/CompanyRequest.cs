@@ -12,4 +12,11 @@ namespace ScraperLinkedInServer.Models.Request
     {
         public IEnumerable<CompanyViewModel> CompaniesViewModel { get; set; }
     }
+
+    public class CompanyLastPageRequest
+    {
+        public int CompanyId { get; set; }
+
+        public int LastScrapedPage { get; set; }
+    }
 }

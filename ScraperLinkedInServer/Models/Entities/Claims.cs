@@ -9,5 +9,6 @@
         public const string Phone = "Phone";
         public const string Role = "Role";
         public const string DateOfBirthday = "DateOfBirthday";
+        public const string IsAdmin = "IsAdministrator";
     }
 }

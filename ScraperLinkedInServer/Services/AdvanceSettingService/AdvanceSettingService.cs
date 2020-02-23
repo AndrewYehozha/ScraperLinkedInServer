@@ -20,10 +20,10 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
             _advanceSettingRepository = advanceSettingRepository;
         }
 
-        public async Task<AdvanceSettingViewModel> GetAdvanceSettingByAccountId(int accountId)
+        public async Task<AdvanceSettingsViewModel> GetAdvanceSettingByAccountId(int accountId)
         {
             var advenceSettingDb = await _advanceSettingRepository.GetAdvanceSettingByAccountId(accountId);
-            return Mapper.Instance.Map<AdvanceSetting, AdvanceSettingViewModel>(advenceSettingDb);
+            return Mapper.Instance.Map<AdvanceSetting, AdvanceSettingsViewModel>(advenceSettingDb);
         }
 
         public async Task InsertDefaultAdvanceSettingAsync(int accountId)
@@ -31,7 +31,7 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
             var defaultAdvanceSetting = new AdvanceSetting
             {
                 TimeStart = new TimeSpan(0, 1, 0),
-                IntervalType = (int)IntervalTypesSettings.Days,
+                IntervalType = (int)Models.Types.IntervalType.Day,
                 IntervalValue = 1,
                 CompanyBatchSize = 2,
                 ProfileBatchSize = 50,
@@ -41,9 +41,9 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
             await _advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
         }
 
-        public async Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSettingVM)
+        public async Task UpdateAdvanceSettingAsync(AdvanceSettingsViewModel advanceSettingVM)
         {
-            var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingViewModel, AdvanceSetting>(advanceSettingVM);
+            var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingsViewModel, AdvanceSetting>(advanceSettingVM);
             await _advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
         }
     }
