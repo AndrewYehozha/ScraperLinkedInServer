@@ -65,7 +65,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var addedCompaniesUrl = db.Companies.Where(x => (x.LinkedInURL != null && x.LinkedInURL.Trim() != "")).Select(x => x.LinkedInURL);
+                var addedCompaniesUrl = await db.Companies.Where(x => x.LinkedInURL != null && x.LinkedInURL.Trim() != "" && x.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)
+                                                    .Select(x => x.LinkedInURL).ToListAsync();
                 companies = companies.Where(x => !addedCompaniesUrl.Contains(x.LinkedInURL));
 
                 foreach (var company in companies)
