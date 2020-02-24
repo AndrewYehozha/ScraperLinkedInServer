@@ -15,9 +15,9 @@ namespace ScraperLinkedInServer.Controllers
         private readonly IDebugLogService _debugLogService;
 
         public DebugLogsV1Controller(
-            IDebugLogService _debugLogService)
+            IDebugLogService debugLogService)
         {
-            _debugLogService = _debugLogService;
+            _debugLogService = debugLogService;
         }
 
         [HttpGet]

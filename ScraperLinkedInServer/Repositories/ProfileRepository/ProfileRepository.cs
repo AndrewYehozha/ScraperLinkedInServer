@@ -58,7 +58,7 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
             using (var db = new ScraperLinkedInDBEntities())
             {
                 var companyID = profiles.FirstOrDefault().CompanyID;
-                var addProfiles = db.Profiles.Where(x => x.CompanyID == companyID)
+                var addProfiles = db.Profiles.Where(x => x.CompanyID == companyID && x.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)
                                              .Select(x => x.ProfileUrl);
 
                 foreach (var profile in profiles.Where(x => !addProfiles.Contains(x.ProfileUrl)))
