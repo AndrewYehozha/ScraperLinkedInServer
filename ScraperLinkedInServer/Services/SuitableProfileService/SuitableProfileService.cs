@@ -15,26 +15,26 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
 {
     public class SuitableProfileService : ISuitableProfileService
     {
-        private readonly ISuitableProfileRepository suitableProfileRepository;
-        private readonly IProfileService profileService;
+        private readonly ISuitableProfileRepository _suitableProfileRepository;
+        private readonly IProfileService _profileService;
 
         public SuitableProfileService(
             ISuitableProfileRepository suitableProfileRepository,
             IProfileService profileService)
         {
-            this.suitableProfileRepository = suitableProfileRepository;
-            this.profileService = profileService;
+            _suitableProfileRepository = suitableProfileRepository;
+            _profileService = profileService;
         }
 
         public async Task<SuitableProfileViewModel> GetSuitableProfileByIdAsync(int id)
         {
-            var suitableProfileDB = await suitableProfileRepository.GetSuitableProfileByIdAsync(id);
+            var suitableProfileDB = await _suitableProfileRepository.GetSuitableProfileByIdAsync(id);
             return Mapper.Instance.Map<SuitableProfile, SuitableProfileViewModel>(suitableProfileDB);
         }
 
         public async Task<IEnumerable<SuitableProfileViewModel>> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size)
         {
-            var suitableProfilesDB = await suitableProfileRepository.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
+            var suitableProfilesDB = await _suitableProfileRepository.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
             return Mapper.Instance.Map<IEnumerable<SuitableProfile>, IEnumerable<SuitableProfileViewModel>>(suitableProfilesDB);
         }
 
@@ -44,13 +44,13 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
         public async Task InsertSuitableProfilesAsync(IEnumerable<SuitableProfileViewModel> suitableProfilesVM)
         {
             var suitableProfilesDB = Mapper.Instance.Map<IEnumerable<SuitableProfileViewModel>, IEnumerable<SuitableProfile>>(suitableProfilesVM);
-            await suitableProfileRepository.InsertSuitableProfilesAsync(suitableProfilesDB);
+            await _suitableProfileRepository.InsertSuitableProfilesAsync(suitableProfilesDB);
 
             var companiesIds = suitableProfilesVM.Select(x => x.CompanyID).Distinct();
             foreach (var companyId in companiesIds)
             {
                 var accountId = suitableProfilesVM.Where(x => x.CompanyID == companyId).FirstOrDefault().AccountID;
-                await profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, ExecutionStatuses.Success);
+                await _profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(accountId, companyId, Models.Types.ExecutionStatus.Success);
             }
         }
     }

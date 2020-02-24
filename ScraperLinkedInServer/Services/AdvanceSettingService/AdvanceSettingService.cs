@@ -11,19 +11,19 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
 {
     public class AdvanceSettingService : IAdvanceSettingService
     {
-        private readonly IAdvanceSettingRepository advanceSettingRepository;
+        private readonly IAdvanceSettingRepository _advanceSettingRepository;
 
         public AdvanceSettingService(
             IAdvanceSettingRepository advanceSettingRepository
         )
         {
-            this.advanceSettingRepository = advanceSettingRepository;
+            _advanceSettingRepository = advanceSettingRepository;
         }
 
-        public async Task<AdvanceSettingViewModel> GetAdvanceSettingByAccountId(int accountId)
+        public async Task<AdvanceSettingsViewModel> GetAdvanceSettingByAccountId(int accountId)
         {
-            var advenceSettingDb = await advanceSettingRepository.GetAdvanceSettingByAccountId(accountId);
-            return Mapper.Instance.Map<AdvanceSetting, AdvanceSettingViewModel>(advenceSettingDb);
+            var advenceSettingDb = await _advanceSettingRepository.GetAdvanceSettingByAccountId(accountId);
+            return Mapper.Instance.Map<AdvanceSetting, AdvanceSettingsViewModel>(advenceSettingDb);
         }
 
         public async Task InsertDefaultAdvanceSettingAsync(int accountId)
@@ -31,20 +31,20 @@ namespace ScraperLinkedInServer.Services.AdvanceSettingService
             var defaultAdvanceSetting = new AdvanceSetting
             {
                 TimeStart = new TimeSpan(0, 1, 0),
-                IntervalType = (int)IntervalTypesSettings.Days,
+                IntervalType = (int)Models.Types.IntervalType.Day,
                 IntervalValue = 1,
                 CompanyBatchSize = 2,
                 ProfileBatchSize = 50,
                 AccountId = accountId
             };
 
-            await advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
+            await _advanceSettingRepository.InsertAdvanceSettingAsync(defaultAdvanceSetting);
         }
 
-        public async Task UpdateAdvanceSettingAsync(AdvanceSettingViewModel advanceSettingVM)
+        public async Task UpdateAdvanceSettingAsync(AdvanceSettingsViewModel advanceSettingVM)
         {
-            var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingViewModel, AdvanceSetting>(advanceSettingVM);
-            await advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
+            var advanceSettingDB = Mapper.Instance.Map<AdvanceSettingsViewModel, AdvanceSetting>(advanceSettingVM);
+            await _advanceSettingRepository.UpdateAdvanceSettingAsync(advanceSettingDB);
         }
     }
 }

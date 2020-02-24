@@ -5,7 +5,7 @@ using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Services.AccountService.Interfaces;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,12 +14,12 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/accounts")]
     public class AccountsV1Controller : ScraperLinkedInApiController
     {
-        private readonly IAccountService accountService;
+        private readonly IAccountService _accountService;
 
         public AccountsV1Controller(
             IAccountService accountService)
         {
-            this.accountService = accountService;
+            _accountService = accountService;
         }
 
         [HttpPost]
@@ -27,14 +27,19 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignIn(AuthorizationRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return JsonError(new AuthorizationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
-            }
+            var response = await _accountService.Authorization(request);
 
-            var result = await accountService.Authorization(request);
+            return Ok(response);
+        }
 
-            return JsonSuccess(result);
+        [HttpPost]
+        [Route("windows-service/signin")]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> WindowsServiceSignIn(AuthorizationWindowsServiceRequest request)
+        {
+            var result = await _accountService.WindowsServiceAuthorization(request);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -42,98 +47,104 @@ namespace ScraperLinkedInServer.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> SignUp(RegistrationRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return JsonError(new RegistrationResponse { Message = ModelState?.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage });
-            }
+            var response = new RegistrationResponse();
 
-            var isExistAccount = await accountService.IsExistAccount(request.Email);
+            var isExistAccount = await _accountService.IsExistAccount(request.Email);
             if (isExistAccount)
             {
-                return JsonError(new RegistrationResponse { Message = "Account is already registered" });
+                response.ErrorMessage = "Account is already registered";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            }
+            else {
+                var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
+                accountVM = await _accountService.InsertAccountAsync(accountVM);
+                var token = TokenManager.GenerateToken(accountVM);
+
+                response.Account = accountVM;
+                response.Token = token;
+                response.StatusCode = (int)HttpStatusCode.OK;
             }
 
-            var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
-            accountVM = await accountService.InsertAccountAsync(accountVM);
-            var token = TokenManager.GenerateToken(accountVM);
-
-            return JsonSuccess(new RegistrationResponse
-            {
-                Account = accountVM,
-                Token = token
-            });
+            return Ok(response);
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("account")]
         [Authorize]
-        public async Task<IHttpActionResult> GetAccountByIdAsync(int id)
+        public async Task<IHttpActionResult> GetAccountByIdAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            if (id != accountId)
-            {
-                response.Message = "Not permissions";
-                return JsonError(response);
-            }
+            response = await _accountService.GetAccountByIdAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            response = await accountService.GetAccountByIdAsync(id);
-
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
-        [Route("account-management")]
+        [Route("account")]
         [Authorize]
         public async Task<IHttpActionResult> UpdateAccountAsync(AccountRequest request)
         {
-            var response = await accountService.UpdateAccountAsync(request.AccountViewModel);
+            var response = new AccountResponse();
 
-            return JsonSuccess(response);
+            var accountId = Identity.ToAccountID();
+            if (request.AccountViewModel.Id != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                response = await _accountService.UpdateAccountAsync(request.AccountViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
+
+            return Ok(response);
         }
 
         [HttpDelete]
-        [Route("account-management/{id}")]
+        [Route("account")]
         [Authorize]
-        public async Task<IHttpActionResult> DeleteAccountAsync(int id)
+        public async Task<IHttpActionResult> DeleteAccountAsync()
         {
             var response = new AccountResponse();
 
             var accountId = Identity.ToAccountID();
-            if (id != accountId)
-            {
-                response.Message = "Not permissions";
-                return JsonError(response);
-            }
+            await _accountService.DeleteAccountAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            await accountService.DeleteAccountAsync(id);
-
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
+
+        //Admin functionality
+
         [HttpPut]
-        [Route("account-management/role")]
+        [Route("account/role")]
         [Authorize(Roles = Roles.Admin)]
         public  async Task<IHttpActionResult> ChangeAccountRoleAsync(ChangeAccountRoleRequest request)
         {
             var response = new AccountResponse();
 
-            await accountService.ChangeAccountRoleAsync(request);
+            await _accountService.ChangeAccountRoleAsync(request);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
-        [Route("account-management/block")]
+        [Route("account/block")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IHttpActionResult> ChangeAccountBlockAsync(ChangeAccountBlockRequest request)
         {
             var response = new AccountResponse();
 
-            await accountService.ChangeAccountBlockAsync(request);
+            await _accountService.ChangeAccountBlockAsync(request);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

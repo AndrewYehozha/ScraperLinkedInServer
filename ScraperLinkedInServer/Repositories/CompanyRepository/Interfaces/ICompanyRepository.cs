@@ -8,7 +8,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
     {
         Task<IEnumerable<Company>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize);
 
-        Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId);
+        Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId, int companyBatchSize);
 
         Task<int> GetCountCompaniesInProcess(int accountId);
 
@@ -19,5 +19,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
         Task UpdateCompanyAsync(Company company);
 
         Task UpdateCompaniesAsync(IEnumerable<Company> companies);
+
+        Task UpdateLastPageCompanyAsync(int accountId, int companyId, int lastScrapedPage);
     }
 }

@@ -1,9 +1,9 @@
-﻿using ScraperLinkedInServer.Models.Request;
+﻿using ScraperLinkedInServer.Models.Entities;
 
 namespace ScraperLinkedInServer.Models.Response
 {
-    public class AccountResponse : AccountRequest
+    public class AccountResponse : BaseResponse
     {
-        public string Message { get; set; }
+        public AccountViewModel AccountViewModel { get; set; }
     }
 }

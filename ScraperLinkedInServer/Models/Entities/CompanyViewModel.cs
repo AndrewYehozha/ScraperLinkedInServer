@@ -1,4 +1,6 @@
-﻿namespace ScraperLinkedInServer.Models.Entities
+﻿using ScraperLinkedInServer.Models.Types;
+
+namespace ScraperLinkedInServer.Models.Entities
 {
     public class CompanyViewModel
     {
@@ -11,12 +13,13 @@
         public string LinkedInURL { get; set; }
         public string LogoUrl { get; set; }
         public string Specialties { get; set; }
-        public int ExecutionStatusID { get; set; }
+        public ExecutionStatus ExecutionStatus { get; set; }
         public string Facebook { get; set; }
         public string Twitter { get; set; }
         public string PhoneNumber { get; set; }
         public string AmountEmployees { get; set; }
         public string Industry { get; set; }
         public int AccountId { get; set; }
+        public int LastScrapedPage { get; set; }
     }
 }

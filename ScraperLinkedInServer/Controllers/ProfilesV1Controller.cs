@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.ProfileService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -11,44 +12,46 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/profiles")]
     public class ProfilesV1Controller : ScraperLinkedInApiController
     {
-        private readonly IProfileService profileService;
+        private readonly IProfileService _profileService;
 
         public ProfilesV1Controller(
             IProfileService profileService)
         {
-            this.profileService = profileService;
+            _profileService = profileService;
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("profile")]
         [Authorize]
-        public async Task<IHttpActionResult> GetProfileByIdAsync(int id)
+        public async Task<IHttpActionResult> GetProfileAsync(int id)
         {
             var response = new ProfileResponse();
 
             var accountId = Identity.ToAccountID();
-            var profile = await profileService.GetProfileByIdAsync(id, accountId);
+            var profile = await _profileService.GetProfileByIdAsync(id, accountId);
             response.ProfileViewModel = profile;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
-        [Route("windows-service-scraper")]
+        [Route("for-search")]
         [Authorize(Roles = Roles.WindowsService)]
-        public async Task<IHttpActionResult> GetProfilesForSearchAsync(int profileBatchSize)
+        public async Task<IHttpActionResult> GetProfilesForSearchAsync(int profilesBatchSize)
         {
             var response = new ProfilesResponse();
 
             var accountId = Identity.ToAccountID();
-            var profiles = await profileService.GetProfilesForSearchAsync(accountId, profileBatchSize);
-            var countProfilesInProcess = await profileService.GetCountProfilesInProcessAsync(accountId);
-            var countNewProfiles = await profileService.GetCountNewProfilesAsync(accountId);
+            var profiles = await _profileService.GetProfilesForSearchAsync(accountId, profilesBatchSize);
+            var countProfilesInProcess = await _profileService.GetCountProfilesInProcessAsync(accountId);
+            var countNewProfiles = await _profileService.GetCountNewProfilesAsync(accountId);
             response.ProfilesViewModel = profiles;
             response.CountProfilesInProcess = countProfilesInProcess;
             response.CountNewProfiles = countNewProfiles;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -59,10 +62,11 @@ namespace ScraperLinkedInServer.Controllers
             var response = new ProfilesResponse();
 
             var accountId = Identity.ToAccountID();
-            var countProfilesInProcess = await profileService.GetCountProfilesInProcessAsync(accountId);
+            var countProfilesInProcess = await _profileService.GetCountProfilesInProcessAsync(accountId);
             response.CountProfilesInProcess = countProfilesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -73,34 +77,38 @@ namespace ScraperLinkedInServer.Controllers
             var response = new ProfilesResponse();
 
             var accountId = Identity.ToAccountID();
-            var countNewProfiles = await profileService.GetCountNewProfilesAsync(accountId);
+            var countNewProfiles = await _profileService.GetCountNewProfilesAsync(accountId);
             response.CountNewProfiles = countNewProfiles;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
-        [Route("windows-service-scraper")]
+        [Route("")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertProfilesAsync(ProfilesRequest request)
         {
             var response = new ProfilesResponse();
 
-            await profileService.InsertProfilesAsync(request.ProfilesViewModel); ;
+            var accountId = Identity.ToAccountID();
+            await _profileService.InsertProfilesAsync(request.ProfilesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
-        [Route("windows-service-scraper")]
+        [Route("")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> UpdateProfilesAsync(ProfilesRequest request)
         {
             var response = new ProfilesResponse();
 
-            await profileService.UpdateProfilesAsync(request.ProfilesViewModel);
+            await _profileService.UpdateProfilesAsync(request.ProfilesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

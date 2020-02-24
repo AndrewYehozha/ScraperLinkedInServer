@@ -1,6 +1,5 @@
 ﻿using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Entities;
-using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.SettingRepository.Interfaces;
 using ScraperLinkedInServer.Services.SettingService.Interfaces;
@@ -10,19 +9,17 @@ namespace ScraperLinkedInServer.Services.SettingService
 {
     public class SettingService : ISettingService
     {
-        private readonly ISettingRepository settingRepository;
+        private readonly ISettingRepository _settingRepository;
 
-        public SettingService(
-            ISettingRepository settingRepository
-        )
+        public SettingService(ISettingRepository settingRepository)
         {
-            this.settingRepository = settingRepository;
+            _settingRepository = settingRepository;
         }
 
-        public async Task<SettingViewModel> GetSettingByAccountIdAsync(int accountId)
+        public async Task<SettingsViewModel> GetSettingByAccountIdAsync(int accountId)
         {
-            var settingDb = await settingRepository.GetSettingByAccountIdAsync(accountId);
-            return Mapper.Instance.Map<Setting, SettingViewModel>(settingDb);
+            var settingDb = await _settingRepository.GetSettingByAccountIdAsync(accountId);
+            return Mapper.Instance.Map<Setting, SettingsViewModel>(settingDb);
         }
 
         public async Task InsertDefaultSettingAsync(int accountId)
@@ -34,17 +31,22 @@ namespace ScraperLinkedInServer.Services.SettingService
                 Login = string.Empty,
                 TechnologiesSearch = string.Empty,
                 RolesSearch = string.Empty,
-                ScraperStatusID = (int)ScraperStatuses.OFF,
+                ScraperStatusID = (int)Models.Types.ScraperStatus.OFF,
                 AccountId = accountId
             };
 
-            await settingRepository.InsertSettingAsync(defaultSetting);
+            await _settingRepository.InsertSettingAsync(defaultSetting);
         }
 
-        public async Task UpdateSettingAsync(SettingViewModel settingVM)
+        public async Task UpdateSettingAsync(SettingsViewModel settingVM)
         {
-            var settingDb = Mapper.Instance.Map<SettingViewModel, Setting>(settingVM);
-            await settingRepository.UpdateSettingAsync(settingDb);
+            var settingDb = Mapper.Instance.Map<SettingsViewModel, Setting>(settingVM);
+            await _settingRepository.UpdateSettingAsync(settingDb);
+        }
+
+        public async Task UpdateScraperStatus(int accountId, Models.Types.ScraperStatus status)
+        {
+            await _settingRepository.UpdateScraperStatus(accountId, status);
         }
     }
 }

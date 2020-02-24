@@ -28,6 +28,10 @@
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_Profiles_ProfileStatuses" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Profiles" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Payment" Width="1.5" PointX="3" PointY="17.5" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Payments_Accounts" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" />
+        <AssociationConnector Association="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

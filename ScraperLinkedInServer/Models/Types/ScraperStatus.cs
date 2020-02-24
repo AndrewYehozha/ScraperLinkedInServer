@@ -1,6 +1,6 @@
 ﻿namespace ScraperLinkedInServer.Models.Types
 {
-    public enum ScraperStatuses : byte
+    public enum ScraperStatus : byte
     {
         Exception = 0,
         ON = 1,

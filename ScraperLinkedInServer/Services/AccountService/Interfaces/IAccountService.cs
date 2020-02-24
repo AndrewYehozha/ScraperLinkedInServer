@@ -11,6 +11,8 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
 
         Task<AuthorizationResponse> Authorization(AuthorizationRequest request);
 
+        Task<AuthorizationWindowsServiceResponse> WindowsServiceAuthorization(AuthorizationWindowsServiceRequest request);
+
         Task<bool> IsExistAccount(string email);
 
         Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM);

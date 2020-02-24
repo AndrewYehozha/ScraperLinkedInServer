@@ -52,6 +52,7 @@
           <Property Name="AmountEmployees" Type="nvarchar" MaxLength="50" />
           <Property Name="Industry" Type="nvarchar(max)" />
           <Property Name="AccountId" Type="int" Nullable="false" />
+          <Property Name="LastScrapedPage" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="DebugLogs">
           <Key>
@@ -76,6 +77,24 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="IntervalTypeName" Type="nvarchar" MaxLength="75" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Payments">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guide" />
+            <PropertyRef Name="Validity" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="AccountId" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Guide" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Validity" Type="int" Nullable="false" />
+          <Property Name="CreateOn" Type="datetime" Nullable="false" />
+          <Property Name="PaymentOn" Type="datetime" />
+          <Property Name="UpdateOn" Type="datetime" />
+          <Property Name="AccountId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Profiles">
           <Key>
@@ -150,6 +169,18 @@
           <Property Name="CompanyID" Type="int" Nullable="false" />
           <Property Name="ProfileID" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_AdvanceSettings_Accounts">
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+          <End Role="AdvanceSettings" Type="Self.AdvanceSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSettings">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AdvanceSettings_AdvanceSettings">
           <End Role="IntervalTypes" Type="Self.IntervalTypes" Multiplicity="1" />
           <End Role="AdvanceSettings" Type="Self.AdvanceSettings" Multiplicity="*" />
@@ -195,6 +226,18 @@
             </Principal>
             <Dependent Role="DebugLogs">
               <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Accounts">
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -258,6 +301,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Settings_ScraperStatuses">
+          <End Role="ScraperStatuses" Type="Self.ScraperStatuses" Multiplicity="1" />
+          <End Role="Settings" Type="Self.Settings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ScraperStatuses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Settings">
+              <PropertyRef Name="ScraperStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SuitableProfiles_Accounts">
           <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
           <End Role="SuitableProfiles" Type="Self.SuitableProfiles" Multiplicity="*" />
@@ -306,6 +361,21 @@
           <EntitySet Name="ScraperStatuses" EntityType="Self.ScraperStatuses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SuitableProfiles" EntityType="Self.SuitableProfiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Payments].[Id] AS [Id], 
+    [Payments].[Guide] AS [Guide], 
+    [Payments].[Validity] AS [Validity], 
+    [Payments].[CreateOn] AS [CreateOn], 
+    [Payments].[PaymentOn] AS [PaymentOn], 
+    [Payments].[UpdateOn] AS [UpdateOn], 
+    [Payments].[AccountId] AS [AccountId]
+    FROM [dbo].[Payments] AS [Payments]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_AdvanceSettings_Accounts" Association="Self.FK_AdvanceSettings_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="AdvanceSettings" EntitySet="AdvanceSettings" />
+          </AssociationSet>
           <AssociationSet Name="FK_AdvanceSettings_AdvanceSettings" Association="Self.FK_AdvanceSettings_AdvanceSettings">
             <End Role="IntervalTypes" EntitySet="IntervalTypes" />
             <End Role="AdvanceSettings" EntitySet="AdvanceSettings" />
@@ -321,6 +391,10 @@
           <AssociationSet Name="FK_DebugLogs_Accounts" Association="Self.FK_DebugLogs_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
             <End Role="DebugLogs" EntitySet="DebugLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Accounts" Association="Self.FK_Payments_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="Payments" EntitySet="Payments" />
           </AssociationSet>
           <AssociationSet Name="FK_Profiles_Accounts" Association="Self.FK_Profiles_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
@@ -340,6 +414,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Settings_Accounts" Association="Self.FK_Settings_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="Settings" EntitySet="Settings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Settings_ScraperStatuses" Association="Self.FK_Settings_ScraperStatuses">
+            <End Role="ScraperStatuses" EntitySet="ScraperStatuses" />
             <End Role="Settings" EntitySet="Settings" />
           </AssociationSet>
           <AssociationSet Name="FK_SuitableProfiles_Accounts" Association="Self.FK_SuitableProfiles_Accounts">
@@ -378,6 +456,8 @@
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Accounts" FromRole="Accounts" ToRole="Profiles" />
           <NavigationProperty Name="Settings" Relationship="Self.FK_Settings_Accounts" FromRole="Accounts" ToRole="Settings" />
           <NavigationProperty Name="SuitableProfiles" Relationship="Self.FK_SuitableProfiles_Accounts" FromRole="Accounts" ToRole="SuitableProfiles" />
+          <NavigationProperty Name="Payments" Relationship="ScraperLinkedInDBModel.FK_Payments_Accounts" FromRole="Account" ToRole="Payment" />
+          <NavigationProperty Name="AdvanceSettings" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" FromRole="Account" ToRole="AdvanceSetting" />
         </EntityType>
         <EntityType Name="AdvanceSetting">
           <Key>
@@ -391,6 +471,7 @@
           <Property Name="ProfileBatchSize" Type="Int32" Nullable="false" />
           <Property Name="AccountId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="IntervalType1" Relationship="Self.FK_AdvanceSettings_AdvanceSettings" FromRole="AdvanceSettings" ToRole="IntervalTypes" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" FromRole="AdvanceSetting" ToRole="Account" />
         </EntityType>
         <EntityType Name="Company">
           <Key>
@@ -416,6 +497,7 @@
           <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="Companies" ToRole="ExecutionStatuses" />
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Companies" FromRole="Companies" ToRole="Profiles" />
           <NavigationProperty Name="SuitableProfiles" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="Company" ToRole="SuitableProfile" />
+          <Property Name="LastScrapedPage" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="DebugLog">
           <Key>
@@ -481,6 +563,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="StatusName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Settings" Relationship="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses" FromRole="ScraperStatus" ToRole="Setting" />
         </EntityType>
         <EntityType Name="Setting">
           <Key>
@@ -495,6 +578,7 @@
           <Property Name="ScraperStatusID" Type="Int32" Nullable="false" />
           <Property Name="AccountId" Type="Int32" />
           <NavigationProperty Name="Account" Relationship="Self.FK_Settings_Accounts" FromRole="Settings" ToRole="Accounts" />
+          <NavigationProperty Name="ScraperStatus" Relationship="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses" FromRole="Setting" ToRole="ScraperStatus" />
         </EntityType>
         <EntityType Name="SuitableProfile">
           <Key>
@@ -720,6 +804,19 @@
             <End Role="Company" EntitySet="Companies" />
             <End Role="SuitableProfile" EntitySet="SuitableProfiles" />
           </AssociationSet>
+          <EntitySet Name="Payments" EntityType="ScraperLinkedInDBModel.Payment" />
+          <AssociationSet Name="FK_Payments_Accounts" Association="ScraperLinkedInDBModel.FK_Payments_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Payment" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdvanceSettings_Accounts" Association="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="AdvanceSetting" EntitySet="AdvanceSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Settings_ScraperStatuses" Association="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses">
+            <End Role="ScraperStatus" EntitySet="ScraperStatuses" />
+            <End Role="Setting" EntitySet="Settings" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_SuitableProfiles_Companies">
           <End Type="ScraperLinkedInDBModel.Company" Role="Company" Multiplicity="1" />
@@ -730,6 +827,59 @@
             </Principal>
             <Dependent Role="SuitableProfile">
               <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guide" />
+            <PropertyRef Name="Validity" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="AccountId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Guide" Type="Guid" Nullable="false" />
+          <Property Name="Validity" Type="Int32" Nullable="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_Payments_Accounts" FromRole="Payment" ToRole="Account" />
+          <Property Name="PaymentOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK_Payments_Accounts">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.Payment" Role="Payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payment">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdvanceSettings_Accounts">
+          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.AdvanceSetting" Role="AdvanceSetting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSetting">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Settings_ScraperStatuses">
+          <End Type="ScraperLinkedInDBModel.ScraperStatus" Role="ScraperStatus" Multiplicity="1" />
+          <End Type="ScraperLinkedInDBModel.Setting" Role="Setting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ScraperStatus">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Setting">
+              <PropertyRef Name="ScraperStatusID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -771,6 +921,7 @@
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Company">
               <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="LastScrapedPage" ColumnName="LastScrapedPage" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
                 <ScalarProperty Name="OrganizationURL" ColumnName="OrganizationURL" />
@@ -892,6 +1043,19 @@
                 <ScalarProperty Name="DateTimeCreation" ColumnName="DateTimeCreation" />
                 <ScalarProperty Name="ProfileID" ColumnName="ProfileID" />
                 <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Payment">
+              <MappingFragment StoreEntitySet="Payments">
+                <ScalarProperty Name="PaymentOn" ColumnName="PaymentOn" />
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="Validity" ColumnName="Validity" />
+                <ScalarProperty Name="Guide" ColumnName="Guide" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

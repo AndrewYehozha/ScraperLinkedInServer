@@ -22,6 +22,8 @@ namespace ScraperLinkedInServer.Database
             this.Profiles = new HashSet<Profile>();
             this.Settings = new HashSet<Setting>();
             this.SuitableProfiles = new HashSet<SuitableProfile>();
+            this.Payments = new HashSet<Payment>();
+            this.AdvanceSettings = new HashSet<AdvanceSetting>();
         }
     
         public int Id { get; set; }
@@ -45,5 +47,9 @@ namespace ScraperLinkedInServer.Database
         public virtual ICollection<Setting> Settings { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SuitableProfile> SuitableProfiles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Payment> Payments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AdvanceSetting> AdvanceSettings { get; set; }
     }
 }

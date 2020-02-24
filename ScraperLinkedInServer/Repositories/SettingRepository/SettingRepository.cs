@@ -40,5 +40,16 @@ namespace ScraperLinkedInServer.Repositories.SettingRepository
                 await db.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateScraperStatus(int accountId, Models.Types.ScraperStatus status)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var settings = await db.Settings.Where(x => x.AccountId == accountId).FirstOrDefaultAsync();
+                settings.ScraperStatusID = (int)status;
+
+                await db.SaveChangesAsync();
+            }
+        }
     }
 }

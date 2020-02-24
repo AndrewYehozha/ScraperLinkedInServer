@@ -10,5 +10,7 @@ namespace ScraperLinkedInServer.Repositories.SettingRepository.Interfaces
         Task InsertSettingAsync(Setting setting);
 
         Task UpdateSettingAsync(Setting setting);
+
+        Task UpdateScraperStatus(int accountId, Models.Types.ScraperStatus status);
     }
 }

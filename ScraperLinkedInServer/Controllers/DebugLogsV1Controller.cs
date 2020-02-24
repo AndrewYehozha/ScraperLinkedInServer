@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.DebugLogService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -11,12 +12,12 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/debug-logs")]
     public class DebugLogsV1Controller : ScraperLinkedInApiController
     {
-        private readonly IDebugLogService debugLogService;
+        private readonly IDebugLogService _debugLogService;
 
         public DebugLogsV1Controller(
             IDebugLogService debugLogService)
         {
-            this.debugLogService = debugLogService;
+            _debugLogService = debugLogService;
         }
 
         [HttpGet]
@@ -27,10 +28,11 @@ namespace ScraperLinkedInServer.Controllers
             var response = new DebugLogsResponse();
 
             var accountId = Identity.ToAccountID();
-            var debugLogsVM = await debugLogService.GetDebugLogsAsync(accountId, batchSize);
+            var debugLogsVM = await _debugLogService.GetDebugLogsAsync(accountId, batchSize);
             response.DebugLogsViewModel = debugLogsVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -41,34 +43,44 @@ namespace ScraperLinkedInServer.Controllers
             var response = new DebugLogsResponse();
 
             var accountId = Identity.ToAccountID();
-            var debugLogsVM = await debugLogService.GetNewDebugLogsAsync(accountId, lastDebugLogId, size);
+            var debugLogsVM = await _debugLogService.GetNewDebugLogsAsync(accountId, lastDebugLogId, size);
             response.DebugLogsViewModel = debugLogsVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
-        [Route("windows-service-scraper")]
+        [Route("log")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertDebugLogAsync(DebugLogRequest request)
         {
             var response = new DebugLogsResponse();
 
-            await debugLogService.InsertDebugLogAsync(request.DebugLogViewModel);
+            var accountId = Identity.ToAccountID();
+            request.DebugLogViewModel.AccountId = accountId;
+            await _debugLogService.InsertDebugLogAsync(request.DebugLogViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
-        [Route("windows-service-scraper")]
+        [Route("")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertDebugLogsAsync(DebugLogsRequest request)
         {
             var response = new DebugLogsResponse();
 
-            await debugLogService.InsertDebugLogsAsync(request.DebugLogsViewModel);
+            var accountId = Identity.ToAccountID();
+            foreach (var debugLog in request.DebugLogsViewModel)
+            {
+                debugLog.AccountId = accountId;
+            }
+            await _debugLogService.InsertDebugLogsAsync(request.DebugLogsViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
     }
 }

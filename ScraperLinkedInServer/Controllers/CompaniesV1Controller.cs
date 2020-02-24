@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -11,42 +12,44 @@ namespace ScraperLinkedInServer.Controllers
     [RoutePrefix("api/v1/companies")]
     public class CompaniesV1Controller : ScraperLinkedInApiController
     {
-        private readonly ICompanyService companyService;
+        private readonly ICompanyService _companyService;
 
         public CompaniesV1Controller(
             ICompanyService companyService)
         {
-            this.companyService = companyService;
+            _companyService = companyService;
         }
 
         [HttpGet]
-        [Route("windows-service-scraper")]
+        [Route("for-search")] //windows-service-scraper
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> GetCompaniesForSearchAsync(int companyBatchSize)
         {
             var response = new CompaniesResponse();
 
             var accountId = Identity.ToAccountID();
-            var companiesVM = await companyService.GetCompaniesForSearchAsync(accountId, companyBatchSize);
-            var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
+            var companiesVM = await _companyService.GetCompaniesForSearchAsync(accountId, companyBatchSize);
+            var countCompaniesInProcess = await _companyService.GetCountCompaniesInProcess(accountId);
             response.CompaniesViewModel = companiesVM;
             response.CountCompaniesInProcess = countCompaniesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
-        [Route("windows-service-worker")]
+        [Route("for-search-suitable-profiles")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> GetCompaniesForSearchSuitableProfilesAsync(int companyBatchSize)
         {
             var response = new CompaniesResponse();
 
             var accountId = Identity.ToAccountID();
-            var companiesVM = await companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId);
+            var companiesVM = await _companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId, companyBatchSize);
             response.CompaniesViewModel = companiesVM;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -57,22 +60,27 @@ namespace ScraperLinkedInServer.Controllers
             var response = new CompaniesResponse();
 
             var accountId = Identity.ToAccountID();
-            var countCompaniesInProcess = await companyService.GetCountCompaniesInProcess(accountId);
+            var countCompaniesInProcess = await _companyService.GetCountCompaniesInProcess(accountId);
             response.CountCompaniesInProcess = countCompaniesInProcess;
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPost]
-        [Route("")]
+        [Route("company")]
         [Authorize]
         public async Task<IHttpActionResult> InsertCompanyAsync(CompanyRequest request)
         {
             var response = new CompanyResponse();
 
-            await companyService.InsertCompanyAsync(request.CompanyViewModel);
+            var accountId = Identity.ToAccountID();
+            request.CompanyViewModel.AccountId = accountId;
 
-            return JsonSuccess(response);
+            await _companyService.InsertCompanyAsync(request.CompanyViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -82,33 +90,66 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new CompaniesResponse();
 
-            await companyService.InsertCompaniesAsync(request.CompaniesViewModel);
+            var accountId = Identity.ToAccountID();
+            foreach (var company in request.CompaniesViewModel)
+            {
+                company.AccountId = accountId;
+                company.ExecutionStatus = ExecutionStatus.Created;
+            }
 
-            return JsonSuccess(response);
+            await _companyService.InsertCompaniesAsync(request.CompaniesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
 
         [HttpPut]
-        [Route("")]
+        [Route("company")]
         [Authorize]
         public async Task<IHttpActionResult> UpdateCompanyAsync(CompanyRequest request)
         {
             var response = new CompanyResponse();
 
-            await companyService.UpdateCompanyAsync(request.CompanyViewModel);
+            var accountId = Identity.ToAccountID();
+            if (request.CompanyViewModel.AccountId != accountId)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                await _companyService.UpdateCompanyAsync(request.CompanyViewModel);
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
 
-            return JsonSuccess(response);
+            return Ok(response);
         }
 
         [HttpPut]
-        [Route("windows-service-scraper")]
+        [Route("")]
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> UpdateCompaniesAsync(CompaniesRequest request)
         {
             var response = new CompaniesResponse();
 
-            await companyService.UpdateCompaniesAsync(request.CompaniesViewModel);
+            await _companyService.UpdateCompaniesAsync(request.CompaniesViewModel);
+            response.StatusCode = (int)HttpStatusCode.OK;
 
-            return JsonSuccess(response);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("company/last-scraped-page")]
+        [Authorize(Roles = Roles.WindowsService)]
+        public async Task<IHttpActionResult> UpdateLastPageCompanyAsync(CompanyLastPageRequest request)
+        {
+            var response = new BaseResponse();
+
+            var accountId = Identity.ToAccountID();
+            await _companyService.UpdateLastPageCompanyAsync(accountId, request.CompanyId, request.LastScrapedPage);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
         }
     }
 }

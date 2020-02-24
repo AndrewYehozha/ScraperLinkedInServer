@@ -36,14 +36,7 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var log = new DebugLog
-                {
-                    Remarks = !string.IsNullOrEmpty(debugLog.Remarks) ? debugLog.Remarks : "",
-                    Logs = debugLog.Logs,
-                    CreatedOn = DateTime.UtcNow
-                };
-
-                db.DebugLogs.Add(log);
+                db.DebugLogs.Add(debugLog);
                 await db.SaveChangesAsync();
             }
         }
@@ -54,14 +47,7 @@ namespace ScraperLinkedInServer.Repositories.DebugLogRepository
             {
                 foreach (var debugLog in debugLogs)
                 {
-                    var log = new DebugLog
-                    {
-                        Remarks = !string.IsNullOrEmpty(debugLog.Remarks) ? debugLog.Remarks : "",
-                        Logs = debugLog.Logs,
-                        CreatedOn = DateTime.UtcNow
-                    };
-
-                    db.DebugLogs.Add(log);
+                    db.DebugLogs.Add(debugLog);
                 }
 
                 await db.SaveChangesAsync();
