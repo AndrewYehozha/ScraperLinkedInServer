@@ -110,5 +110,18 @@ namespace ScraperLinkedInServer.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut]
+        [Route("execution-status")]
+        [Authorize(Roles = Roles.WindowsService)]
+        public async Task<IHttpActionResult> UpdateProfilesExecutionStatusByCompanyID(UpdateProfileExecutionStatusRequest request)
+        {
+            var response = new BaseResponse();
+
+            await _profileService.UpdateProfilesExecutionStatusByCompanyIdAsync(request.AccountId, request.CompanyId, request.ExecutionStatus);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpPost]
-        [Route("windows-service/signin")]
+        [Route("signin/windows-service")]
         [AllowAnonymous]
         public async Task<IHttpActionResult> WindowsServiceSignIn(AuthorizationWindowsServiceRequest request)
         {
@@ -58,10 +58,32 @@ namespace ScraperLinkedInServer.Controllers
             else {
                 var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
                 accountVM = await _accountService.InsertAccountAsync(accountVM);
-                var token = TokenManager.GenerateToken(accountVM);
+                var token = TokenManager.GenerateToken(accountVM, Roles.User);
 
                 response.Account = accountVM;
                 response.Token = token;
+                response.StatusCode = (int)HttpStatusCode.OK;
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("active/ids")]
+        [Authorize]
+        public async Task<IHttpActionResult> GetActiveAccountsIdsAsync()
+        {
+            var response = new AccountsIdsResponse();
+
+            var isAdmin = bool.Parse(Identity.ToIsAdmin());
+            if (!isAdmin)
+            {
+                response.ErrorMessage = "Not permissions";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
+            else
+            {
+                response.Ids = await _accountService.GetActiveAccountsIdsAsync();
                 response.StatusCode = (int)HttpStatusCode.OK;
             }
 

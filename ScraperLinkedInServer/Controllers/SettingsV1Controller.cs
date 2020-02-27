@@ -34,6 +34,19 @@ namespace ScraperLinkedInServer.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("setting/{accountId}")]
+        [Authorize]
+        public async Task<IHttpActionResult> GetSettingByAccountIdAsync(int accountId)
+        {
+            var response = new SettingsResponse();
+
+            response.SettingsViewModel = await _settingService.GetSettingByAccountIdAsync(accountId);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
+        }
+
         [HttpPut]
         [Route("setting")]
         [Authorize]

@@ -1,5 +1,6 @@
 ﻿using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Repositories.AccountRepository.Interfaces;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,14 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             using (var db = new ScraperLinkedInDBEntities())
             {
                 return await db.Accounts.Where(x => x.Email == email).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<IEnumerable<int>> GetActiveAccountsIdsAsync()
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.Accounts.Where(x => !x.IsBlocked && !x.IsDeleted).Select(s => s.Id).ToListAsync();
             }
         }
 

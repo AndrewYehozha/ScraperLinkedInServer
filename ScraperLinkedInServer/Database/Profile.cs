@@ -14,12 +14,6 @@ namespace ScraperLinkedInServer.Database
     
     public partial class Profile
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Profile()
-        {
-            this.SuitableProfiles = new HashSet<SuitableProfile>();
-        }
-    
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -37,7 +31,5 @@ namespace ScraperLinkedInServer.Database
         public virtual Company Company { get; set; }
         public virtual ExecutionStatus ExecutionStatus { get; set; }
         public virtual ProfileStatus ProfileStatus { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SuitableProfile> SuitableProfiles { get; set; }
     }
 }

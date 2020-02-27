@@ -55,7 +55,7 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertDebugLogAsync(DebugLogRequest request)
         {
-            var response = new DebugLogsResponse();
+            var response = new DebugLogResponse();
 
             var accountId = Identity.ToAccountID();
             request.DebugLogViewModel.AccountId = accountId;

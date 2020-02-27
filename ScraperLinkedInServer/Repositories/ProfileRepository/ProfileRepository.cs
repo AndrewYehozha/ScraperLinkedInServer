@@ -97,9 +97,11 @@ namespace ScraperLinkedInServer.Repositories.ProfileRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                db.Profiles.Where(x => x.AccountID == accountId && x.CompanyID == companyId)
-                           .ToList()
-                           .ForEach(y => y.ExecutionStatusID = (int)executionStatus);
+                var profiles = db.Profiles.Where(x => x.AccountID == accountId && x.CompanyID == companyId);
+                foreach (var profile in profiles)
+                {
+                    profile.ExecutionStatusID = (int)executionStatus;
+                }
 
                 await db.SaveChangesAsync();
             }
