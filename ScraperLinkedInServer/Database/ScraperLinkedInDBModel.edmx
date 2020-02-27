@@ -139,6 +139,8 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="RolesSearch" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ScraperStatusID" Type="int" Nullable="false" />
           <Property Name="AccountId" Type="int" />
+          <Property Name="IsSearchDevelopers" Type="bit" Nullable="false" />
+          <Property Name="IsSearchChiefs" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SuitableProfiles">
           <Key>
@@ -167,7 +169,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="DateTimeCreation" Type="datetime" />
           <Property Name="AccountID" Type="int" Nullable="false" />
           <Property Name="CompanyID" Type="int" Nullable="false" />
-          <Property Name="ProfileID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_AdvanceSettings_Accounts">
           <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
@@ -337,18 +338,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SuitableProfiles_Profiles">
-          <End Role="Profiles" Type="Self.Profiles" Multiplicity="1" />
-          <End Role="SuitableProfiles" Type="Self.SuitableProfiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Profiles">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SuitableProfiles">
-              <PropertyRef Name="ProfileID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ScraperLinkedInDBModelStoreContainer">
           <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AdvanceSettings" EntityType="Self.AdvanceSettings" Schema="dbo" store:Type="Tables" />
@@ -428,10 +417,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             <End Role="Companies" EntitySet="Companies" />
             <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_SuitableProfiles_Profiles" Association="Self.FK_SuitableProfiles_Profiles">
-            <End Role="Profiles" EntitySet="Profiles" />
-            <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -451,13 +436,13 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <Property Name="IsBlocked" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AdvanceSettings" Relationship="Self.FK_AdvanceSettings_Accounts" FromRole="Accounts" ToRole="AdvanceSettings" />
           <NavigationProperty Name="Companies" Relationship="Self.FK_Companies_Accounts" FromRole="Accounts" ToRole="Companies" />
           <NavigationProperty Name="DebugLogs" Relationship="Self.FK_DebugLogs_Accounts" FromRole="Accounts" ToRole="DebugLogs" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_Accounts" FromRole="Accounts" ToRole="Payments" />
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Accounts" FromRole="Accounts" ToRole="Profiles" />
           <NavigationProperty Name="Settings" Relationship="Self.FK_Settings_Accounts" FromRole="Accounts" ToRole="Settings" />
           <NavigationProperty Name="SuitableProfiles" Relationship="Self.FK_SuitableProfiles_Accounts" FromRole="Accounts" ToRole="SuitableProfiles" />
-          <NavigationProperty Name="Payments" Relationship="ScraperLinkedInDBModel.FK_Payments_Accounts" FromRole="Account" ToRole="Payment" />
-          <NavigationProperty Name="AdvanceSettings" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" FromRole="Account" ToRole="AdvanceSetting" />
         </EntityType>
         <EntityType Name="AdvanceSetting">
           <Key>
@@ -470,8 +455,8 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="CompanyBatchSize" Type="Int32" Nullable="false" />
           <Property Name="ProfileBatchSize" Type="Int32" Nullable="false" />
           <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_AdvanceSettings_Accounts" FromRole="AdvanceSettings" ToRole="Accounts" />
           <NavigationProperty Name="IntervalType1" Relationship="Self.FK_AdvanceSettings_AdvanceSettings" FromRole="AdvanceSettings" ToRole="IntervalTypes" />
-          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" FromRole="AdvanceSetting" ToRole="Account" />
         </EntityType>
         <EntityType Name="Company">
           <Key>
@@ -493,11 +478,11 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="AmountEmployees" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Industry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="LastScrapedPage" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Account" Relationship="Self.FK_Companies_Accounts" FromRole="Companies" ToRole="Accounts" />
           <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Companies_ExecutionStatuses" FromRole="Companies" ToRole="ExecutionStatuses" />
           <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Companies" FromRole="Companies" ToRole="Profiles" />
-          <NavigationProperty Name="SuitableProfiles" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="Company" ToRole="SuitableProfile" />
-          <Property Name="LastScrapedPage" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SuitableProfiles" Relationship="Self.FK_SuitableProfiles_Companies" FromRole="Companies" ToRole="SuitableProfiles" />
         </EntityType>
         <EntityType Name="DebugLog">
           <Key>
@@ -547,7 +532,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <NavigationProperty Name="Company" Relationship="Self.FK_Profiles_Companies" FromRole="Profiles" ToRole="Companies" />
           <NavigationProperty Name="ExecutionStatus" Relationship="Self.FK_Profiles_ExecutionStatuses" FromRole="Profiles" ToRole="ExecutionStatuses" />
           <NavigationProperty Name="ProfileStatus" Relationship="Self.FK_Profiles_ProfileStatuses" FromRole="Profiles" ToRole="ProfileStatuses" />
-          <NavigationProperty Name="SuitableProfiles" Relationship="Self.FK_SuitableProfiles_Profiles" FromRole="Profiles" ToRole="SuitableProfiles" />
         </EntityType>
         <EntityType Name="ProfileStatus">
           <Key>
@@ -563,7 +547,7 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="StatusName" Type="String" MaxLength="75" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Settings" Relationship="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses" FromRole="ScraperStatus" ToRole="Setting" />
+          <NavigationProperty Name="Settings" Relationship="Self.FK_Settings_ScraperStatuses" FromRole="ScraperStatuses" ToRole="Settings" />
         </EntityType>
         <EntityType Name="Setting">
           <Key>
@@ -578,7 +562,9 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="ScraperStatusID" Type="Int32" Nullable="false" />
           <Property Name="AccountId" Type="Int32" />
           <NavigationProperty Name="Account" Relationship="Self.FK_Settings_Accounts" FromRole="Settings" ToRole="Accounts" />
-          <NavigationProperty Name="ScraperStatus" Relationship="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses" FromRole="Setting" ToRole="ScraperStatus" />
+          <NavigationProperty Name="ScraperStatus" Relationship="Self.FK_Settings_ScraperStatuses" FromRole="Settings" ToRole="ScraperStatuses" />
+          <Property Name="IsSearchDevelopers" Type="Boolean" Nullable="false" />
+          <Property Name="IsSearchChiefs" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="SuitableProfile">
           <Key>
@@ -605,13 +591,40 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <Property Name="Facebook" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="TechStack" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DateTimeCreation" Type="DateTime" Precision="3" />
-          <Property Name="ProfileID" Type="Int32" Nullable="false" />
           <Property Name="AccountID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_SuitableProfiles_Accounts" FromRole="SuitableProfiles" ToRole="Accounts" />
-          <NavigationProperty Name="Profile" Relationship="Self.FK_SuitableProfiles_Profiles" FromRole="SuitableProfiles" ToRole="Profiles" />
           <Property Name="CompanyID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Company1" Relationship="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies" FromRole="SuitableProfile" ToRole="Company" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_SuitableProfiles_Accounts" FromRole="SuitableProfiles" ToRole="Accounts" />
+          <NavigationProperty Name="Company1" Relationship="Self.FK_SuitableProfiles_Companies" FromRole="SuitableProfiles" ToRole="Companies" />
         </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guide" />
+            <PropertyRef Name="Validity" />
+            <PropertyRef Name="CreateOn" />
+            <PropertyRef Name="AccountId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Guide" Type="Guid" Nullable="false" />
+          <Property Name="Validity" Type="Int32" Nullable="false" />
+          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PaymentOn" Type="DateTime" Precision="3" />
+          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Payments_Accounts" FromRole="Payments" ToRole="Accounts" />
+        </EntityType>
+        <Association Name="FK_AdvanceSettings_Accounts">
+          <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
+          <End Role="AdvanceSettings" Type="Self.AdvanceSetting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdvanceSettings">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Companies_Accounts">
           <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
           <End Role="Companies" Type="Self.Company" Multiplicity="*" />
@@ -633,6 +646,18 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             </Principal>
             <Dependent Role="DebugLogs">
               <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Accounts">
+          <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accounts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -708,6 +733,18 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SuitableProfiles_Companies">
+          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
+          <End Role="SuitableProfiles" Type="Self.SuitableProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SuitableProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Profiles_ExecutionStatuses">
           <End Role="ExecutionStatuses" Type="Self.ExecutionStatus" Multiplicity="1" />
           <End Role="Profiles" Type="Self.Profile" Multiplicity="*" />
@@ -732,15 +769,15 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SuitableProfiles_Profiles">
-          <End Role="Profiles" Type="Self.Profile" Multiplicity="1" />
-          <End Role="SuitableProfiles" Type="Self.SuitableProfile" Multiplicity="*" />
+        <Association Name="FK_Settings_ScraperStatuses">
+          <End Role="ScraperStatuses" Type="Self.ScraperStatus" Multiplicity="1" />
+          <End Role="Settings" Type="Self.Setting" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Profiles">
+            <Principal Role="ScraperStatuses">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="SuitableProfiles">
-              <PropertyRef Name="ProfileID" />
+            <Dependent Role="Settings">
+              <PropertyRef Name="ScraperStatusID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -756,6 +793,11 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <EntitySet Name="ScraperStatuses" EntityType="Self.ScraperStatus" />
           <EntitySet Name="Settings" EntityType="Self.Setting" />
           <EntitySet Name="SuitableProfiles" EntityType="Self.SuitableProfile" />
+          <EntitySet Name="Payments" EntityType="Self.Payment" />
+          <AssociationSet Name="FK_AdvanceSettings_Accounts" Association="Self.FK_AdvanceSettings_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="AdvanceSettings" EntitySet="AdvanceSettings" />
+          </AssociationSet>
           <AssociationSet Name="FK_Companies_Accounts" Association="Self.FK_Companies_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
             <End Role="Companies" EntitySet="Companies" />
@@ -763,6 +805,10 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <AssociationSet Name="FK_DebugLogs_Accounts" Association="Self.FK_DebugLogs_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
             <End Role="DebugLogs" EntitySet="DebugLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Accounts" Association="Self.FK_Payments_Accounts">
+            <End Role="Accounts" EntitySet="Accounts" />
+            <End Role="Payments" EntitySet="Payments" />
           </AssociationSet>
           <AssociationSet Name="FK_Profiles_Accounts" Association="Self.FK_Profiles_Accounts">
             <End Role="Accounts" EntitySet="Accounts" />
@@ -788,6 +834,10 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Profiles" EntitySet="Profiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_SuitableProfiles_Companies" Association="Self.FK_SuitableProfiles_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
+          </AssociationSet>
           <AssociationSet Name="FK_Profiles_ExecutionStatuses" Association="Self.FK_Profiles_ExecutionStatuses">
             <End Role="ExecutionStatuses" EntitySet="ExecutionStatuses" />
             <End Role="Profiles" EntitySet="Profiles" />
@@ -796,93 +846,11 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
             <End Role="ProfileStatuses" EntitySet="ProfileStatuses" />
             <End Role="Profiles" EntitySet="Profiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_SuitableProfiles_Profiles" Association="Self.FK_SuitableProfiles_Profiles">
-            <End Role="Profiles" EntitySet="Profiles" />
-            <End Role="SuitableProfiles" EntitySet="SuitableProfiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SuitableProfiles_Companies" Association="ScraperLinkedInDBModel.FK_SuitableProfiles_Companies">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="SuitableProfile" EntitySet="SuitableProfiles" />
-          </AssociationSet>
-          <EntitySet Name="Payments" EntityType="ScraperLinkedInDBModel.Payment" />
-          <AssociationSet Name="FK_Payments_Accounts" Association="ScraperLinkedInDBModel.FK_Payments_Accounts">
-            <End Role="Account" EntitySet="Accounts" />
-            <End Role="Payment" EntitySet="Payments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AdvanceSettings_Accounts" Association="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts">
-            <End Role="Account" EntitySet="Accounts" />
-            <End Role="AdvanceSetting" EntitySet="AdvanceSettings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Settings_ScraperStatuses" Association="ScraperLinkedInDBModel.FK_Settings_ScraperStatuses">
-            <End Role="ScraperStatus" EntitySet="ScraperStatuses" />
-            <End Role="Setting" EntitySet="Settings" />
+          <AssociationSet Name="FK_Settings_ScraperStatuses" Association="Self.FK_Settings_ScraperStatuses">
+            <End Role="ScraperStatuses" EntitySet="ScraperStatuses" />
+            <End Role="Settings" EntitySet="Settings" />
           </AssociationSet>
         </EntityContainer>
-        <Association Name="FK_SuitableProfiles_Companies">
-          <End Type="ScraperLinkedInDBModel.Company" Role="Company" Multiplicity="1" />
-          <End Type="ScraperLinkedInDBModel.SuitableProfile" Role="SuitableProfile" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SuitableProfile">
-              <PropertyRef Name="CompanyID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Payment">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Guide" />
-            <PropertyRef Name="Validity" />
-            <PropertyRef Name="CreateOn" />
-            <PropertyRef Name="AccountId" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Guide" Type="Guid" Nullable="false" />
-          <Property Name="Validity" Type="Int32" Nullable="false" />
-          <Property Name="CreateOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdateOn" Type="DateTime" Precision="3" />
-          <Property Name="AccountId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="ScraperLinkedInDBModel.FK_Payments_Accounts" FromRole="Payment" ToRole="Account" />
-          <Property Name="PaymentOn" Type="DateTime" Precision="3" />
-        </EntityType>
-        <Association Name="FK_Payments_Accounts">
-          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
-          <End Type="ScraperLinkedInDBModel.Payment" Role="Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AdvanceSettings_Accounts">
-          <End Type="ScraperLinkedInDBModel.Account" Role="Account" Multiplicity="1" />
-          <End Type="ScraperLinkedInDBModel.AdvanceSetting" Role="AdvanceSetting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AdvanceSetting">
-              <PropertyRef Name="AccountId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Settings_ScraperStatuses">
-          <End Type="ScraperLinkedInDBModel.ScraperStatus" Role="ScraperStatus" Multiplicity="1" />
-          <End Type="ScraperLinkedInDBModel.Setting" Role="Setting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ScraperStatus">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Setting">
-              <PropertyRef Name="ScraperStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -921,7 +889,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Company">
               <MappingFragment StoreEntitySet="Companies">
-                <ScalarProperty Name="LastScrapedPage" ColumnName="LastScrapedPage" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
                 <ScalarProperty Name="OrganizationURL" ColumnName="OrganizationURL" />
@@ -938,6 +905,7 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
                 <ScalarProperty Name="AmountEmployees" ColumnName="AmountEmployees" />
                 <ScalarProperty Name="Industry" ColumnName="Industry" />
                 <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+                <ScalarProperty Name="LastScrapedPage" ColumnName="LastScrapedPage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1005,6 +973,8 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <EntitySetMapping Name="Settings">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Setting">
               <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="IsSearchChiefs" ColumnName="IsSearchChiefs" />
+                <ScalarProperty Name="IsSearchDevelopers" ColumnName="IsSearchDevelopers" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Login" ColumnName="Login" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
@@ -1019,7 +989,6 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
           <EntitySetMapping Name="SuitableProfiles">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.SuitableProfile">
               <MappingFragment StoreEntitySet="SuitableProfiles">
-                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -1041,21 +1010,21 @@ warning 6002: The table/view 'ScraperLinkedInDB.dbo.Payments' does not have a pr
                 <ScalarProperty Name="Facebook" ColumnName="Facebook" />
                 <ScalarProperty Name="TechStack" ColumnName="TechStack" />
                 <ScalarProperty Name="DateTimeCreation" ColumnName="DateTimeCreation" />
-                <ScalarProperty Name="ProfileID" ColumnName="ProfileID" />
                 <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Payments">
             <EntityTypeMapping TypeName="ScraperLinkedInDBModel.Payment">
               <MappingFragment StoreEntitySet="Payments">
-                <ScalarProperty Name="PaymentOn" ColumnName="PaymentOn" />
-                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
-                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
-                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
-                <ScalarProperty Name="Validity" ColumnName="Validity" />
-                <ScalarProperty Name="Guide" ColumnName="Guide" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Guide" ColumnName="Guide" />
+                <ScalarProperty Name="Validity" ColumnName="Validity" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="PaymentOn" ColumnName="PaymentOn" />
+                <ScalarProperty Name="UpdateOn" ColumnName="UpdateOn" />
+                <ScalarProperty Name="AccountId" ColumnName="AccountId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

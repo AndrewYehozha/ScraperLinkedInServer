@@ -3,6 +3,7 @@ using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Request;
 using Profile = ScraperLinkedInServer.Database.Profile;
+using System.Collections.Generic;
 
 namespace ScraperLinkedInServer.ObjectMappers
 {
@@ -53,14 +54,16 @@ namespace ScraperLinkedInServer.ObjectMappers
                            .ForMember(c => c.ProfileStatusID, opt => opt.MapFrom(ce => (int)ce.ProfileStatus))
                            .ForMember(c => c.Account, opt => opt.Ignore())
                            .ForMember(c => c.ExecutionStatus, opt => opt.Ignore())
-                           .ForMember(c => c.ProfileStatus, opt => opt.Ignore())
-                           .ForMember(c => c.SuitableProfiles, opt => opt.Ignore());
+                           .ForMember(c => c.ProfileStatus, opt => opt.Ignore());
 
                         cfg.CreateMap<Profile, ProfileViewModel>()
                            .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
                            .ForMember(c => c.ProfileStatus, opt => opt.MapFrom(ce => (Models.Types.ProfileStatus)ce.ProfileStatusID))
                            .ForMember(c => c.OrganizationName, opt => opt.MapFrom(ce => ce.Company.OrganizationName));
 
+                        cfg.CreateMap<Company, CompanyProfilesViewModel>()
+                           .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
+                           .ForMember(c => c.ProfilesViewModel, opt => opt.MapFrom(ce => Mapper.Instance.Map<IEnumerable<Profile>, IEnumerable<ProfileViewModel>>(ce.Profiles)));
 
                         cfg.CreateMap<SettingsViewModel, Setting>()
                            .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));

@@ -38,9 +38,6 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
             return Mapper.Instance.Map<IEnumerable<SuitableProfile>, IEnumerable<SuitableProfileViewModel>>(suitableProfilesDB);
         }
 
-        [HttpPost]
-        [Route("suitable-profile-management")]
-        [Authorize]
         public async Task InsertSuitableProfilesAsync(IEnumerable<SuitableProfileViewModel> suitableProfilesVM)
         {
             var suitableProfilesDB = Mapper.Instance.Map<IEnumerable<SuitableProfileViewModel>, IEnumerable<SuitableProfile>>(suitableProfilesVM);

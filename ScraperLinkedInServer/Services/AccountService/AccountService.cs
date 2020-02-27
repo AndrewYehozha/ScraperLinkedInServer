@@ -14,6 +14,7 @@ using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models;
 using ScraperLinkedInServer.Services.PaymentService.Interfaces;
 using System.Net;
+using System.Collections.Generic;
 
 namespace ScraperLinkedInServer.Services.AccountService
 {
@@ -50,6 +51,11 @@ namespace ScraperLinkedInServer.Services.AccountService
             return response;
         }
 
+        public async Task<IEnumerable<int>> GetActiveAccountsIdsAsync()
+        {
+            return await _accountRepository.GetActiveAccountsIdsAsync();
+        }
+
         public async Task<AuthorizationResponse> Authorization(AuthorizationRequest request)
         {
             var response = new AuthorizationResponse();
@@ -72,7 +78,7 @@ namespace ScraperLinkedInServer.Services.AccountService
             }
 
             var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
-            var token = TokenManager.GenerateToken(accountVM);
+            var token = TokenManager.GenerateToken(accountVM, Roles.User);
 
             response.Account = accountVM;
             response.Token = token;
@@ -95,9 +101,8 @@ namespace ScraperLinkedInServer.Services.AccountService
 
             var account = await _accountRepository.GetAccountByIdAsync(payment.AccountId);
             var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
-            accountVM.Role = Roles.WindowsService;
 
-            response.Token = TokenManager.GenerateToken(accountVM);
+            response.Token = TokenManager.GenerateToken(accountVM, Roles.WindowsService);
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return response;

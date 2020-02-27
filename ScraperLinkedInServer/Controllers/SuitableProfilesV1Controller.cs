@@ -63,13 +63,7 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize(Roles = Roles.WindowsService)]
         public async Task<IHttpActionResult> InsertSuitableProfilesAsync(SuitableProfilesRequest request)
         {
-            var response = new SuitableProfilesResponse();
-
-            var accountId = Identity.ToAccountID();
-            foreach (var suitableProfile in request.SuitableProfilesViewModel)
-            {
-                suitableProfile.AccountID = accountId;
-            }
+            var response = new BaseResponse();
 
             await _suitableProfileService.InsertSuitableProfilesAsync(request.SuitableProfilesViewModel);
             response.StatusCode = (int)HttpStatusCode.OK;

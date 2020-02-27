@@ -40,13 +40,12 @@ namespace ScraperLinkedInServer.Controllers
         [HttpGet]
         [Route("for-search-suitable-profiles")]
         [Authorize(Roles = Roles.WindowsService)]
-        public async Task<IHttpActionResult> GetCompaniesForSearchSuitableProfilesAsync(int companyBatchSize)
+        public async Task<IHttpActionResult> GetCompaniesForSearchSuitableProfilesAsync(int accountId, int companyBatchSize)
         {
-            var response = new CompaniesResponse();
+            var response = new CompaniesProfilesResponse();
 
-            var accountId = Identity.ToAccountID();
-            var companiesVM = await _companyService.GetCompaniesForSearchSuitableProfilesAsync(accountId, companyBatchSize);
-            response.CompaniesViewModel = companiesVM;
+            var companyProfilesVM = await _companyService.GetCompaniesProfilesForSearchAsync(accountId, companyBatchSize);
+            response.CompanyProfilesViewModel = companyProfilesVM;
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);

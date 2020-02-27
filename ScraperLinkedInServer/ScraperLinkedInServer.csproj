@@ -451,6 +451,7 @@
     <Compile Include="Models\Entities\AccountViewModel.cs" />
     <Compile Include="Models\Entities\AdvanceSettingsViewModel.cs" />
     <Compile Include="Models\Entities\Claims.cs" />
+    <Compile Include="Models\Entities\CompanyProfilesViewModel.cs" />
     <Compile Include="Models\Entities\CompanyViewModel.cs" />
     <Compile Include="Models\Entities\DebugLogViewModel.cs" />
     <Compile Include="Models\Entities\PaymentViewModel.cs" />
@@ -470,6 +471,7 @@
     <Compile Include="Models\Response\AdvanceSettingsResponse.cs" />
     <Compile Include="Models\Response\AuthorizationResponse.cs" />
     <Compile Include="Models\Response\BaseResponse.cs" />
+    <Compile Include="Models\Response\CompaniesProfilesResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />
     <Compile Include="Models\Response\DebugLogsResponse.cs" />
     <Compile Include="Models\Response\ProfilesResponse.cs" />

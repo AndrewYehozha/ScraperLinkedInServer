@@ -22,7 +22,7 @@ namespace ScraperLinkedInServer.Database
         public int ProfileBatchSize { get; set; }
         public int AccountId { get; set; }
     
-        public virtual IntervalType IntervalType1 { get; set; }
         public virtual Account Account { get; set; }
+        public virtual IntervalType IntervalType1 { get; set; }
     }
 }
