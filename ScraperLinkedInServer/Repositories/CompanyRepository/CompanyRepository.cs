@@ -23,21 +23,22 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
             }
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesForSearchSuitableProfilesAsync(int accountId, int companyBatchSize)
+        public async Task<IEnumerable<Company>> GetCompaniesProfilesForSearchAsync(int accountId, int companyBatchSize)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                var lastProcessedCompanyId = db.Profiles.Where(x => x.Company.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued) && (x.ProfileStatusID != (int)Models.Types.ProfileStatus.Undefined))
-                                                        .OrderByDescending(d => d.Id)
-                                                        .Select(x => x.CompanyID)
-                                                        .FirstOrDefault();
+                //var lastProcessedCompanyId = db.Profiles.Where(x => x.Company.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued) && (x.ProfileStatusID != (int)Models.Types.ProfileStatus.Undefined))
+                //                                        .OrderByDescending(d => d.Id)
+                //                                        .Select(x => x.CompanyID)
+                //                                        .FirstOrDefault();
 
-                var unsuitableCompanies = await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any(y => (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Developer)))
-                                                      .ToListAsync();
-                unsuitableCompanies.ForEach(x => x.Profiles.ToList().ForEach(y => y.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Success));
-                await db.SaveChangesAsync();
+                //var unsuitableCompanies = await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any(y => (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Developer)))
+                //                                      .ToListAsync();
+                //unsuitableCompanies.ForEach(x => x.Profiles.ToList().ForEach(y => y.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Success));
+                //await db.SaveChangesAsync();
 
-                return await db.Companies.Where(x => x.AccountId == accountId && (x.Id < lastProcessedCompanyId) && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Developer) && (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Success)))
+                return await db.Companies.Where(x => x.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Undefined)))
+                                         .Include(x => x.Profiles)
                                          .Take(companyBatchSize)
                                          .ToListAsync();
             }

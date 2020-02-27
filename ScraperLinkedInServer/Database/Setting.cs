@@ -22,6 +22,8 @@ namespace ScraperLinkedInServer.Database
         public string RolesSearch { get; set; }
         public int ScraperStatusID { get; set; }
         public Nullable<int> AccountId { get; set; }
+        public bool IsSearchDevelopers { get; set; }
+        public bool IsSearchChiefs { get; set; }
     
         public virtual Account Account { get; set; }
         public virtual ScraperStatus ScraperStatus { get; set; }

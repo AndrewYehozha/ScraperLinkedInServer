@@ -11,6 +11,8 @@ namespace ScraperLinkedInServer.Models.Entities
         public string TechnologiesSearch { get; set; }
         public string RolesSearch { get; set; }
         public ScraperStatus ScraperStatus { get; set; }
+        public bool IsSearchChiefs { get; set; }
+        public bool IsSearchDevelopers { get; set; }
         public int? AccountId { get; set; }
     }
 }

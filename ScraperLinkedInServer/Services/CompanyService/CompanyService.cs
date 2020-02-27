@@ -25,10 +25,10 @@ namespace ScraperLinkedInServer.Services.CompanyService
             return Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<CompanyViewModel>>(companiesDb);
         }
 
-        public async Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchSuitableProfilesAsync(int accountId, int companyBatchSize)
+        public async Task<IEnumerable<CompanyProfilesViewModel>> GetCompaniesProfilesForSearchAsync(int accountId, int companyBatchSize)
         {
-            var companiesDb = await _companyRepository.GetCompaniesForSearchSuitableProfilesAsync(accountId, companyBatchSize);
-            return Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<CompanyViewModel>>(companiesDb);
+            var companiesDb = await _companyRepository.GetCompaniesProfilesForSearchAsync(accountId, companyBatchSize);
+            return Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<CompanyProfilesViewModel>>(companiesDb);
         }
 
         public async Task<int> GetCountCompaniesInProcess(int accountId)

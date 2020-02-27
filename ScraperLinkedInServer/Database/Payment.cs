@@ -18,9 +18,9 @@ namespace ScraperLinkedInServer.Database
         public System.Guid Guide { get; set; }
         public int Validity { get; set; }
         public System.DateTime CreateOn { get; set; }
+        public Nullable<System.DateTime> PaymentOn { get; set; }
         public Nullable<System.DateTime> UpdateOn { get; set; }
         public int AccountId { get; set; }
-        public Nullable<System.DateTime> PaymentOn { get; set; }
     
         public virtual Account Account { get; set; }
     }
