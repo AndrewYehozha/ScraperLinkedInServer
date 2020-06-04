@@ -474,6 +474,7 @@
     <Compile Include="Models\Response\CompaniesProfilesResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />
     <Compile Include="Models\Response\DebugLogsResponse.cs" />
+    <Compile Include="Models\Response\GenerateTokenResponse.cs" />
     <Compile Include="Models\Response\ProfilesResponse.cs" />
     <Compile Include="Models\Response\RegistrationResponse.cs" />
     <Compile Include="Models\Response\SettingsResponse.cs" />

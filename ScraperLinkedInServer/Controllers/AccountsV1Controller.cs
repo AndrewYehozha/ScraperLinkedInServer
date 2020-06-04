@@ -49,19 +49,20 @@ namespace ScraperLinkedInServer.Controllers
         {
             var response = new RegistrationResponse();
 
-            var isExistAccount = await _accountService.IsExistAccount(request.Email);
+            var isExistAccount = await _accountService.IsExistAccount(request.Email, request.Phone);
             if (isExistAccount)
             {
-                response.ErrorMessage = "Account is already registered";
+                response.ErrorMessage = "Account with that email or phone is already registered";
                 response.StatusCode = (int)HttpStatusCode.Unauthorized;
             }
             else {
                 var accountVM = Mapper.Instance.Map<RegistrationRequest, AccountViewModel>(request);
                 accountVM = await _accountService.InsertAccountAsync(accountVM);
-                var token = TokenManager.GenerateToken(accountVM, Roles.User);
+                var tokenResponse = TokenManager.GenerateToken(accountVM, Roles.User);
 
                 response.Account = accountVM;
-                response.Token = token;
+                response.Token = tokenResponse.Token;
+                response.TokenExpires = tokenResponse.Expires;
                 response.StatusCode = (int)HttpStatusCode.OK;
             }
 
