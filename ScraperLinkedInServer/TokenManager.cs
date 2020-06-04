@@ -4,13 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Types;
+using ScraperLinkedInServer.Models.Response;
 
 namespace ScraperLinkedInServer
 {
     public class TokenManager
     {
         private readonly static string Secret = "LGNSELdlknKNn837wWDL2ZzfwefasdWdQkFHiovnspaS";
-        public static string GenerateToken(AccountViewModel account, string role)
+        public static GenerateTokenResponse GenerateToken(AccountViewModel account, string role)
         {
             var identity = new ClaimsIdentity(new[] {
                     new Claim(Claims.AccountId, account.Id.ToString()),
@@ -24,7 +25,7 @@ namespace ScraperLinkedInServer
             var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(Secret));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            DateTime expiresDate = (account.Role == Roles.Admin) ? DateTime.UtcNow.AddDays(7)
+            var expiresDate = (account.Role == Roles.Admin) ? DateTime.UtcNow.AddDays(7)
                                     : (role == Roles.WindowsService) ? DateTime.UtcNow.AddDays(2)
                                     : DateTime.UtcNow.AddDays(1);
             var descriptor = new SecurityTokenDescriptor
@@ -39,7 +40,7 @@ namespace ScraperLinkedInServer
 
             var handler = new JwtSecurityTokenHandler();
             var token = handler.CreateJwtSecurityToken(descriptor);
-            return handler.WriteToken(token);
+            return new GenerateTokenResponse { Token = handler.WriteToken(token), Expires = expiresDate };
         }
     }
 }

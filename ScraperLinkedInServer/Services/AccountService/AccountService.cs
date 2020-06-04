@@ -78,10 +78,11 @@ namespace ScraperLinkedInServer.Services.AccountService
             }
 
             var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
-            var token = TokenManager.GenerateToken(accountVM, Roles.User);
+            var tokenResponse = TokenManager.GenerateToken(accountVM, Roles.User);
 
             response.Account = accountVM;
-            response.Token = token;
+            response.Token = tokenResponse.Token;
+            response.TokenExpires = tokenResponse.Expires;
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return response;
@@ -102,15 +103,18 @@ namespace ScraperLinkedInServer.Services.AccountService
             var account = await _accountRepository.GetAccountByIdAsync(payment.AccountId);
             var accountVM = Mapper.Instance.Map<Account, AccountViewModel>(account);
 
-            response.Token = TokenManager.GenerateToken(accountVM, Roles.WindowsService);
+            var tokenResponse = TokenManager.GenerateToken(accountVM, Roles.WindowsService);
+            response.Token = tokenResponse.Token;
+            response.TokenExpires = tokenResponse.Expires;
+
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return response;
         }
 
-        public async Task<bool> IsExistAccount(string email)
+        public async Task<bool> IsExistAccount(string email, string phone)
         {
-            return await _accountRepository.GetAccountByEmailAsync(email) != null;
+            return await _accountRepository.GetAccountByEmailAsync(email, phone) != null;
         }
 
         public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM)

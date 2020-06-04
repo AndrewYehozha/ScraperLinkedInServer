@@ -17,11 +17,11 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
-        public async Task<Account> GetAccountByEmailAsync(string email)
+        public async Task<Account> GetAccountByEmailAsync(string email, string phone)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
-                return await db.Accounts.Where(x => x.Email == email).FirstOrDefaultAsync();
+                return await db.Accounts.Where(x => x.Email == email || x.Phone == phone).FirstOrDefaultAsync();
             }
         }
 
