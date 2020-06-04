@@ -59,7 +59,7 @@ namespace ScraperLinkedInServer.Services.AccountService
         public async Task<AuthorizationResponse> Authorization(AuthorizationRequest request)
         {
             var response = new AuthorizationResponse();
-            var account = await _accountRepository.GetAccountByEmailAsync(request.Email);
+            var account = await _accountRepository.GetAccountByEmailOrPhoneAsync(request.Email);
             
             var message = account.IsValid();
             if (!string.IsNullOrEmpty(message))
@@ -114,7 +114,7 @@ namespace ScraperLinkedInServer.Services.AccountService
 
         public async Task<bool> IsExistAccount(string email, string phone)
         {
-            return await _accountRepository.GetAccountByEmailAsync(email, phone) != null;
+            return await _accountRepository.GetAccountByEmailOrPhoneAsync(email, phone) != null;
         }
 
         public async Task<AccountViewModel> InsertAccountAsync(AccountViewModel accountVM)

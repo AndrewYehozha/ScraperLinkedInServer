@@ -17,7 +17,7 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
-        public async Task<Account> GetAccountByEmailAsync(string email, string phone)
+        public async Task<Account> GetAccountByEmailOrPhoneAsync(string email, string phone)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {

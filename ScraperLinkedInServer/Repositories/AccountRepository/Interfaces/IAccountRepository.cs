@@ -6,7 +6,7 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<Account> GetAccountByEmailAsync(string email, string phone);
+        Task<Account> GetAccountByEmailOrPhoneAsync(string email = "-1", string phone = "-1");
 
         Task<IEnumerable<int>> GetActiveAccountsIdsAsync();
 
