@@ -4,19 +4,19 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a0f707256e24498a896c83fed89fe168" Name="Diagram1" ZoomLevel="86">
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Account" Width="1.5" PointX="0.75" PointY="11.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.AdvanceSetting" Width="1.5" PointX="3" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Company" Width="1.5" PointX="6" PointY="11.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.DebugLog" Width="1.5" PointX="3" PointY="20.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ExecutionStatus" Width="1.5" PointX="3.75" PointY="17.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.IntervalType" Width="1.5" PointX="0.75" PointY="17.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Profile" Width="1.5" PointX="8.25" PointY="12" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ProfileStatus" Width="1.5" PointX="6" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ScraperStatus" Width="1.5" PointX="0.75" PointY="9.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Setting" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.SuitableProfile" Width="1.5" PointX="11.25" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Payment" Width="1.5" PointX="3" PointY="27.25" IsExpanded="true" />
+      <Diagram DiagramId="32423130b17945748c24ac7785722931" Name="Diagram1">
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Account" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.AdvanceSetting" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Company" Width="1.5" PointX="6" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.DebugLog" Width="1.5" PointX="3" PointY="15" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ExecutionStatus" Width="1.5" PointX="3.75" PointY="18.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.IntervalType" Width="1.5" PointX="0.75" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Profile" Width="1.5" PointX="8.25" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ProfileStatus" Width="1.5" PointX="6" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.ScraperStatus" Width="1.5" PointX="0.75" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Setting" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.SuitableProfile" Width="1.5" PointX="11.25" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScraperLinkedInDBModel.Payment" Width="1.5" PointX="3" PointY="28" IsExpanded="true" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_AdvanceSettings_Accounts" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_Companies_Accounts" ManuallyRouted="false" />
         <AssociationConnector Association="ScraperLinkedInDBModel.FK_DebugLogs_Accounts" ManuallyRouted="false" />

@@ -1,5 +1,7 @@
 ﻿using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Entities;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
@@ -17,6 +19,11 @@ namespace ScraperLinkedInServer.Services.CompanyService
             ICompanyRepository companyRepository)
         {
             _companyRepository = companyRepository;
+        }
+
+        public Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request)
+        {
+            return _companyRepository.SearchCompaniesAsync(accountId, request);
         }
 
         public async Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize)

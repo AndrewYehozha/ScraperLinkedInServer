@@ -38,6 +38,7 @@ namespace ScraperLinkedInServer.Database
         public string Industry { get; set; }
         public int AccountId { get; set; }
         public int LastScrapedPage { get; set; }
+        public System.DateTime DateCreated { get; set; }
     
         public virtual Account Account { get; set; }
         public virtual ExecutionStatus ExecutionStatus { get; set; }
