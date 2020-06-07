@@ -42,10 +42,10 @@ namespace ScraperLinkedInServer.Services.CompanyService
             await _companyRepository.InsertCompanyAsync(companieDb);
         }
 
-        public async Task InsertCompaniesAsync(IEnumerable<CompanyViewModel> companiesVM)
+        public async Task<int> InsertCompaniesAsync(int accountId, IEnumerable<CompanyViewModel> companiesVM)
         {
-            var companiesDb = Mapper.Instance.Map<IEnumerable<CompanyViewModel>, IEnumerable<Company>>(companiesVM);
-            await _companyRepository.InsertCompaniesAsync(companiesDb);
+            var companiesDb = Mapper.Instance.Map<IEnumerable<CompanyViewModel>, IEnumerable<Company>>(companiesVM.Where(x => (x.LinkedInURL != null && x.LinkedInURL.Trim() != "")));
+            return await _companyRepository.InsertCompaniesAsync(accountId, companiesDb);
         }
 
         public async Task UpdateCompanyAsync(CompanyViewModel companyVM)

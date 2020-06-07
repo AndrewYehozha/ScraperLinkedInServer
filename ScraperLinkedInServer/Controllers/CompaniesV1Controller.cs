@@ -1,9 +1,17 @@
-﻿using ScraperLinkedInServer.Extensions;
+﻿using CsvHelper;
+using ScraperLinkedInServer.Extensions;
+using ScraperLinkedInServer.Models.CSVMap;
+using ScraperLinkedInServer.Models.Entities;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -85,18 +93,54 @@ namespace ScraperLinkedInServer.Controllers
         [HttpPost]
         [Route("import")]
         [Authorize]
-        public async Task<IHttpActionResult> InsertCompaniesAsync(CompaniesRequest request)
+        public async Task<IHttpActionResult> InsertCompaniesAsync()
         {
-            var response = new CompaniesResponse();
+            var response = new ImportCompaniesResponse();
 
-            var accountId = Identity.ToAccountID();
-            foreach (var company in request.CompaniesViewModel)
+            if (!Request.Content.IsMimeMultipartContent())
             {
-                company.AccountId = accountId;
-                company.ExecutionStatus = ExecutionStatus.Created;
+                response.ErrorMessage = "This is not file";
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Ok(response);
             }
 
-            await _companyService.InsertCompaniesAsync(request.CompaniesViewModel);
+            var importedCompaniesCount = 0;
+            var accountId = Identity.ToAccountID();
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+            foreach (var file in provider.Contents)
+            {
+                var fileType = file.Headers.ContentDisposition.FileName.Trim('\"');
+                if (!fileType.Equals("application/vnd.ms-excel"))
+                {
+                        response.ErrorMessage = "Invalid file type. Please, import the CSV file";
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return Ok(response);
+                }
+
+                var fileContent = await file.ReadAsStringAsync();
+                using (var reader = new StringReader(fileContent))
+                {
+                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        try
+                        {
+                            csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
+                            csv.Configuration.RegisterClassMap<CompanyCSVMap>();
+                            var companies = csv.GetRecords<CompanyViewModel>().ToList();
+                            importedCompaniesCount += await _companyService.InsertCompaniesAsync(accountId, companies);
+                        }
+                        catch (Exception ex)
+                        {
+                            response.ErrorMessage = "The file does not have a single required column";
+                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            return Ok(response);
+                        }
+                    }
+                }
+            }
+
+            response.ImportedCompaniesCount = importedCompaniesCount;
             response.StatusCode = (int)HttpStatusCode.OK;
 
             return Ok(response);

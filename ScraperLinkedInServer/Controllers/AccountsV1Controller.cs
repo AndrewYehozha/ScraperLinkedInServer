@@ -141,6 +141,16 @@ namespace ScraperLinkedInServer.Controllers
             return Ok(response);
         }
 
+        [HttpPut]
+        [Route("account/change-password")]
+        public async Task<IHttpActionResult> ChangeAccountRoleAsync(ChangePasswordRequest request)
+        {
+            var accountId = Identity.ToAccountID();
+            var response = await _accountService.ChangePasswordByAccountIdAsync(accountId, request);
+
+            return Ok(response);
+        }
+
 
         //Admin functionality
 

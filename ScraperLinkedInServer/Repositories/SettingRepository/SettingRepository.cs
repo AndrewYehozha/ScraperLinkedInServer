@@ -36,6 +36,8 @@ namespace ScraperLinkedInServer.Repositories.SettingRepository
                 settingDB.Password = setting.Password;
                 settingDB.TechnologiesSearch = setting.TechnologiesSearch;
                 settingDB.RolesSearch = setting.RolesSearch;
+                settingDB.IsSearchChiefs = setting.IsSearchChiefs;
+                settingDB.IsSearchDevelopers = setting.IsSearchDevelopers;
 
                 await db.SaveChangesAsync();
             }

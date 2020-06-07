@@ -14,7 +14,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
 
         Task InsertCompanyAsync(Company company);
 
-        Task InsertCompaniesAsync(IEnumerable<Company> companies);
+        Task<int> InsertCompaniesAsync(int accountId, IEnumerable<Company> companies);
 
         Task UpdateCompanyAsync(Company company);
 

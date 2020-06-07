@@ -1,4 +1,5 @@
 ﻿using ScraperLinkedInServer.Database;
+using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -62,7 +63,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
             }
         }
 
-        public async Task InsertCompaniesAsync(IEnumerable<Company> companies)
+        public async Task<int> InsertCompaniesAsync(int accountId, IEnumerable<Company> companies)
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
@@ -72,6 +73,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
 
                 foreach (var company in companies)
                 {
+                    company.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Created;
+                    company.AccountId = accountId;
                     company.Founders = company.Founders ?? "";
                     company.Website = company.Website ?? "";
 
@@ -80,6 +83,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
 
                 db.SaveChanges();
                 await db.SaveChangesAsync();
+
+                return companies.Count();
             }
         }
 

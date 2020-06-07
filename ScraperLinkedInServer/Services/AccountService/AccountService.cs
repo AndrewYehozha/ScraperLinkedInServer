@@ -164,6 +164,42 @@ namespace ScraperLinkedInServer.Services.AccountService
             await _accountRepository.ChangeAccountBlockAsync(request.AccountId, request.IsBlocked);
         }
 
+        public async Task<BaseResponse> ChangePasswordByAccountIdAsync(int accountId, ChangePasswordRequest request)
+        {
+            var response = new BaseResponse();
+
+            var account = await _accountRepository.GetAccountByIdAsync(accountId);
+
+            var message = account.IsValid();
+            if (!string.IsNullOrEmpty(message))
+            {
+                response.ErrorMessage = message;
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
+            }
+
+            if (request.NewPassword != request.ConfirmedPassword)
+            {
+                response.ErrorMessage = "New passwords must match";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
+            }
+
+            var isCorrectPassword = CheckAccountCorrectPassword(request.OldPassword, account.Password);
+            if (!isCorrectPassword)
+            {
+                response.ErrorMessage = "Invalid Old Password";
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return response;
+            }
+
+            await _accountRepository.ChangePasswordByAccountIdAsync(accountId, HashPassword(request.NewPassword));
+
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return response;
+        }
+
         public async Task DeleteAccountAsync(int accountId)
         {
             await _accountRepository.DeleteAccountAsync(accountId);
