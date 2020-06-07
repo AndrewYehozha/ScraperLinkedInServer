@@ -28,6 +28,20 @@ namespace ScraperLinkedInServer.Controllers
             _companyService = companyService;
         }
 
+        [HttpPost]
+        [Route("search")]
+        [Authorize]
+        public async Task<IHttpActionResult> SearchCompaniesAsync(SearchCompaniesRequest request)
+        {
+            var response = new SearchCompaniesResponse();
+            var accountId = Identity.ToAccountID();
+
+            response = await _companyService.SearchCompaniesAsync(accountId, request);
+            response.StatusCode = (int)HttpStatusCode.OK;
+
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("for-search")] //windows-service-scraper
         [Authorize(Roles = Roles.WindowsService)]
@@ -93,7 +107,7 @@ namespace ScraperLinkedInServer.Controllers
         [HttpPost]
         [Route("import")]
         [Authorize]
-        public async Task<IHttpActionResult> InsertCompaniesAsync()
+        public async Task<IHttpActionResult> ImportCompaniesAsync()
         {
             var response = new ImportCompaniesResponse();
 

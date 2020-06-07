@@ -1,4 +1,6 @@
 ﻿using ScraperLinkedInServer.Database;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,6 +8,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
 {
     public interface ICompanyRepository
     {
+        Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request);
+
         Task<IEnumerable<Company>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize);
 
         Task<IEnumerable<Company>> GetCompaniesProfilesForSearchAsync(int accountId, int companyBatchSize);

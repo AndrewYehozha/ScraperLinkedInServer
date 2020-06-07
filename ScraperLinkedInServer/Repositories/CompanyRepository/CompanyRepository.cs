@@ -1,6 +1,11 @@
 ﻿using ScraperLinkedInServer.Database;
+using ScraperLinkedInServer.Models.Entities;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
+using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -10,6 +15,80 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
 {
     public class CompanyRepository : ICompanyRepository
     {
+        public async Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var response = new SearchCompaniesResponse();
+
+                try
+                {
+                    var startDate = request.StartDate.Date;
+                    var endDate = request.EndDate.Date;
+
+                    var result = db.Companies.Where(x => x.AccountId == accountId 
+                    && (DbFunctions.TruncateTime(x.DateCreated) >= DbFunctions.TruncateTime(startDate) && DbFunctions.TruncateTime(x.DateCreated) <= DbFunctions.TruncateTime(endDate)))
+                        .AsQueryable();
+
+                    if (!string.IsNullOrEmpty(request.SearchValue) && request.SearchValue.Length > 2)
+                    {
+                        result = result.Where(x => (x.OrganizationName.Contains(request.SearchValue) || x.Specialties.Contains(request.SearchValue)));
+                    }
+
+                    switch (request.SortedFieldType)
+                    {
+                        case SortedCompaniesFieldTypes.OrganizationName:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.OrganizationName)
+                                : result.OrderByDescending(m => m.OrganizationName);
+                            break;
+                        case SortedCompaniesFieldTypes.HeadquartersLocation:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.HeadquartersLocation)
+                                : result.OrderByDescending(m => m.HeadquartersLocation);
+                            break;
+                        case SortedCompaniesFieldTypes.Website:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.Website)
+                                : result.OrderByDescending(m => m.Website);
+                            break;
+                        case SortedCompaniesFieldTypes.Specialties:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.Specialties)
+                                : result.OrderByDescending(m => m.Specialties);
+                            break;
+                        case SortedCompaniesFieldTypes.AmountEmployees:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.AmountEmployees)
+                                : result.OrderByDescending(m => m.AmountEmployees);
+                            break;
+                        case SortedCompaniesFieldTypes.ExecutionStatus:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.ExecutionStatusID)
+                                : result.OrderByDescending(m => m.ExecutionStatusID);
+                            break;
+                        case SortedCompaniesFieldTypes.DateCreated:
+                        default:
+                            result = request.IsAscending
+                                ? result.OrderBy(m => m.DateCreated)
+                                : result.OrderByDescending(m => m.DateCreated);
+                            break;
+                    }
+
+                    response.TotalCount = await result.CountAsync();
+                    result = result.Skip(request.PageSize * (request.PageNumber - 1)).Take(request.PageSize);
+                    response.SearchCompaniesViewModel = Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<SearchCompaniesViewModel>>(await result.ToListAsync());
+                }
+                catch (Exception ex)
+                {
+                    response.ErrorMessage = ex.Message;
+                    response.StatusCode = 400;
+                }
+
+                return response;
+            }
+        }
+
         public async Task<IEnumerable<Company>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize)
         {
             using (var db = new ScraperLinkedInDBEntities())
@@ -58,6 +137,9 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
         {
             using (var db = new ScraperLinkedInDBEntities())
             {
+
+                company.DateCreated = DateTime.UtcNow;
+
                 db.Companies.Add(company);
                 await db.SaveChangesAsync();
             }
@@ -77,6 +159,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                     company.AccountId = accountId;
                     company.Founders = company.Founders ?? "";
                     company.Website = company.Website ?? "";
+                    company.DateCreated = DateTime.UtcNow.Date;
 
                     db.Companies.Add(company);
                 }

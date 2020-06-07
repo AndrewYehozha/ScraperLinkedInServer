@@ -65,6 +65,10 @@ namespace ScraperLinkedInServer.ObjectMappers
                            .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
                            .ForMember(c => c.ProfilesViewModel, opt => opt.MapFrom(ce => Mapper.Instance.Map<IEnumerable<Profile>, IEnumerable<ProfileViewModel>>(ce.Profiles)));
 
+                        cfg.CreateMap<Company, SearchCompaniesViewModel>()
+                           .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
+                           .ForMember(c => c.DateCreated, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy")));
+
                         cfg.CreateMap<SettingsViewModel, Setting>()
                            .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus))
                            .ForMember(c => c.ScraperStatus, opt => opt.Ignore());
