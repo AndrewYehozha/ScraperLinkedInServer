@@ -14,7 +14,7 @@ namespace ScraperLinkedInServer.Services.CompanyService.Interfaces
 
         Task InsertCompanyAsync(CompanyViewModel companyVM);
 
-        Task InsertCompaniesAsync(IEnumerable<CompanyViewModel> companiesVM);
+        Task<int> InsertCompaniesAsync(int accountId, IEnumerable<CompanyViewModel> companiesVM);
 
         Task UpdateCompanyAsync(CompanyViewModel companyVM);
 

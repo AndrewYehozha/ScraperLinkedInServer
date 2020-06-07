@@ -52,6 +52,9 @@
     <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="dotnet-aspnet-codegenerator-design, Version=3.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Web.CodeGeneration.Design.3.1.0\lib\net461\dotnet-aspnet-codegenerator-design.exe</HintPath>
     </Reference>
@@ -268,6 +271,11 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.7\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -448,6 +456,7 @@
     <Compile Include="Database\SuitableProfile.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CSVMap\CompanyCSVMap.cs" />
     <Compile Include="Models\Entities\AccountViewModel.cs" />
     <Compile Include="Models\Entities\AdvanceSettingsViewModel.cs" />
     <Compile Include="Models\Entities\Claims.cs" />
@@ -460,6 +469,7 @@
     <Compile Include="Models\Entities\SuitableProfileViewModel.cs" />
     <Compile Include="Models\Request\AccountRequest.cs" />
     <Compile Include="Models\Request\AdvanceSettingsRequest.cs" />
+    <Compile Include="Models\Request\ChangePasswordRequest.cs" />
     <Compile Include="Models\Request\CompanyRequest.cs" />
     <Compile Include="Models\Request\DebugLogRequest.cs" />
     <Compile Include="Models\Request\ProfilesRequest.cs" />
@@ -475,6 +485,7 @@
     <Compile Include="Models\Response\CompanyResponse.cs" />
     <Compile Include="Models\Response\DebugLogsResponse.cs" />
     <Compile Include="Models\Response\GenerateTokenResponse.cs" />
+    <Compile Include="Models\Response\ImportCompaniesResponse.cs" />
     <Compile Include="Models\Response\ProfilesResponse.cs" />
     <Compile Include="Models\Response\RegistrationResponse.cs" />
     <Compile Include="Models\Response\SettingsResponse.cs" />

@@ -18,6 +18,8 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository.Interfaces
 
         Task ChangeAccountBlockAsync(int accountId, bool isBlocked);
 
+        Task ChangePasswordByAccountIdAsync(int accountId, string newPassword);
+
         Task ChangeAccountRoleAsync(int accountId, string role);
 
         Task<Account> GetAccountByIdAsync(int id);

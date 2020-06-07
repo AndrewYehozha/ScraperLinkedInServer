@@ -80,6 +80,16 @@ namespace ScraperLinkedInServer.Repositories.AccountRepository
             }
         }
 
+        public async Task ChangePasswordByAccountIdAsync(int accountId, string newPassword)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var accountDb = db.Accounts.Where(x => x.Id == accountId).FirstOrDefault();
+                accountDb.Password = newPassword;
+                await db.SaveChangesAsync();
+            }
+        }
+
         public async Task DeleteAccountAsync(int accountId)
         {
             using (var db = new ScraperLinkedInDBEntities())

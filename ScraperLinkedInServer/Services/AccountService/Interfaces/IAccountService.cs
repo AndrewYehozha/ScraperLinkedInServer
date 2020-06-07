@@ -29,5 +29,7 @@ namespace ScraperLinkedInServer.Services.AccountService.Interfaces
         Task ChangeAccountBlockAsync(ChangeAccountBlockRequest request);
 
         Task ChangeAccountRoleAsync(ChangeAccountRoleRequest request);
+
+        Task<BaseResponse> ChangePasswordByAccountIdAsync(int accountId, ChangePasswordRequest request);
     }
 }

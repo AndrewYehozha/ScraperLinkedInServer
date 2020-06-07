@@ -66,7 +66,8 @@ namespace ScraperLinkedInServer.ObjectMappers
                            .ForMember(c => c.ProfilesViewModel, opt => opt.MapFrom(ce => Mapper.Instance.Map<IEnumerable<Profile>, IEnumerable<ProfileViewModel>>(ce.Profiles)));
 
                         cfg.CreateMap<SettingsViewModel, Setting>()
-                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus));
+                           .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus))
+                           .ForMember(c => c.ScraperStatus, opt => opt.Ignore());
                         cfg.CreateMap<Setting, SettingsViewModel>()
                            .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (Models.Types.ScraperStatus)ce.ScraperStatusID));
 
