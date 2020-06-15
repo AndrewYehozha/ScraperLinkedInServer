@@ -10,6 +10,8 @@ namespace ScraperLinkedInServer.Services.CompanyService.Interfaces
     {
         Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request);
 
+        Task<ExportCompaniesResponse> SearchExportCompaniesAsync(int accountId, SearchCompaniesRequest request);
+
         Task<IEnumerable<CompanyViewModel>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize);
 
         Task<IEnumerable<CompanyProfilesViewModel>> GetCompaniesProfilesForSearchAsync(int accountId, int companyBatchSize);

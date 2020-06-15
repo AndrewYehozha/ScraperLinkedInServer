@@ -456,7 +456,8 @@
     <Compile Include="Database\SuitableProfile.cs">
       <DependentUpon>ScraperLinkedInDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\CSVMap\CompanyCSVMap.cs" />
+    <Compile Include="Models\CSVMap\CompanyImportCSVMap.cs" />
+    <Compile Include="Models\CSVMap\CompanyExportCSVMap.cs" />
     <Compile Include="Models\Entities\AccountViewModel.cs" />
     <Compile Include="Models\Entities\AdvanceSettingsViewModel.cs" />
     <Compile Include="Models\Entities\Claims.cs" />
@@ -486,6 +487,9 @@
     <Compile Include="Models\Response\CompaniesProfilesResponse.cs" />
     <Compile Include="Models\Response\CompanyResponse.cs" />
     <Compile Include="Models\Response\DebugLogsResponse.cs" />
+    <Compile Include="Models\Entities\ExportCompaniesViewModel.cs" />
+    <Compile Include="Models\Response\ExportCompaniesResponse.cs" />
+    <Compile Include="Models\Response\ExportFileResponse.cs" />
     <Compile Include="Models\Response\GenerateTokenResponse.cs" />
     <Compile Include="Models\Response\ImportCompaniesResponse.cs" />
     <Compile Include="Models\Response\ProfilesResponse.cs" />

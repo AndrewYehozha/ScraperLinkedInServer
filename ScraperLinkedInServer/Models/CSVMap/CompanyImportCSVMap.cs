@@ -3,9 +3,9 @@ using ScraperLinkedInServer.Models.Entities;
 
 namespace ScraperLinkedInServer.Models.CSVMap
 {
-    public class CompanyCSVMap : ClassMap<CompanyViewModel>
+    public class CompanyImportCSVMap : ClassMap<CompanyViewModel>
     {
-        public CompanyCSVMap()
+        public CompanyImportCSVMap()
         {
             Map(m => m.Id).Ignore();
             Map(m => m.OrganizationName).Name("Organization Name", "OrganizationName").Optional();

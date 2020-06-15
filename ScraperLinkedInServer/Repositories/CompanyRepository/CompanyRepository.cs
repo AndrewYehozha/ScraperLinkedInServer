@@ -25,86 +25,110 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
 
         public async Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request)
         {
-            using (var db = new ScraperLinkedInDBEntities())
+            var response = new SearchCompaniesResponse();
+
+            try
             {
-                var response = new SearchCompaniesResponse();
-
-                try
+                using (var db = new ScraperLinkedInDBEntities())
                 {
-                    var startDate = request.StartDate.Date;
-                    var endDate = request.EndDate.Date;
+                    var companiesSearchResult = SearchCompaniesAsIQueryable(db, accountId, request);
 
-                    var result = db.Companies.Where(x => x.AccountId == accountId
-                    && (DbFunctions.TruncateTime(x.DateCreated) >= DbFunctions.TruncateTime(startDate) && DbFunctions.TruncateTime(x.DateCreated) <= DbFunctions.TruncateTime(endDate)))
-                        .AsQueryable();
-
-                    if (!string.IsNullOrEmpty(request.SearchValue) && request.SearchValue.Length > 2)
-                    {
-                        result = result.Where(x => (x.OrganizationName.Contains(request.SearchValue) || x.Specialties.Contains(request.SearchValue)));
-                    }
-
-                    if(request.ExecutionStatus != Models.Types.ExecutionStatus.Any)
-                    {
-                        result = result.Where(x => x.ExecutionStatusID == (int)request.ExecutionStatus);
-                    }
-
-                    switch (request.SortedFieldType)
-                    {
-                        case SortedCompaniesFieldTypes.OrganizationName:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.OrganizationName)
-                                : result.OrderByDescending(m => m.OrganizationName);
-                            break;
-                        case SortedCompaniesFieldTypes.HeadquartersLocation:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.HeadquartersLocation)
-                                : result.OrderByDescending(m => m.HeadquartersLocation);
-                            break;
-                        case SortedCompaniesFieldTypes.Website:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.Website)
-                                : result.OrderByDescending(m => m.Website);
-                            break;
-                        case SortedCompaniesFieldTypes.Specialties:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.Specialties)
-                                : result.OrderByDescending(m => m.Specialties);
-                            break;
-                        case SortedCompaniesFieldTypes.AmountEmployees:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.AmountEmployees)
-                                : result.OrderByDescending(m => m.AmountEmployees);
-                            break;
-                        case SortedCompaniesFieldTypes.ExecutionStatus:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.ExecutionStatusID)
-                                : result.OrderByDescending(m => m.ExecutionStatusID);
-                            break;
-                        case SortedCompaniesFieldTypes.DateCreated:
-                        default:
-                            result = request.IsAscending
-                                ? result.OrderBy(m => m.DateCreated)
-                                : result.OrderByDescending(m => m.DateCreated);
-                            break;
-                    }
-
-                    response.TotalCount = await result.CountAsync();
+                    response.TotalCount = await companiesSearchResult.CountAsync();
 
                     if (request.PageNumber >= 0 && request.PageSize > 0)
                     {
-                        result = result.Skip(request.PageSize * (request.PageNumber - 1)).Take(request.PageSize);
+                        companiesSearchResult = companiesSearchResult.Skip(request.PageSize * (request.PageNumber - 1)).Take(request.PageSize);
                     }
 
-                    response.SearchCompaniesViewModel = Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<SearchCompaniesViewModel>>(await result.ToListAsync());
+                    response.SearchCompaniesViewModel = Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<SearchCompaniesViewModel>>(await companiesSearchResult.ToListAsync());
+                    response.StatusCode = 200;
                 }
-                catch (Exception ex)
-                {
-                    response.ErrorMessage = ex.Message;
-                    response.StatusCode = 400;
-                }
-
-                return response;
             }
+            catch (Exception ex)
+            {
+                response.ErrorMessage = ex.Message;
+                response.StatusCode = 400;
+            }
+
+            return response;
+        }
+
+        public async Task<ExportCompaniesResponse> ExportCompaniesAsync(int accountId, SearchCompaniesRequest request)
+        {
+            var response = new ExportCompaniesResponse();
+
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                var companiesSearchResult = SearchCompaniesAsIQueryable(db, accountId, request);
+
+                response.CompaniesEntriesCount = await companiesSearchResult.CountAsync();
+
+                response.ExportCompaniesViewModel = Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<ExportCompaniesViewModel>>(await companiesSearchResult.ToListAsync());
+            }
+
+            return response;
+        }
+
+        private IQueryable<Company> SearchCompaniesAsIQueryable(ScraperLinkedInDBEntities db, int accountId, SearchCompaniesRequest request)
+        {
+            var startDate = request.StartDate.Date;
+            var endDate = request.EndDate.Date;
+
+            var result = db.Companies.Where(x => x.AccountId == accountId
+            && (DbFunctions.TruncateTime(x.DateCreated) >= DbFunctions.TruncateTime(startDate) && DbFunctions.TruncateTime(x.DateCreated) <= DbFunctions.TruncateTime(endDate)))
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.SearchValue) && request.SearchValue.Length > 2)
+            {
+                result = result.Where(x => (x.OrganizationName.Contains(request.SearchValue) || x.Specialties.Contains(request.SearchValue)));
+            }
+
+            if (request.ExecutionStatus != Models.Types.ExecutionStatus.Any)
+            {
+                result = result.Where(x => x.ExecutionStatusID == (int)request.ExecutionStatus);
+            }
+
+            switch (request.SortedFieldType)
+            {
+                case SortedCompaniesFieldTypes.OrganizationName:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.OrganizationName)
+                        : result.OrderByDescending(m => m.OrganizationName);
+                    break;
+                case SortedCompaniesFieldTypes.HeadquartersLocation:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.HeadquartersLocation)
+                        : result.OrderByDescending(m => m.HeadquartersLocation);
+                    break;
+                case SortedCompaniesFieldTypes.Website:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.Website)
+                        : result.OrderByDescending(m => m.Website);
+                    break;
+                case SortedCompaniesFieldTypes.Specialties:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.Specialties)
+                        : result.OrderByDescending(m => m.Specialties);
+                    break;
+                case SortedCompaniesFieldTypes.AmountEmployees:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.AmountEmployees)
+                        : result.OrderByDescending(m => m.AmountEmployees);
+                    break;
+                case SortedCompaniesFieldTypes.ExecutionStatus:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.ExecutionStatusID)
+                        : result.OrderByDescending(m => m.ExecutionStatusID);
+                    break;
+                case SortedCompaniesFieldTypes.DateCreated:
+                default:
+                    result = request.IsAscending
+                        ? result.OrderBy(m => m.DateCreated)
+                        : result.OrderByDescending(m => m.DateCreated);
+                    break;
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<Company>> GetCompaniesForSearchAsync(int accountId, int companyBatchSize)

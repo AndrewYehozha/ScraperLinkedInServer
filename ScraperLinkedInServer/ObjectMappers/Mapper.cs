@@ -44,6 +44,16 @@ namespace ScraperLinkedInServer.ObjectMappers
                         cfg.CreateMap<Company, CompanyViewModel>()
                            .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID));
 
+                        cfg.CreateMap<Company, ExportCompaniesViewModel>()
+                           .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => 
+                                                                                    ce.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Created ? "Created"
+                                                                                    : ce.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Failed ? "Failed"
+                                                                                    : ce.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Queued ? "Queued"
+                                                                                    : ce.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success ? "Success"
+                                                                                    : "-")
+                           )
+                           .ForMember(c => c.DateCreatedFormat, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy")));
+
 
                         cfg.CreateMap<DebugLogViewModel, DebugLog>();
                         cfg.CreateMap<DebugLog, DebugLogViewModel>();
