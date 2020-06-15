@@ -25,5 +25,7 @@ namespace ScraperLinkedInServer.Services.CompanyService.Interfaces
         Task UpdateCompaniesAsync(IEnumerable<CompanyViewModel> companiesVM);
 
         Task UpdateLastPageCompanyAsync(int accountId, int companyId, int lastScrapedPage);
+
+        Task<CompanyViewModel> GetCompanyByIdAsync(int id, int accountId);
     }
 }

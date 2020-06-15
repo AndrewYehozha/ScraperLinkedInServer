@@ -21,6 +21,12 @@ namespace ScraperLinkedInServer.Services.CompanyService
             _companyRepository = companyRepository;
         }
 
+        public async Task<CompanyViewModel> GetCompanyByIdAsync(int id, int accountId)
+        {
+            var companyDb = await _companyRepository.GetCompanyByIdAsync(id, accountId);
+            return Mapper.Instance.Map<Company, CompanyViewModel>(companyDb);
+        }
+
         public Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request)
         {
             return _companyRepository.SearchCompaniesAsync(accountId, request);
