@@ -24,6 +24,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository.Interfaces
 
         Task UpdateCompaniesAsync(IEnumerable<Company> companies);
 
+        Task<Company> GetCompanyByIdAsync(int id, int accountId);
+
         Task UpdateLastPageCompanyAsync(int accountId, int companyId, int lastScrapedPage);
     }
 }

@@ -15,6 +15,14 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
 {
     public class CompanyRepository : ICompanyRepository
     {
+        public async Task<Company> GetCompanyByIdAsync(int id, int accountId)
+        {
+            using (var db = new ScraperLinkedInDBEntities())
+            {
+                return await db.Companies.Where(x => x.Id == id && x.AccountId == accountId).FirstOrDefaultAsync();
+            }
+        }
+
         public async Task<SearchCompaniesResponse> SearchCompaniesAsync(int accountId, SearchCompaniesRequest request)
         {
             using (var db = new ScraperLinkedInDBEntities())
@@ -26,13 +34,18 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                     var startDate = request.StartDate.Date;
                     var endDate = request.EndDate.Date;
 
-                    var result = db.Companies.Where(x => x.AccountId == accountId 
+                    var result = db.Companies.Where(x => x.AccountId == accountId
                     && (DbFunctions.TruncateTime(x.DateCreated) >= DbFunctions.TruncateTime(startDate) && DbFunctions.TruncateTime(x.DateCreated) <= DbFunctions.TruncateTime(endDate)))
                         .AsQueryable();
 
                     if (!string.IsNullOrEmpty(request.SearchValue) && request.SearchValue.Length > 2)
                     {
                         result = result.Where(x => (x.OrganizationName.Contains(request.SearchValue) || x.Specialties.Contains(request.SearchValue)));
+                    }
+
+                    if(request.ExecutionStatus != Models.Types.ExecutionStatus.Any)
+                    {
+                        result = result.Where(x => x.ExecutionStatusID == (int)request.ExecutionStatus);
                     }
 
                     switch (request.SortedFieldType)
@@ -76,7 +89,12 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                     }
 
                     response.TotalCount = await result.CountAsync();
-                    result = result.Skip(request.PageSize * (request.PageNumber - 1)).Take(request.PageSize);
+
+                    if (request.PageNumber >= 0 && request.PageSize > 0)
+                    {
+                        result = result.Skip(request.PageSize * (request.PageNumber - 1)).Take(request.PageSize);
+                    }
+
                     response.SearchCompaniesViewModel = Mapper.Instance.Map<IEnumerable<Company>, IEnumerable<SearchCompaniesViewModel>>(await result.ToListAsync());
                 }
                 catch (Exception ex)
@@ -116,8 +134,7 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                 //                                      .ToListAsync();
                 //unsuitableCompanies.ForEach(x => x.Profiles.ToList().ForEach(y => y.ExecutionStatusID = (int)Models.Types.ExecutionStatus.Success));
                 //await db.SaveChangesAsync();
-
-                return await db.Companies.Where(x => x.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Undefined)))
+                return await db.Companies.Where(x => x.AccountId == accountId && (x.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success) && x.Profiles.Any() && !x.Profiles.Any(y => (y.ProfileStatusID == (int)Models.Types.ProfileStatus.Undefined) || (y.ExecutionStatusID != (int)Models.Types.ExecutionStatus.Queued)))
                                          .Include(x => x.Profiles)
                                          .Take(companyBatchSize)
                                          .ToListAsync();
@@ -160,6 +177,8 @@ namespace ScraperLinkedInServer.Repositories.CompanyRepository
                     company.Founders = company.Founders ?? "";
                     company.Website = company.Website ?? "";
                     company.DateCreated = DateTime.UtcNow.Date;
+                    company.Specialties = company.Specialties ?? "";
+                    company.LogoUrl = company.LogoUrl ?? "";
 
                     db.Companies.Add(company);
                 }
