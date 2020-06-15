@@ -1,5 +1,4 @@
 ﻿using ScraperLinkedInServer.Models.Entities;
-using ScraperLinkedInServer.Models.Types;
 using System.Collections.Generic;
 
 namespace ScraperLinkedInServer.Models.Response

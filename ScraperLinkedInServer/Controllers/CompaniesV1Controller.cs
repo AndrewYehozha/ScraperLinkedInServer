@@ -49,11 +49,9 @@ namespace ScraperLinkedInServer.Controllers
         [Authorize]
         public async Task<IHttpActionResult> SearchCompaniesAsync(SearchCompaniesRequest request)
         {
-            var response = new SearchCompaniesResponse();
             var accountId = Identity.ToAccountID();
 
-            response = await _companyService.SearchCompaniesAsync(accountId, request);
-            response.StatusCode = (int)HttpStatusCode.OK;
+            var response = await _companyService.SearchCompaniesAsync(accountId, request);
 
             return Ok(response);
         }
@@ -156,7 +154,7 @@ namespace ScraperLinkedInServer.Controllers
                         try
                         {
                             csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
-                            csv.Configuration.RegisterClassMap<CompanyCSVMap>();
+                            csv.Configuration.RegisterClassMap<CompanyImportCSVMap>();
                             var companies = csv.GetRecords<CompanyViewModel>().ToList();
                             importedCompaniesCount += await _companyService.InsertCompaniesAsync(accountId, companies);
                         }
@@ -179,28 +177,53 @@ namespace ScraperLinkedInServer.Controllers
         [HttpPost]
         [Route("export")]
         [Authorize]
-        public async Task<HttpResponseMessage> ExportCompaniesAsync(SearchCompaniesRequest request)
+        public async Task<IHttpActionResult> ExportCompaniesAsync(SearchCompaniesRequest request)
         {
-            //var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("Test"));
-            var stream = new FileStream(@"D:\Важное\Учеба\IV-Курс\Практика\Основы с работы\companies-5-4-2020.csv", FileMode.Open);
-            // processing the stream.
-            var result = Request.CreateResponse(HttpStatusCode.OK);
-            result.Content = new StreamContent(stream);
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-excel");
-            result.Content.Headers.ContentLength = stream.Length;
-            return result;
+            var result = new ExportFileResponse();
+            var accountId = Identity.ToAccountID();
 
+            var companiesList = await _companyService.SearchExportCompaniesAsync(accountId, request);
+            if (companiesList.CompaniesEntriesCount > 0)
+            {
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
+                        csv.Configuration.RegisterClassMap<CompanyExportCSVMap>();
+                        csv.WriteRecords(companiesList.ExportCompaniesViewModel);
+                        writer.Flush();
+                        stream.Position = 0;
+                        result.Content = reader.ReadToEnd();
+                        reader.Close();
+                        result.ContentType = "application/vnd.ms-excel";
+                        result.ContentEntriesCount = companiesList.CompaniesEntriesCount;
+                        result.DateCreateUTC = $"{ DateTime.UtcNow.ToString("MM-dd-yy_H-mm-ss") }UTC";
 
-            //var response = Request.CreateResponse(HttpStatusCode.OK);
-            //var accountId = Identity.ToAccountID();
-            //var companiesList = await _companyService.SearchCompaniesAsync(accountId, request);
+                        result.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorMessage = ex.Message;
+                    result.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Entries with Company not found";
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+            }
 
+            return Ok(result);
+
+            //var result = Request.CreateResponse(HttpStatusCode.OK);
             //if (companiesList.SearchCompaniesViewModel.Any())
             //{
-            //    using (var stream = new MemoryStream())
-            //    {
-            //        using (var writer = new StreamWriter(stream))
+            //        using (var writer = new StreamWriter("path\\to\\file.csv", false, System.Text.Encoding.UTF8))
             //        {
             //            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             //            {
@@ -209,29 +232,29 @@ namespace ScraperLinkedInServer.Controllers
             //                    csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
             //                    csv.Configuration.RegisterClassMap<CompanyCSVMap>();
             //                    await csv.WriteRecordsAsync(companiesList.SearchCompaniesViewModel);
-            //                    var c = stream.ToString();
-            //                    response.StatusCode = HttpStatusCode.OK;
-            //                    response.Content = new StringContent(stream.ToString());
-            //                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            //                    response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment"); //attachment will force download
-            //                    response.Content.Headers.ContentDisposition.FileName = $"companies_{ DateTime.UtcNow.ToString("MM-dd-yyyy-H-mm-ss") }.csv";
+
+
+            //                    // processing the stream.
+            //                    var fileStream = new FileStream(@"D:\Важное\Учеба\IV-Курс\Практика\Основы с работы\companies-5-4-2020.csv", FileMode.Open);
+            //                    result.Content = new StreamContent(fileStream);
+            //                    result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            //                    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-excel");
+            //                    result.Content.Headers.ContentLength = fileStream.Length;
             //                }
             //                catch (Exception ex)
             //                {
-            //                    response.ReasonPhrase = ex.Message;
-            //                    response.StatusCode = HttpStatusCode.BadRequest;
+            //                    result.ReasonPhrase = ex.Message;
+            //                    result.StatusCode = HttpStatusCode.BadRequest;
             //                }
             //            }
             //        }
-            //    }
             //}
             //else
             //{
-            //    response.ReasonPhrase = "The file is empty";
-            //    response.StatusCode = HttpStatusCode.OK;
+            //    result.ReasonPhrase = "The file is empty";
+            //    result.StatusCode = HttpStatusCode.OK;
             //}
-            ////return File(System.IO.File.ReadAllBytes(@"D:\Важное\Учеба\IV-Курс\Практика\Основы с работы\companies-5-4-2020 - Copy.csv"), "application/vnd.ms-excel", "companies-5-4-2020 - Copy.csv");
-            //return response;
+            //return result;
         }
 
         [HttpPut]
