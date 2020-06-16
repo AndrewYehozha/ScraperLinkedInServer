@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScraperLinkedInServer.Models.Types;
+using System;
 
 namespace ScraperLinkedInServer.Models.Entities
 {
@@ -24,8 +25,9 @@ namespace ScraperLinkedInServer.Models.Entities
         public string Twitter { get; set; }
         public string Facebook { get; set; }
         public string TechStack { get; set; }
-        public DateTime? DateTimeCreation { get; set; }
         public int AccountID { get; set; }
         public int CompanyID { get; set; }
+        public ProfileStatus ProfileStatus { get; set; }
+        public DateTime? DateTimeCreation { get; set; }
     }
 }

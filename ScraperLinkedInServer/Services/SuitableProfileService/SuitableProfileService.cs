@@ -1,15 +1,14 @@
 ﻿using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Entities;
-using ScraperLinkedInServer.Models.Types;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.ObjectMappers;
 using ScraperLinkedInServer.Repositories.SuitableProfileRepository.Interfaces;
 using ScraperLinkedInServer.Services.ProfileService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace ScraperLinkedInServer.Services.SuitableProfileService
 {
@@ -32,10 +31,14 @@ namespace ScraperLinkedInServer.Services.SuitableProfileService
             return Mapper.Instance.Map<SuitableProfile, SuitableProfileViewModel>(suitableProfileDB);
         }
 
-        public async Task<IEnumerable<SuitableProfileViewModel>> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size)
+        public async Task<SearchSuitableProfilesResponse> GetSuitableProfilesAsync(int accountId, SearchSuitablesProfilesRequest request)
         {
-            var suitableProfilesDB = await _suitableProfileRepository.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
-            return Mapper.Instance.Map<IEnumerable<SuitableProfile>, IEnumerable<SuitableProfileViewModel>>(suitableProfilesDB);
+            return await _suitableProfileRepository.GetSuitableProfilesAsync(accountId, request);
+        }
+
+        public async Task<ExportSuitablesProfilesResponse> SearchExportSuitablesProfilesAsync(int accountId, SearchSuitablesProfilesRequest request)
+        {
+            return await _suitableProfileRepository.ExportSuitablesProfilesAsync(accountId, request);
         }
 
         public async Task InsertSuitableProfilesAsync(IEnumerable<SuitableProfileViewModel> suitableProfilesVM)

@@ -1,10 +1,13 @@
-﻿using ScraperLinkedInServer.Extensions;
+﻿using CsvHelper;
+using ScraperLinkedInServer.Extensions;
 using ScraperLinkedInServer.Models.Request;
 using ScraperLinkedInServer.Models.Response;
 using ScraperLinkedInServer.Models.Types;
 using ScraperLinkedInServer.Services.CompanyService.Interfaces;
 using ScraperLinkedInServer.Services.SuitableProfileService.Interfaces;
 using System;
+using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -26,7 +29,7 @@ namespace ScraperLinkedInServer.Controllers
         }
 
         [HttpGet]
-        [Route("suitable-profile/{id}")]
+        [Route("suitable-profile")]
         [Authorize]
         public async Task<IHttpActionResult> GetSuitableProfileAsync(int id)
         {
@@ -39,23 +42,62 @@ namespace ScraperLinkedInServer.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("")]
+        [HttpPost]
+        [Route("search")]
         [Authorize]
-        public async Task<IHttpActionResult> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int page, int size)
+        public async Task<IHttpActionResult> GetSuitableProfilesAsync(SearchSuitablesProfilesRequest request)
         {
-            var response = new SuitableProfilesResponse();
-
-            startDate = startDate == DateTime.MinValue ? DateTime.UtcNow.AddDays(-7) : startDate.ToUniversalTime();
-            endDate = endDate == DateTime.MinValue ? DateTime.UtcNow : endDate.ToUniversalTime();
-
             var accountId = Identity.ToAccountID();
-            var suitableProfilesVM = await _suitableProfileService.GetSuitableProfilesAsync(startDate, endDate, accountId, page, size);
-            response.SuitableProfilesViewModel = suitableProfilesVM;
-            response.CountCompaniesInProcess = await _companyService.GetCountCompaniesInProcess(accountId);
-            response.StatusCode = (int)HttpStatusCode.OK;
+
+            var response = await _suitableProfileService.GetSuitableProfilesAsync(accountId, request);
 
             return Ok(response);
+        }
+
+
+        [HttpPost]
+        [Route("export")]
+        [Authorize]
+        public async Task<IHttpActionResult> ExportSuitableProfilesAsync(SearchSuitablesProfilesRequest request)
+        {
+            var result = new ExportFileResponse();
+            var accountId = Identity.ToAccountID();
+
+            var suitablesProfilesList = await _suitableProfileService.SearchExportSuitablesProfilesAsync(accountId, request);
+            if (suitablesProfilesList.SuitablesProfilesEntriesCount > 0)
+            {
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteRecords(suitablesProfilesList.ExportSuitableProfilesViewModel);
+                        writer.Flush();
+                        stream.Position = 0;
+                        result.Content = reader.ReadToEnd();
+                        reader.Close();
+                        result.ContentType = "application/vnd.ms-excel";
+                        result.ContentEntriesCount = suitablesProfilesList.SuitablesProfilesEntriesCount;
+                        result.DateCreateUTC = $"{ DateTime.UtcNow.ToString("MM-dd-yy_H-mm-ss") }UTC";
+
+                        result.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorMessage = ex.Message;
+                    result.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Entries with Company not found";
+                result.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+
+            return Ok(result);
         }
 
         [HttpPost]

@@ -37,8 +37,10 @@ namespace ScraperLinkedInServer.Database
         public Nullable<System.DateTime> DateTimeCreation { get; set; }
         public int AccountID { get; set; }
         public int CompanyID { get; set; }
+        public Nullable<int> ProfileStatusID { get; set; }
     
         public virtual Account Account { get; set; }
         public virtual Company Company1 { get; set; }
+        public virtual ProfileStatus ProfileStatus { get; set; }
     }
 }
