@@ -1,5 +1,6 @@
 ﻿using ScraperLinkedInServer.Database;
-using System;
+using ScraperLinkedInServer.Models.Request;
+using ScraperLinkedInServer.Models.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,8 +10,10 @@ namespace ScraperLinkedInServer.Repositories.SuitableProfileRepository.Interface
     {
         Task<SuitableProfile> GetSuitableProfileByIdAsync(int id);
 
-        Task<IEnumerable<SuitableProfile>> GetSuitableProfilesAsync(DateTime startDate, DateTime endDate, int accountId, int page, int size);
+        Task<SearchSuitableProfilesResponse> GetSuitableProfilesAsync(int accountId, SearchSuitablesProfilesRequest request);
 
         Task InsertSuitableProfilesAsync(IEnumerable<SuitableProfile> suitableProfiles);
+
+        Task<ExportSuitablesProfilesResponse> ExportSuitablesProfilesAsync(int accountId, SearchSuitablesProfilesRequest request);
     }
 }

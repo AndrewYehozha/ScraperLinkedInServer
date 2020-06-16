@@ -18,6 +18,7 @@ namespace ScraperLinkedInServer.Database
         public ProfileStatus()
         {
             this.Profiles = new HashSet<Profile>();
+            this.SuitableProfiles = new HashSet<SuitableProfile>();
         }
     
         public int Id { get; set; }
@@ -25,5 +26,7 @@ namespace ScraperLinkedInServer.Database
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Profile> Profiles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SuitableProfile> SuitableProfiles { get; set; }
     }
 }

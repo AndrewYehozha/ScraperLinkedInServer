@@ -4,6 +4,7 @@ using ScraperLinkedInServer.Database;
 using ScraperLinkedInServer.Models.Request;
 using Profile = ScraperLinkedInServer.Database.Profile;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ScraperLinkedInServer.ObjectMappers
 {
@@ -52,7 +53,7 @@ namespace ScraperLinkedInServer.ObjectMappers
                                                                                     : ce.ExecutionStatusID == (int)Models.Types.ExecutionStatus.Success ? "Success"
                                                                                     : "-")
                            )
-                           .ForMember(c => c.DateCreatedFormat, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy")));
+                           .ForMember(c => c.DateCreatedFormat, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy", CultureInfo.CreateSpecificCulture("en-US"))));
 
 
                         cfg.CreateMap<DebugLogViewModel, DebugLog>();
@@ -77,7 +78,7 @@ namespace ScraperLinkedInServer.ObjectMappers
 
                         cfg.CreateMap<Company, SearchCompaniesViewModel>()
                            .ForMember(c => c.ExecutionStatus, opt => opt.MapFrom(ce => (Models.Types.ExecutionStatus)ce.ExecutionStatusID))
-                           .ForMember(c => c.DateCreated, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy")));
+                           .ForMember(c => c.DateCreated, opt => opt.MapFrom(ce => ce.DateCreated.ToString("MM/dd/yyyy", CultureInfo.CreateSpecificCulture("en-US"))));
 
                         cfg.CreateMap<SettingsViewModel, Setting>()
                            .ForMember(c => c.ScraperStatusID, opt => opt.MapFrom(ce => (int)ce.ScraperStatus))
@@ -86,9 +87,15 @@ namespace ScraperLinkedInServer.ObjectMappers
                            .ForMember(c => c.ScraperStatus, opt => opt.MapFrom(ce => (Models.Types.ScraperStatus)ce.ScraperStatusID));
 
 
-                        cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>();
-                        cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>();
+                        cfg.CreateMap<SuitableProfileViewModel, SuitableProfile>()
+                           .ForMember(c => c.ProfileStatusID, opt => opt.MapFrom(ce => (int)ce.ProfileStatus))
+                           .ForMember(c => c.ProfileStatus, opt => opt.Ignore());
+                        cfg.CreateMap<SuitableProfile, SuitableProfileViewModel>()
+                           .ForMember(c => c.ProfileStatus, opt => opt.MapFrom(ce => (Models.Types.ProfileStatus)ce.ProfileStatusID));
 
+                        cfg.CreateMap<SuitableProfile, SearchSuitableProfilesViewModel>()
+                           .ForMember(c => c.ProfileStatus, opt => opt.MapFrom(ce => (Models.Types.ProfileStatus)ce.ProfileStatusID))
+                           .ForMember(c => c.DateTimeCreation, opt => opt.MapFrom(ce => ce.DateTimeCreation.Value.ToString("MM/dd/yyyy", CultureInfo.CreateSpecificCulture("en-US"))));
 
                         cfg.CreateMap<PaymentViewModel, Payment>();
                         cfg.CreateMap<Payment, PaymentViewModel>();
